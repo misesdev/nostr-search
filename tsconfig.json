@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "strict": true,
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "outDir": "./lib",
+        "rootDir": "./"
+    },
+    "paths": {
+        "@/*": [
+            "./src/*"
+        ]
+    },
+    "include": [
+        "./**/*.ts",
+        "./**/*.js",
+        "./**/*.mjs"
+    ],
+    "exclude": [
+        "node_modules",
+        "<node_internals>/**",
+        "bin/**"
+    ]
+}
