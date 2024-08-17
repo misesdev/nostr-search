@@ -25,20 +25,6 @@ const main = async () : Promise<void> => {
     console.log("search relays", Nostr.explicitRelayUrls)
 }
 
-const init = () => {
-
-    getConnection().then(conn => {
-
-        const npub = "1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef"
-
-        console.log("searching")
-        conn.fetchEvent({ kinds:[3], authors: [npub], limit: 1 }).then(event => {
-
-            console.log("event:", event)
-        })
-    })
-}
-
 //(async () => { await init() })();
 
 main()
