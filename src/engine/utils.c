@@ -27,33 +27,27 @@ int hexToInteger(char* hexByte)
     return decimal;
 }
 
-int* toArray(char *npub) 
+void hexToBytes(char *npub, int *array[]) 
 {
     int length = strlen(npub); 
 
     if(length % 2 != 0) 
     {
         printf("Invalid hexadecimal bytes");
-        return NULL;
+        return;
     }
     
     int index = 0;
     char hexByte[2];
-    int array[strlen(npub) / 2];
-
     for(int i = 0; i <= length - 2; i += 2)
     {
         hexByte[0] = npub[i];
         hexByte[1] = npub[i + 1];
 
-        array[index] = hexToInteger(hexByte);
+        *array[index] = hexToInteger(hexByte);
 
         index++;
     }
-   
-    int *pointer = malloc(sizeof(array));
-
-    return pointer;
 }
 
 
