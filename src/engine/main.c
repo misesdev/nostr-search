@@ -8,7 +8,7 @@ int main(int argc, char *args[])
     char npub[] = "ff22";
     int numbers[strlen(npub)];
 
-    hexToBytes("FF22", **numbers);
+    hexToBytes("FF22", *numbers);
 
     printf("first: %d, second: %d", numbers[0], numbers[1]);
 }
