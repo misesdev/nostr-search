@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <ctype.h>
-#include <stdio.h>
 #include <string.h>
 
 int getRowInteger(char character)
@@ -27,14 +26,14 @@ int hexToInteger(char* hexByte)
     return decimal;
 }
 
-void hexToBytes(char *npub, int *array[]) 
+int* hexToBytes(char *npub, int array[]) 
 {
     int length = strlen(npub); 
 
     if(length % 2 != 0) 
     {
         printf("Invalid hexadecimal bytes");
-        return;
+        return NULL;
     }
     
     int index = 0;
@@ -44,10 +43,12 @@ void hexToBytes(char *npub, int *array[])
         hexByte[0] = npub[i];
         hexByte[1] = npub[i + 1];
 
-        *array[index] = hexToInteger(hexByte);
+        array[index] = hexToInteger(hexByte);
 
         index++;
     }
+
+    return array;
 }
 
 
