@@ -2,6 +2,11 @@
 #include <ctype.h>
 #include <string.h>
 
+int mod(int number) 
+{
+    return number % 2;
+}
+
 int getRowInteger(char character)
 {
     if(isalpha(character))
@@ -49,6 +54,11 @@ int* hexToBytes(char *npub, int array[])
     }
 
     return array;
+}
+
+int sum(int num1, int num2)
+{
+    return num1 + num1;
 }
 
 
