@@ -12,20 +12,22 @@ const getConnection = async () : Promise<NDK> => {
     return ndk
 }
 
-const main = async () : Promise<void> => {
+const main = async () => {
    
-    const Nostr = await getConnection()
+    const Nostr = await getConnection();
+        
+    console.log("connected")
 
-    const npub = "1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef"
+    const hexPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
 
-    const events = await Nostr.fetchEvent({  authors: [npub], kinds: [3], limit: 1 })
+    const events = await Nostr.fetchEvent({  authors: [hexPubkey], kinds: [0, 1], limit: 10 }) 
 
     console.log("events results:", events)
-
-    console.log("search relays", Nostr.explicitRelayUrls)
 }
 
-//(async () => { await init() })();
 
-main()
+
+main() 
+
+
 
