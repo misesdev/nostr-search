@@ -1,7 +1,11 @@
+#ifndef HTTP_UTILS_C
+#define HTTP_UTILS_C
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../types/types.c"
+#include "../types/linked_lists.c"
 
 Search* requestParams(char *hexBytes) {
     
@@ -20,13 +24,36 @@ Search* requestParams(char *hexBytes) {
     return search; 
 }
 
-char* responseJsonResult(User users[])
+char* responseJsonResult(struct UserNode *linkedUser)
 {
-    int length = sizeof(*users);
-
     char *response = malloc(1000 * sizeof(char));
+
+    strcat(response, "[");
+    
+    struct UserNode *current = linkedUser;
+    
+    while (current) 
+    {      
+        // build property username
+        strcat(response, "{ \"username\": \""); 
+        strcat(response, current->user->name); 
+        strcat(response, "\", ");
+
+        // build the property pubkey
+        strcat(response, "\"pubkey\": \"");
+        strcat(response, current->user->npub); 
+        strcat(response, "\"}");
+        
+        if(current->next != NULL) {
+            strcat(response, ",");
+        }
+
+        current = current->next;
+    }
+
+    strcat(response, "]");
 
     return response; 
 }
 
-
+#endif

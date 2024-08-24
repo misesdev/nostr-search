@@ -1,8 +1,11 @@
+#ifndef TYPES_C
+#define TYPES_C
+
 #include <stdint.h>
 
 typedef struct {
-    char name[30];
-    uint8_t npub[32];
+    char name[32];
+    char npub[65]; // 64 bytes + byte null end
 } User;
 
 typedef struct {
@@ -10,3 +13,4 @@ typedef struct {
     char term[64];
 } Search;
 
+#endif
