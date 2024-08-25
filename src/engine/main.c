@@ -16,7 +16,7 @@ int main(int argc, char *args[])
     float similarity;
     float startTime = (float)clock()/CLOCKS_PER_SEC;
 
-    for(int i = 0; i < 100001; i++) {
+    for(int i = 0; i < 1000001; i++) {
         similarity = textSimilarity("Intercesão é", "Intercessão é o ato de interceder");
         //similarity = stringSimilarity("Intercesão é", "Intercessão é o ato de interceder");
     }
