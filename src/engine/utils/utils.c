@@ -1,6 +1,7 @@
 #ifndef UTILS_C
 #define UTILS_C
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <ctype.h>
@@ -48,7 +49,7 @@ int parseInt(char *decimal)
     return result;
 }
 
-float stringSimilarity(char *origin, char* compare)
+float stringSimilarity(char origin[], char compare[])
 {
     // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
     char originPair[2];
@@ -66,10 +67,42 @@ float stringSimilarity(char *origin, char* compare)
             comparePair[1] = toupper(compare[c+1]);
 
             if(originPair[0] == comparePair[0] && originPair[1] == comparePair[1]) {
-                intersection += 1;
+                intersection++;
             }
         }
     }
+
+    float similarity = (2 * intersection) / sizePairs;
+
+    return similarity;
+}
+
+float textSimilarity(char origin[], char compare[])
+{
+    // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
+    int intersection = 0;
+    float sizePairs = strlen(origin) + strlen(compare);
+    int hashMap[52] = {0};
+    
+    int counter, number;
+    for(counter = 0;counter < strlen(origin) -1; counter++) { 
+        number = toupper(origin[counter]);
+        number += toupper(origin[counter+1]);
+        number *= 33;
+        hashMap[number % 52]++;
+    }
+    
+    for(counter = 0;counter < strlen(compare) -1; counter++) { 
+        number = toupper(compare[counter]);
+        number += toupper(compare[counter+1]);
+        number *= 33;
+        hashMap[number % 52]++;
+    }
+    
+    for(counter = 0; counter < 52; counter++)
+    {
+        if(hashMap[counter] > 1) intersection += hashMap[counter ] / 2;
+    }    
 
     float similarity = (2 * intersection) / sizePairs;
 

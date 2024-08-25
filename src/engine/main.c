@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 //#include "./trie.c"
 #include "./utils/utils.c"
@@ -12,9 +13,20 @@
 
 int main(int argc, char *args[]) 
 {
-    float similarity = stringSimilarity("Web Database Applications", "Web Database App with PHP & MySQL");
+    float similarity;
+    float startTime = (float)clock()/CLOCKS_PER_SEC;
 
-    printf("similarity: %f", similarity);
+    for(int i = 0; i < 100001; i++) {
+        similarity = textSimilarity("Intercesão é", "Intercessão é o ato de interceder");
+        //similarity = stringSimilarity("Intercesão é", "Intercessão é o ato de interceder");
+    }
+
+    float endTime = (float)clock()/CLOCKS_PER_SEC;
+    
+    float timeElapsed = endTime - startTime;
+
+    printf("similarity: %f\n", similarity);
+    printf("time s: %f", timeElapsed);
 
     //User *user = malloc(sizeof(User));
 
