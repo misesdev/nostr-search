@@ -32,7 +32,7 @@ uint8_t* hexToBytes(char *hex)
         index++;
     }
 
-    return bytes;
+    return bytes; 
 }
 
 int parseInt(char *decimal)
@@ -52,21 +52,13 @@ int parseInt(char *decimal)
 float stringSimilarity(char origin[], char compare[])
 {
     // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
-    char originPair[2];
-    char comparePair[2];
     uint8_t intersection = 0;
-    uint8_t originLength = strlen(origin) - 1;
-    uint8_t compareLength = strlen(compare) - 1;
-    float sizePairs = originLength + compareLength;
+    float sizePairs = strlen(origin) + strlen(compare);
 
-    for (uint8_t i = 0; i < originLength; i++) { 
-        originPair[0] = toupper(origin[i]);
-        originPair[1] = toupper(origin[i+1]);
-        for(uint8_t c = 0; c < compareLength; c++) {
-            comparePair[0] = toupper(compare[c]);
-            comparePair[1] = toupper(compare[c+1]);
-
-            if(originPair[0] == comparePair[0] && originPair[1] == comparePair[1]) {
+    for (uint8_t i = 0; origin[i] != '\0'; i++) { 
+        for(uint8_t c = 0; compare[c] != '\0'; c++) {
+            if(toupper(origin[i]) == toupper(compare[c])
+                && toupper(origin[i+1]) == toupper(compare[c+1])) {
                 intersection++;
             }
         }
@@ -77,36 +69,31 @@ float stringSimilarity(char origin[], char compare[])
     return similarity;
 }
 
-float textSimilarity(char origin[], char compare[])
+float textSimilarity(char *origin, char *compare)
 {
     // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
-    int intersection = 0;
-    float sizePairs = strlen(origin) + strlen(compare);
-    int hashMap[52] = {0};
+    int intersection = 0, number;
+    float sizePairs = (strlen(origin) + strlen(compare));
+    int hashMap[50] = {0};
     
-    int counter, number;
-    for(counter = 0;counter < strlen(origin) -1; counter++) { 
-        number = toupper(origin[counter]);
-        number += toupper(origin[counter+1]);
-        number *= 33;
-        hashMap[number % 52]++;
+    while(*origin) { 
+        number = toupper(*origin) * toupper(*origin+1);
+        hashMap[number % 50] += 1;
+        origin++;
     }
     
-    for(counter = 0;counter < strlen(compare) -1; counter++) { 
-        number = toupper(compare[counter]);
-        number += toupper(compare[counter+1]);
-        number *= 33;
-        hashMap[number % 52]++;
+    while(*compare) { 
+        number = toupper(*compare) * toupper(*compare+1);
+        hashMap[number % 50] += 1;
+        compare++;
     }
     
-    for(counter = 0; counter < 52; counter++)
+    for(int i = 0; i < 50; i++)
     {
-        if(hashMap[counter] > 1) intersection += hashMap[counter ] / 2;
+        if(hashMap[i] > 1) intersection += hashMap[i] / 2;
     }    
 
-    float similarity = (2 * intersection) / sizePairs;
-
-    return similarity;
+    return (2 * intersection) / sizePairs;
 }
 
 #endif
