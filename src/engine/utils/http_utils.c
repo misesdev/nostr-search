@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../types/types.c"
-#include "../types/linked_lists.c"
 
 Search* requestParams(char *hexBytes) {
     
@@ -24,7 +23,7 @@ Search* requestParams(char *hexBytes) {
     return search; 
 }
 
-char* responseJsonResult(struct UserNode *linkedUser)
+char* JsonResult(struct UserNode *linkedUser)
 {
     char *response = malloc(1000 * sizeof(char));
 
@@ -41,7 +40,7 @@ char* responseJsonResult(struct UserNode *linkedUser)
 
         // build the property pubkey
         strcat(response, "\"pubkey\": \"");
-        strcat(response, current->user->npub); 
+        strcat(response, current->user->pubkey); 
         strcat(response, "\"}");
         
         if(current->next != NULL) {
