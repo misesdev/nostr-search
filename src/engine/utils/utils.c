@@ -102,7 +102,7 @@ uint8_t* compressPubkey(char *pubkey)
     uint8_t *numbers = hexToBytes(pubkey);
 
     for(uint8_t i = 0; i < 32; i += 2) {
-        address[index] = (numbers[i] * numbers[i+1]) % 255;
+        address[index] = (numbers[i] * numbers[i+1]) % 200;
         index++;
     }
     free(numbers);

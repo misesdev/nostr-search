@@ -4,23 +4,14 @@
 #include <string.h>
 #include "../types/types.c"
 
-User* loadData() 
+struct TrieNode* loadData() 
 {
-    FILE *file = fopen("database.bin", "wb");
+    FILE *file = fopen("database", "wb");
     
-    if(!file) {
-        return NULL;
-    }
+    if(!file) return NULL;
 
-    User *user = malloc(sizeof(User));
+    for(int i = 0;i < 32; i++) {    }
 
-
-    strcpy(user->name, "Mises Dev");
-
-    for(int i = 0;i < 32; i++) {
-        user->npub[i] = 255;
-    }
-
-    return user;
+    return NULL;
 }
 

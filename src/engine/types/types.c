@@ -21,7 +21,7 @@ struct UserNode {
 struct TrieNode {
     User *user;
     struct UserNode *follows;
-    struct TrieNode *childrens[255];
+    struct TrieNode *children[200];
     bool isEndOfKey;
 };
 

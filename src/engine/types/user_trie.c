@@ -9,16 +9,16 @@
 
 bool hasChildren(struct TrieNode *node)
 {
-    for(uint8_t i = 0; i < 255; i++) {
-        if(node->childrens[i]) return true;
+    for(uint8_t i = 0; i < 200; i++) {
+        if(node->children[i]) return true;
     }
     return true;
 }
 
 struct TrieNode* createTrieNode() {
     struct TrieNode *node = malloc(sizeof(struct TrieNode));
-    for(uint8_t i = 0; i < 255; i++) {
-        node->childrens[i] = NULL;
+    for(uint8_t i = 0; i < 200; i++) {
+        node->children[i] = NULL;
     }
     return node;
 }
@@ -29,10 +29,10 @@ struct TrieNode* insertTrieNode(struct TrieNode *node, User *user, struct UserNo
     uint8_t *address = compressPubkey(user->pubkey);
 
     for(uint8_t i = 0; i < 16; i++){
-        if(!t_node->childrens[address[i]]) {
-            t_node->childrens[address[i]] = createTrieNode();
+        if(!t_node->children[address[i]]) {
+            t_node->children[address[i]] = createTrieNode();
         }
-        t_node = t_node->childrens[address[i]];
+        t_node = t_node->children[address[i]];
     }
 
     t_node->user = user;
@@ -65,8 +65,8 @@ bool deleteTrieNode(struct TrieNode *node, uint8_t *pubkey, uint8_t depth)
     else {
         uint8_t index = pubkey[depth];
         if(deleteTrieNode(node, pubkey, depth+1)) {
-            free(node->childrens[index]);
-            node->childrens[index] = NULL;
+            free(node->children[index]);
+            node->children[index] = NULL;
 
             return !node->isEndOfKey && !hasChildren(node);
         }
@@ -78,8 +78,8 @@ void clearTrieNode(struct TrieNode *node) {
     if(node == NULL) return;
 
     for(uint8_t i = 0; i < 255; i++) {
-        if(node->childrens[i]) {
-            clearTrieNode(node->childrens[i]);
+        if(node->children[i]) {
+            clearTrieNode(node->children[i]);
         }
     }
     free(node->user);
@@ -92,8 +92,8 @@ struct TrieNode* getTrieNode(struct TrieNode *node, char *pubkey)
     uint8_t *address = compressPubkey(pubkey);
     
     for(uint8_t i = 0; i < 16; i++){
-        if(t_node->childrens[address[i]]) {
-            t_node = t_node->childrens[address[i]];
+        if(t_node->children[address[i]]) {
+            t_node = t_node->children[address[i]];
         }
     }
 
