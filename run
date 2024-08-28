@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gcc ./src/engine/main.c -o ./build/search &&
+
+./build/search
