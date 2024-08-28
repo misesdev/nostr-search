@@ -7,62 +7,93 @@
 #include "./types.c"
 #include "../utils/utils.c"
 
-uint8_t* compressPubkey(char *pubkey)
+bool hasChildren(struct TrieNode *node)
 {
-    uint8_t index = 0;
-    uint8_t *address = malloc(16 * sizeof(uint8_t));
-    uint8_t *numbers = hexToBytes(pubkey);
-
-    for(uint8_t i = 0; i < 32; i += 2) {
-        address[index] = (numbers[i] * numbers[i+1]) % 255;
-        index++;
+    for(uint8_t i = 0; i < 255; i++) {
+        if(node->childrens[i]) return true;
     }
-    free(numbers);
-
-    return address;
+    return true;
 }
 
 struct TrieNode* createTrieNode() {
     struct TrieNode *node = malloc(sizeof(struct TrieNode));
-    
+    for(uint8_t i = 0; i < 255; i++) {
+        node->childrens[i] = NULL;
+    }
     return node;
 }
 
-void insertTrieNode(struct TrieNode *node, User *user, struct UserNode *follows)
+struct TrieNode* insertTrieNode(struct TrieNode *node, User *user, struct UserNode *follows)
 {
     struct TrieNode* t_node = node;
     uint8_t *address = compressPubkey(user->pubkey);
 
     for(uint8_t i = 0; i < 16; i++){
-        t_node->nodes[address[i]] = createTrieNode();
-        t_node = t_node->nodes[address[i]];
+        if(!t_node->childrens[address[i]]) {
+            t_node->childrens[address[i]] = createTrieNode();
+        }
+        t_node = t_node->childrens[address[i]];
     }
 
     t_node->user = user;
     t_node->follows = follows;
+    t_node->isEndOfKey = true;
 
     free(address);
+
+    return t_node;
 }
 
-void deleteTrieNode(User *user)
+bool deleteTrieNode(struct TrieNode *node, uint8_t *pubkey, uint8_t depth)
 {
-    
+    if(!node) return false;
+   
+    if(depth == 15) // if the end address 
+    {
+        if(node->isEndOfKey) {
+            node->isEndOfKey = false;
+        }
+
+        if(!hasChildren(node)) {
+            free(node->user);
+            free(node);
+            return true;
+        }
+
+        return false;
+    }
+    else {
+        uint8_t index = pubkey[depth];
+        if(deleteTrieNode(node, pubkey, depth+1)) {
+            free(node->childrens[index]);
+            node->childrens[index] = NULL;
+
+            return !node->isEndOfKey && !hasChildren(node);
+        }
+    }
+    return false;
 }
 
 void clearTrieNode(struct TrieNode *node) {
+    if(node == NULL) return;
 
+    for(uint8_t i = 0; i < 255; i++) {
+        if(node->childrens[i]) {
+            clearTrieNode(node->childrens[i]);
+        }
+    }
+    free(node->user);
+    free(node);
 }
 
-struct TrieNode* getUserTrieNode(struct TrieNode *node, char *pubkey)
+struct TrieNode* getTrieNode(struct TrieNode *node, char *pubkey)
 {
     struct TrieNode* t_node = node;
     uint8_t *address = compressPubkey(pubkey);
     
     for(uint8_t i = 0; i < 16; i++){
-        if(t_node->nodes[address[i]]) {
-            t_node = t_node->nodes[address[i]];
-        } else {
-            return NULL;
+        if(t_node->childrens[address[i]]) {
+            t_node = t_node->childrens[address[i]];
         }
     }
 

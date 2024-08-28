@@ -13,13 +13,20 @@
 
 int main(int argc, char *args[]) 
 {
-    uint8_t *address = hexToBytes("6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93");
+    User *user = malloc(sizeof(User));
+    strcpy(user->name, "Mises Dev");
+    strcpy(user->pubkey, "6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93");
 
-    for(uint8_t i = 0; i < 32; i++) {
-         printf("%d ", address[i]);
-    }
+    struct TrieNode *node = createTrieNode(); 
 
-    free(address);
+    insertTrieNode(node, user, NULL);
+
+    //deleteTrieNode(node, compressPubkey(user->pubkey), 0);
+
+    struct TrieNode *unode = getTrieNode(node, "6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93");
+    printf("username: %s", unode->user->name);
+
+    //clearTrieNode(node);
 }
 
 

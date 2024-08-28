@@ -1,7 +1,6 @@
 #ifndef UTILS_C
 #define UTILS_C
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <ctype.h>
@@ -94,6 +93,21 @@ float textSimilarity(char *origin, char *compare)
     }    
 
     return (2 * intersection) / sizePairs;
+}
+
+uint8_t* compressPubkey(char *pubkey)
+{
+    uint8_t index = 0;
+    uint8_t *address = malloc(16 * sizeof(uint8_t));
+    uint8_t *numbers = hexToBytes(pubkey);
+
+    for(uint8_t i = 0; i < 32; i += 2) {
+        address[index] = (numbers[i] * numbers[i+1]) % 255;
+        index++;
+    }
+    free(numbers);
+
+    return address;
 }
 
 #endif

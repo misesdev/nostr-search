@@ -1,5 +1,6 @@
 #ifndef TYPES_C
 #define TYPES_C
+#include <stdbool.h>
 
 typedef struct {
     char name[35];
@@ -20,7 +21,8 @@ struct UserNode {
 struct TrieNode {
     User *user;
     struct UserNode *follows;
-    struct TrieNode *nodes[255];
+    struct TrieNode *childrens[255];
+    bool isEndOfKey;
 };
 
 #endif
