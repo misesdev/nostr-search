@@ -101,4 +101,5 @@ struct TrieNode* getTrieNode(struct TrieNode *node, char *pubkey)
 }
 
 
-#endif 
+#endif
+

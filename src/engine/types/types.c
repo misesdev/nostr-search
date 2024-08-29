@@ -10,7 +10,7 @@ typedef struct {
 
 typedef struct {
     char pubkey[65];
-    char term[100];
+    char search[100];
 } Search;
 
 struct UserNode {
@@ -20,7 +20,6 @@ struct UserNode {
 
 struct TrieNode {
     User *user;
-    struct UserNode *follows;
     struct TrieNode *children[200];
     bool isEndOfKey;
 };
