@@ -1,6 +1,8 @@
 #ifndef TYPES_C
 #define TYPES_C
+
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct {
     char name[35];
@@ -9,9 +11,13 @@ typedef struct {
 } User;
 
 typedef struct {
-    char pubkey[65];
-    char search[100];
-} Search;
+    uint8_t address[16];
+} Follower;
+
+struct FollowerNode {
+    Follower *follower;
+    struct FollowerNode *next;
+};
 
 struct UserNode {
     User *user;
@@ -24,6 +30,12 @@ struct TrieNode {
     bool isEndOfKey;
 };
 
+typedef struct {
+    char pubkey[65];
+    char search[100];
+} Search;
+
 #endif
+
 
 

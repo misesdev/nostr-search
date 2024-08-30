@@ -5,11 +5,11 @@
 #include <time.h>
 
 //#include "./trie.c"
-#include "./utils/utils.c"
-//#include "./filesystem/load.c"
-//#include "./types/linked_lists.c"
-#include "./utils/http_utils.c"
-#include "./types/user_trie.c"
+#include "./src/utils/utils.c"
+//#include "./src/filesystem/load.c"
+//#include "./src/types/linked_lists.c"
+#include "./src/utils/http_utils.c"
+#include "./src/types/user_trie.c"
 
 int main(int argc, char *args[]) 
 {

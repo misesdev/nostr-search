@@ -1,5 +1,5 @@
 #!/bin/bash
 
-gcc ./src/engine/main.c -o ./build/search &&
+gcc ./main.c -o ./build/search.bin &&
 
-./build/search
+./build/search.bin

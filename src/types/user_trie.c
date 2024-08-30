@@ -20,6 +20,7 @@ struct TrieNode* createTrieNode() {
     for(uint8_t i = 0; i < 200; i++) {
         node->children[i] = NULL;
     }
+    node->isEndOfKey = false;
     return node;
 }
 
@@ -36,7 +37,6 @@ struct TrieNode* insertTrieNode(struct TrieNode *node, User *user, struct UserNo
     }
 
     t_node->user = user;
-    t_node->follows = follows;
     t_node->isEndOfKey = true;
 
     free(address);
