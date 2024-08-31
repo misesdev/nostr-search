@@ -10,6 +10,9 @@
 #include <pthread.h> // Para threads
 #include <sys/types.h>
 #include <sys/sysinfo.h> // Para verificar a memória usada
+#include "./utils/http_utils.c"
+#include "./types/types.c"
+#include "./types/user_list.c"
 
 #define PORT 8080
 #define SIZE_BUFFER 1024
@@ -18,6 +21,7 @@
 typedef struct {
     int socket;
     struct sockaddr_in address;
+    char* (* executeRequest)(char *);
 } client_info;
 
 // Função para processar cada conexão de cliente em uma thread separada
@@ -28,25 +32,15 @@ void* handle_client(void* arg) {
 
     int bytes_read = read(client->socket, buffer, SIZE_BUFFER - 1);
     if (bytes_read > 0) {
-        printf("Mensagem recebida: %s\n", buffer);
+        logRequest(buffer);
+                
+        char *json_response = client->executeRequest(buffer);
 
-        // Obtenha o JSON dinâmico da função jsonResult
-        char* json_response = "{\"name\": \"Mises Dev\", \"age\": 15 }";//jsonResult(NULL); // Passar o root correto se necessário
-
-        // Prepare a resposta HTTP
-        char http_response[SIZE_BUFFER];
-        snprintf(http_response, SIZE_BUFFER,
-                 "HTTP/1.1 200 OK\r\n"
-                 "Content-Type: application/json\r\n"
-                 "Content-Length: %zu\r\n"
-                 "Access-Control-Allow-Origin: *\r\n"
-                 "\r\n"
-                 "%s",
-                 strlen(json_response), json_response);
+        char *http_response = httpResponse(json_response);
 
         send(client->socket, http_response, strlen(http_response), 0);
-        printf("Resposta HTTP enviada.\n");
 
+        free(http_response);
     }
 
     close(client->socket);
@@ -55,14 +49,14 @@ void* handle_client(void* arg) {
 }
 
 // Função principal do servidor
-int main() {
+void serverUp(char *(* executeRequest)(char*)) {
     int socket_server;
     struct sockaddr_in address;
     int size_address = sizeof(address);
 
     socket_server = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_server == 0) {
-        perror("Falha na criação do socket");
+        perror("failed to create the socket\n");
         exit(EXIT_FAILURE);
     }
 
@@ -71,37 +65,39 @@ int main() {
     address.sin_port = htons(PORT);
 
     if (bind(socket_server, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        perror("Falha no bind");
+        perror("failed to bind\n");
         close(socket_server);
         exit(EXIT_FAILURE);
     }
 
     if (listen(socket_server, MAX_THREADS) < 0) {
-        perror("Falha no listen");
+        perror("failed to listen\n");
         close(socket_server);
         exit(EXIT_FAILURE);
     }
 
-    printf("Servidor TCP escutando na porta %d\n", PORT);
+    printf("tcp server listening in port: %d\n", PORT);
 
     while (1) {
         client_info* client = malloc(sizeof(client_info)); // Aloca memória para cada cliente
         if (!client) {
-            perror("Falha na alocação de memória para o cliente");
+            perror("fail in the allocation of memory for the client\n");
             continue; // Tenta aceitar uma nova conexão
         }
 
         client->socket = accept(socket_server, (struct sockaddr*)&client->address, (socklen_t*)&size_address);
         if (client->socket < 0) {
-            perror("Falha no accept");
+            perror("failed to accept requests\n");
             free(client);
             continue; // Tenta aceitar uma nova conexão
         }
 
+        client->executeRequest = executeRequest;
+
         // Cria uma nova thread para cada cliente
         pthread_t thread_id;
         if (pthread_create(&thread_id, NULL, handle_client, (void*)client) != 0) {
-            perror("Falha na criação da thread");
+            perror("failed to create the thread\n");
             close(client->socket);
             free(client);
         }
@@ -116,7 +112,6 @@ int main() {
     }
 
     close(socket_server);
-    return 0;
 }
 
 #endif

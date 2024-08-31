@@ -31,7 +31,9 @@ Search* requestParams(char *request)
 
 char* jsonResult(struct UserNode *root)
 {
-    char *response = "[";
+    char *response = malloc(2 * sizeof(char)); 
+
+    strcpy(response, "[");
 
     struct UserNode *current = root;
     
@@ -39,17 +41,17 @@ char* jsonResult(struct UserNode *root)
     {     
         if(current->user) {
             // build property username
-            response = strconcat(response, "{ \"username\": \""); 
+            response = strconcat(response, "{ \"username\":\""); 
             response = strconcat(response, current->user->name); 
             response = strconcat(response, "\", ");
 
             // build the property pubkey
-            response = strconcat(response, "\"pubkey\": \"");
+            response = strconcat(response, "\"pubkey\":\"");
             response = strconcat(response, current->user->pubkey); 
             response = strconcat(response, "\", ");
         
             // build the property profile
-            response = strconcat(response, "\"profile\": \"");
+            response = strconcat(response, "\"profile\":\"");
             response = strconcat(response, current->user->profile);
             response = strconcat(response, "\"}");
         
@@ -66,4 +68,35 @@ char* jsonResult(struct UserNode *root)
     return response; 
 }
 
+char* httpResponse(char *json_result)
+{
+    char *response = malloc(1024 * sizeof(char));
+    
+    snprintf(response, 2048,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: %zu\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "\r\n"
+        "%s",
+        strlen(json_result), 
+        json_result
+    );
+
+    return response;
+}
+
+void logRequest(char *buffer) 
+{
+    char log[100];
+    char *start = NULL;
+    
+    if((start = strstr(buffer, "Host:")) != NULL) {
+        sscanf(start, "Host:%s", log);
+        printf("received request from: %s\n", log);
+    }
+}
+
 #endif
+
+

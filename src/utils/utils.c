@@ -118,11 +118,7 @@ char* strconcat(char *str1, char *str2)
     int full_size = size_1 + size_2 + 1; // 1 for null byte
 
     char *result = malloc(full_size);
-    if(result == NULL) {
-        printf("error error when trying to allocate memory");
-        exit(EXIT_FAILURE);
-    }
-
+  
     strcpy(result, str1);
     strcat(result, str2);
     free(str1);

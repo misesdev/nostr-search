@@ -9,6 +9,7 @@ struct UserNode* createUserNode(User *user)
 {
     struct UserNode *node = malloc(sizeof(struct UserNode));
     node->user = user;
+    node->next = NULL;
     return node;
 }
 
