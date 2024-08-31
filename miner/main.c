@@ -23,7 +23,7 @@ static int callback_nostr(struct lws *wsi, enum lws_callback_reasons reason, voi
 
             // Enviar comando de assinatura para o relay
             char subscribe_message[MAX_MESSAGE_LEN];
-            snprintf(subscribe_message, sizeof(subscribe_message), "[\"REQ\", \"4376c65d2f232afbe9b882a35baa4f6fe8667c4e684749af565f981833ed6a\", {\"kinds\": [0, 1]}]");
+            snprintf(subscribe_message, sizeof(subscribe_message), "[\"REQ\", \"6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93\", {\"kinds\": [0, 1]}]");
             lws_write(wsi, (unsigned char *)subscribe_message, strlen(subscribe_message), LWS_WRITE_TEXT);
             break;
 
@@ -49,6 +49,14 @@ static int callback_nostr(struct lws *wsi, enum lws_callback_reasons reason, voi
             printf("Conexão fechada pelo relay.\n");
             break;
 
+        case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
+            printf("Client connection error\n");
+            break;
+
+        case LWS_CALLBACK_CLOSED:
+            printf("Client has closed the connection\n");
+            break;
+
         default:
             break;
     }
@@ -59,7 +67,7 @@ static int callback_nostr(struct lws *wsi, enum lws_callback_reasons reason, voi
 // Protocolo WebSocket
 static struct lws_protocols protocols[] = {
     {
-        "nostr-protocol",
+        "nostr-protocol",//"websocket-protocol",
         callback_nostr,
         0,
         MAX_MESSAGE_LEN,
@@ -84,8 +92,9 @@ int main(void) {
     memset(&info, 0, sizeof(info));
     info.port = CONTEXT_PORT_NO_LISTEN;
     info.protocols = protocols;
-    info.options |= LWS_SERVER_OPTION_DISABLE_IPV6;
-    info.options |= LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
+    //info.timeout_secs = 60;
+    //info.options |= LWS_SERVER_OPTION_DISABLE_IPV6;
+    //info.options |= LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
     //info.client_ssl_ca_filepath = NULL;
 
     // logs detalhados
@@ -98,8 +107,8 @@ int main(void) {
     }
 
     // Adicione relays à lista
-    add_relay("relay.damus.io");
-    add_relay("filter.nostr.wine");
+    //add_relay("relay.damus.io");
+    //add_relay("filter.nostr.wine");
     add_relay("nostr.wine");
 
     // Conectar a todos os relays
@@ -110,10 +119,10 @@ int main(void) {
         ccinfo.port = 443; // Porta padrão para WebSocket seguro
         ccinfo.path = "/";
         ccinfo.host = lws_canonical_hostname(context);
-        ccinfo.origin = lws_canonical_hostname(context);
+        ccinfo.origin = "origin"; //lws_canonical_hostname(context);
         ccinfo.protocol = protocols[0].name;
-        ccinfo.ssl_connection = LCCSCF_USE_SSL; // | LCCSCF_ALLOW_INSECURE;
-        ccinfo.userdata = &relays[i];
+        ccinfo.ssl_connection = LCCSCF_USE_SSL; //LCCSCF_ALLOW_INSECURE;
+        //ccinfo.userdata = &relays[i];
 
         relays[i].wsi = lws_client_connect_via_info(&ccinfo);
     }
