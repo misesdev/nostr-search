@@ -4,10 +4,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-//#include "./trie.c"
-#include "./src/utils/utils.c"
-//#include "./src/filesystem/load.c"
-//#include "./src/types/linked_lists.c"
 #include "./src/utils/http_utils.c"
 #include "./src/types/user_trie.c"
 #include "./src/utils/http_utils.c"
