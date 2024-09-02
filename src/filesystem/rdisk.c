@@ -5,6 +5,7 @@
 #include "../types/types.c"
 #include "../types/user_trie.c"
 #include "../types/friend_list.c"
+#include "../types/user_list.c"
 
 struct TrieNode* loadUsersTree(FILE *file, long offset, struct TrieNode *root) 
 {    
@@ -26,7 +27,7 @@ struct TrieNode* loadUsersTree(FILE *file, long offset, struct TrieNode *root)
 
 long offsetFriends = 0;
 
-void loadFriends(User *user, FILE *file)
+void loadFriends(struct TrieNode *root, User *user, FILE *file)
 {
     fseek(file, offsetFriends, SEEK_SET);
 
@@ -52,28 +53,38 @@ void loadFriends(User *user, FILE *file)
         current = current->next;
     }
 
-    //user->friends = friends;
+    struct UserNode *listFriends;
+
+    while(friends) {
+        User *friendUser = getTrieNode(root, friends->user)->user;
+        
+        insertUserNode(listFriends, friendUser);
+
+        friends = friends->next;
+    }
+
+    user->friends = listFriends;
 }
 
-void loadFollowsTree(struct TrieNode *root, FILE *file)
+void loadFollowsTree(struct TrieNode *root, struct TrieNode *current, FILE *file)
 {
-    if(root == NULL) return;
+    if(current == NULL) return;
    
     for(int i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
-        if(root->children[i]) {
-            loadFollowsTree(root->children[i], file);
+        if(current->children[i]) {
+            loadFollowsTree(root, current->children[i], file);
         }
     }
     
-    if(root->isEndOfKey) {
-        loadFriends(root->user, file); 
+    if(current->isEndOfKey) {
+        loadFriends(root, current->user, file); 
     }
 }
 
 struct TrieNode* loadFromDisk() 
 {
-    FILE *fileUsers = fopen("./data/users.nd", "wb");
-    FILE *fileFollows = fopen("./data/friends.nd", "wb");
+    FILE *fileUsers = fopen("./data/users.db", "wb");
+    FILE *fileFollows = fopen("./data/friends.db", "wb");
 
     if(!fileUsers) return NULL;
     if(!fileFollows) return NULL;
@@ -82,7 +93,7 @@ struct TrieNode* loadFromDisk()
 
     loadUsersTree(fileUsers, 0, false);
     
-    loadFollowsTree(root, fileFollows);
+    loadFollowsTree(root, root, fileFollows);
 
     fclose(fileUsers);
     fclose(fileFollows);
@@ -90,36 +101,4 @@ struct TrieNode* loadFromDisk()
     return root;
 }
 
-int loadTrieOnDisk(FILE *file, long offset, struct TrieNode *root) 
-{
-    fseek(file, offset, SEEK_SET);
-
-    fwrite(root, sizeof(struct TrieNode), 1, file);
-    
-    for(int i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
-        if(root->children[i]) {
-            offset += sizeof(struct TrieNode);
-            loadTrieOnDisk(file, offset, root->children[i]);
-        }
-    }
-
-    return 0;
-}
-
-int loadFollowsOnDisk(FILE *file, long offset) 
-{
-
-    return 0;
-}
-
-int loadInDisk(struct TrieNode *root) 
-{
-    FILE *fileUsers = fopen("./data/users.nd", "wb");
-    FILE *fileFollows = fopen("./data/folows.nd", "wb");
-
-    if(!fileUsers) return -1;
-    if(!fileFollows) return -1;
-
-    return 0;    
-}
 

@@ -86,7 +86,22 @@ void destroyTrieNode(struct TrieNode *node) {
     free(node);
 }
 
-struct TrieNode* getTrieNode(struct TrieNode *node, char *pubkey)
+struct TrieNode* getTrieNode(struct TrieNode *node, uint8_t address[PUBKEY_ADDRESS_LENGTH])
+{
+    struct TrieNode* t_node = node;
+    
+    for(uint8_t i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
+        if(t_node->children[address[i]]) {
+            t_node = t_node->children[address[i]];
+        }
+    }
+
+    if(t_node->isEndOfKey) return t_node;
+
+    return NULL;
+}
+
+struct TrieNode* getTrieNodeFromPubkey(struct TrieNode *node, char *pubkey)
 {
     struct TrieNode* t_node = node;
     uint8_t *address = compressPubkey(pubkey);
@@ -99,6 +114,7 @@ struct TrieNode* getTrieNode(struct TrieNode *node, char *pubkey)
 
     return t_node;
 }
+
 
 
 #endif
