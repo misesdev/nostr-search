@@ -9,7 +9,7 @@
 
 bool hasChildren(struct TrieNode *node)
 {
-    for(uint8_t i = 0; i < 200; i++) {
+    for(uint8_t i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
         if(node->children[i]) return true;
     }
     return true;
@@ -17,7 +17,7 @@ bool hasChildren(struct TrieNode *node)
 
 struct TrieNode* createTrieNode() {
     struct TrieNode *node = malloc(sizeof(struct TrieNode));
-    for(uint8_t i = 0; i < 200; i++) {
+    for(uint8_t i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
         node->children[i] = NULL;
     }
     node->isEndOfKey = false;
@@ -29,7 +29,7 @@ struct TrieNode* insertTrieNode(struct TrieNode *node, User *user, struct UserNo
     struct TrieNode* t_node = node;
     uint8_t *address = compressPubkey(user->pubkey);
 
-    for(uint8_t i = 0; i < 16; i++){
+    for(uint8_t i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
         if(!t_node->children[address[i]]) {
             t_node->children[address[i]] = createTrieNode();
         }
@@ -48,7 +48,7 @@ bool deleteTrieNode(struct TrieNode *node, uint8_t *pubkey, uint8_t depth)
 {
     if(!node) return false;
    
-    if(depth == 15) // if the end address 
+    if(depth == PUBKEY_ADDRESS_LENGTH - 1) // if the end address 
     {
         if(node->isEndOfKey) {
             node->isEndOfKey = false;
@@ -74,12 +74,12 @@ bool deleteTrieNode(struct TrieNode *node, uint8_t *pubkey, uint8_t depth)
     return false;
 }
 
-void clearTrieNode(struct TrieNode *node) {
+void destroyTrieNode(struct TrieNode *node) {
     if(node == NULL) return;
 
-    for(uint8_t i = 0; i < 255; i++) {
+    for(uint8_t i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
         if(node->children[i]) {
-            clearTrieNode(node->children[i]);
+            destroyTrieNode(node->children[i]);
         }
     }
     free(node->user);
@@ -91,7 +91,7 @@ struct TrieNode* getTrieNode(struct TrieNode *node, char *pubkey)
     struct TrieNode* t_node = node;
     uint8_t *address = compressPubkey(pubkey);
     
-    for(uint8_t i = 0; i < 16; i++){
+    for(uint8_t i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
         if(t_node->children[address[i]]) {
             t_node = t_node->children[address[i]];
         }

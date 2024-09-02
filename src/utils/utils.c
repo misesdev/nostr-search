@@ -1,12 +1,12 @@
 #ifndef UTILS_C
 #define UTILS_C
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <ctype.h>
 #include <string.h>
 #include <sys/types.h>
+#include "../types/types.c"
 
 int getRowInteger(char character)
 {
@@ -99,11 +99,11 @@ float textSimilarity(char *origin, char *compare)
 uint8_t* compressPubkey(char *pubkey)
 {
     uint8_t index = 0;
-    uint8_t *address = malloc(16 * sizeof(uint8_t));
+    uint8_t *address = malloc(PUBKEY_ADDRESS_LENGTH * sizeof(uint8_t));
     uint8_t *numbers = hexToBytes(pubkey);
 
     for(uint8_t i = 0; i < 32; i += 2) {
-        address[index] = (numbers[i] * numbers[i+1]) % 200;
+        address[index] = (numbers[i] * numbers[i+1]) % TRIE_CHILDREN_LENGTH;
         index++;
     }
     free(numbers);
@@ -124,6 +124,14 @@ char* strconcat(char *str1, char *str2)
     free(str1);
 
     return result;
+}
+
+bool isEmptyAddress(uint8_t array[PUBKEY_ADDRESS_LENGTH])
+{
+    for(int i = 0; i < PUBKEY_ADDRESS_LENGTH; i++) {
+        if(array[i] > 0) return false;
+    }
+    return true;
 }
 
 #endif

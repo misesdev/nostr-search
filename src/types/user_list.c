@@ -44,7 +44,7 @@ void deleteUserNode(struct UserNode *node, char *pubkey)
     }
 }
 
-void clearUserNode(struct UserNode *node) 
+void destryUserNodeList(struct UserNode *node) 
 {
     struct UserNode *delete;
 
