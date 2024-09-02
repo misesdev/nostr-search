@@ -1,0 +1,6 @@
+#!/bin/bash
+
+gcc ./src/indexer.c -o ./build/indexer.bin -lwebsockets -ljansson &&
+
+./build/indexer.bin
+
