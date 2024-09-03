@@ -11,8 +11,6 @@
 #include <sys/types.h>
 #include <sys/sysinfo.h> // Para verificar a memória usada
 #include "./utils/http_utils.c"
-#include "./types/types.c"
-#include "./types/user_list.c"
 
 #define PORT 8080
 #define SIZE_BUFFER 1024

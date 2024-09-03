@@ -3,11 +3,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include "./src/types/user_list.c"
 #include "./src/utils/http_utils.c"
 #include "./src/types/user_trie.c"
-#include "./src/utils/http_utils.c"
-#include "./src/server.c"
+//#include "./src/server.c"
+#include "./src/filesystem/wdisk.c"
+#include "./src/filesystem/rdisk.c"
+#include "./src/utils/utils.c"
 
 char* requestProssess(char *request) 
 {
@@ -26,20 +28,28 @@ char* requestProssess(char *request)
 
 int main(int argc, char *args[]) 
 {
+    char *pubkey = "6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93";
     User *user = malloc(sizeof(User));
     strcpy(user->name, "Mises Dev");
-    strcpy(user->pubkey, "6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93");
+    strcpy(user->pubkey, pubkey);
 
-    struct TrieNode *node = createTrieNode(); 
+    struct TrieNode *root = createTrieNode(); 
 
-    insertTrieNode(node, user, NULL);
+    insertTrieNode(root, user, NULL);
+    
+    loadTrieInDisk(root);
 
-    //deleteTrieNode(node, compressPubkey(user->pubkey), 0);
+    struct TrieNode *t_root = loadTrieFromDisk();
 
-    struct TrieNode *unode = getTrieNode(node, "6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93");
-    printf("username: %s\n", unode->user->name);
+    uint8_t address[16];
+    compressPubkey(pubkey, address);
 
-    serverUp(&requestProssess);
+    struct TrieNode *t_node = getTrieNode(t_root, address);
+
+    if(t_node) {
+        printf("Found user: %s", t_node->user->name);
+    }
+    //serverUp(&requestProssess);
 
     //clearTrieNode(node);
     return 0;

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include "../utils/utils.c"
 #include "../types/types.c"
 #include "../types/user_list.c"
@@ -92,8 +93,12 @@ void loadFriendsOnDisk(struct UserNode *userList, FILE *file)
     }
 }
 
-bool loadInDisk(struct TrieNode *root) 
+bool loadTrieInDisk(struct TrieNode *root) 
 {
+    char *directory = "./data";
+
+    mkdir(directory, 0777);
+
     FILE *fileTrie = fopen("./data/trie.db", "wb");
     FILE *fileUsers = fopen("./data/users.db", "wb");
     FILE *fileFriends = fopen("./data/folows.db", "wb");
@@ -108,9 +113,9 @@ bool loadInDisk(struct TrieNode *root)
 
     loadFriendsOnDisk(userList, fileFriends);
 
-    fclose(fileTrie);
-    fclose(fileUsers);
     fclose(fileFriends);
+    fclose(fileUsers);
+    fclose(fileTrie);
 
     return true;    
 }

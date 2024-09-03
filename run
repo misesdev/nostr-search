@@ -3,3 +3,5 @@
 gcc ./main.c -o ./build/search.bin &&
 
 ./build/search.bin
+
+
