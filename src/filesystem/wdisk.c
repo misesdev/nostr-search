@@ -37,13 +37,15 @@ int loadTrieOnDisk(FILE *file, long offset, struct TrieNode *root)
 
 int loadInDisk(struct TrieNode *root) 
 {
-    FILE *fileUsers = fopen("./data/users.nd", "wb");
-    FILE *fileFollows = fopen("./data/folows.nd", "wb");
+    FILE *fileTrie = fopen("./data/trie.db", "wb");
+    FILE *fileUsers = fopen("./data/users.db", "wb");
+    FILE *fileFriends = fopen("./data/folows.db", "wb");
 
+    if(!fileTrie) return -1;
     if(!fileUsers) return -1;
-    if(!fileFollows) return -1;
+    if(!fileFriends) return -1;
 
-    loadTrieOnDisk(fileUsers, 0, root);
+    loadTrieOnDisk(fileTrie, 0, root);
 
     return 0;    
 }
