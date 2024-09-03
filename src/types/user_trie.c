@@ -115,7 +115,5 @@ struct TrieNode* getTrieNodeFromPubkey(struct TrieNode *node, char *pubkey)
     return t_node;
 }
 
-
-
 #endif
 

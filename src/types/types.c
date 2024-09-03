@@ -25,17 +25,13 @@ struct TrieNode {
     bool isEndOfKey;
 };
 
-typedef struct {
-    uint8_t address[PUBKEY_ADDRESS_LENGTH];
-} UserAddress;
-
 struct FriendNode {
     uint8_t user[PUBKEY_ADDRESS_LENGTH];
     struct FriendNode *next;
 };
 
 typedef struct {
-    UserAddress user;
+    uint8_t user[PUBKEY_ADDRESS_LENGTH];
     struct FriendNode *friends;
 } FriendList;
 

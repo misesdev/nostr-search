@@ -7,98 +7,128 @@
 #include "../types/friend_list.c"
 #include "../types/user_list.c"
 
-struct TrieNode* loadUsersTree(FILE *file, long offset, struct TrieNode *root) 
-{    
+long userOffset = 0;
+
+User* loadUserFromDisk(FILE *file, long offset) 
+{
     fseek(file, offset, SEEK_SET);
+
+    User *user = malloc(sizeof(User));
+
+    fread(&user, sizeof(User), 1, file);
+
+    return user;
+}
+
+struct TrieNode* loadUsersTree(FILE *fileTrie, FILE *fileUsers, long offset, struct TrieNode *root) 
+{    
+    fseek(fileTrie, offset, SEEK_SET);
 
     struct TrieNode *diskNode = malloc(sizeof(struct TrieNode));
 
-    fread(&diskNode, sizeof(struct TrieNode), 1, file);
+    fread(&diskNode, sizeof(struct TrieNode), 1, fileTrie);
     
     for(int i = 0;i < TRIE_CHILDREN_LENGTH; i++) {
         if(diskNode->children[i]) {
             offset += sizeof(struct TrieNode);
-            root->children[i] = loadUsersTree(file, offset, root);
+            root->children[i] = loadUsersTree(fileTrie, fileUsers, offset, diskNode->children[i]);
         }
+    }
+
+    // load user for address
+    if(diskNode->isEndOfKey) {
+        diskNode->user = loadUserFromDisk(fileUsers, userOffset);
+        userOffset += sizeof(User);
     }
 
     return root;
 }
 
-long offsetFriends = 0;
+long friendOffset = 0;
 
-void loadFriends(struct TrieNode *root, User *user, FILE *file)
+void loadFriendList(FILE *file, FriendList *friends)
 {
-    fseek(file, offsetFriends, SEEK_SET);
+    fseek(file, friendOffset, SEEK_SET);
+    fread(friends->user, sizeof(uint8_t), PUBKEY_ADDRESS_LENGTH, file);
+    friendOffset += PUBKEY_ADDRESS_LENGTH;
 
-    struct FriendNode *friends = malloc(sizeof(struct FriendNode));
+    int friendsCount;
+    fseek(file, friendOffset, SEEK_SET);
+    fread(&friendsCount, sizeof(int), 1, file);
+    friendOffset += sizeof(int);
 
-    fread(&(friends->user), PUBKEY_ADDRESS_LENGTH * sizeof(uint8_t), 1, file);
+    struct FriendNode *current = friends->friends; // = createFriendNode(NULL);
 
-    offsetFriends += sizeof(FriendList);
-
-    struct FriendNode *current = friends;
-
-    while (fseek(file, offsetFriends, SEEK_SET)) 
-    { 
-        uint8_t *address[PUBKEY_ADDRESS_LENGTH];
-
-        fread(address, PUBKEY_ADDRESS_LENGTH * sizeof(uint8_t), 1, file);
-
-        offsetFriends += (PUBKEY_ADDRESS_LENGTH * sizeof(uint8_t)); 
-
-        if(isEmptyAddress((*address))) break;
-
-        current->next = createFriendNode((*address)); 
+    uint8_t user[PUBKEY_ADDRESS_LENGTH];
+    for(int i = 0; i < friendsCount; i++) {
+        fseek(file, friendOffset, SEEK_SET);
+        fread(&user, sizeof(uint8_t), PUBKEY_ADDRESS_LENGTH, file);
+        friendOffset += PUBKEY_ADDRESS_LENGTH;
+        current = createFriendNode(user);
         current = current->next;
     }
-
-    struct UserNode *listFriends;
-
-    while(friends) {
-        User *friendUser = getTrieNode(root, friends->user)->user;
-        
-        insertUserNode(listFriends, friendUser);
-
-        friends = friends->next;
-    }
-
-    user->friends = listFriends;
 }
 
-void loadFollowsTree(struct TrieNode *root, struct TrieNode *current, FILE *file)
+FriendList* loadFriendListFromDisk(FILE *file, int *count)
 {
-    if(current == NULL) return;
-   
-    for(int i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
-        if(current->children[i]) {
-            loadFollowsTree(root, current->children[i], file);
-        }
+    fread(&count, sizeof(int), 1, file);
+    friendOffset += sizeof(int);
+
+    FriendList *friends = malloc(*count * sizeof(FriendList));
+
+    for(int i = 0; i < *count; i++) {
+        loadFriendList(file, &friends[i]);
     }
     
-    if(current->isEndOfKey) {
-        loadFriends(root, current->user, file); 
+    return friends;
+}
+
+void serializeFriendsOnTrie(struct TrieNode *root, FriendList *friends, int friendsCount)
+{
+    User *currentUser;
+    User *currentFriendUser;
+    struct FriendNode *currentFriend;
+
+    for(int i = 0; i < friendsCount; i++) {
+        currentFriend = friends[i].friends;
+        currentUser = getTrieNode(root, friends->user)->user;
+
+        while (currentFriend) {  
+            currentFriendUser = getTrieNode(root, currentFriend->user)->user;
+
+            insertUserNode(currentUser->friends, currentUser);
+
+            currentFriend = currentFriend->next;
+        }
+
+        destroyFriendNodeList(friends[i].friends);
+        //free(&friends[i]);
     }
 }
 
 struct TrieNode* loadFromDisk() 
 {
+    FILE *fileTrie = fopen("./data/trie.db", "wb");
     FILE *fileUsers = fopen("./data/users.db", "wb");
-    FILE *fileFollows = fopen("./data/friends.db", "wb");
+    FILE *fileFriends = fopen("./data/friends.db", "wb");
 
+    if(!fileTrie) return NULL;
     if(!fileUsers) return NULL;
-    if(!fileFollows) return NULL;
+    if(!fileFriends) return NULL;
 
     struct TrieNode* root = createTrieNode();
 
-    loadUsersTree(fileUsers, 0, false);
+    loadUsersTree(fileTrie, fileUsers, 0, false);
     
-    loadFollowsTree(root, root, fileFollows);
+    int *friendsCount;
+    FriendList *friends = loadFriendListFromDisk(fileFriends, friendsCount);
 
+    serializeFriendsOnTrie(root, friends, *friendsCount);
+
+    fclose(fileTrie);
     fclose(fileUsers);
-    fclose(fileFollows);
+    fclose(fileFriends);
     
     return root;
 }
-
 
