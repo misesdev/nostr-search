@@ -27,7 +27,8 @@ struct TrieNode* createTrieNode() {
 struct TrieNode* insertTrieNode(struct TrieNode *node, User *user, struct UserNode *follows)
 {
     struct TrieNode* t_node = node;
-    uint8_t *address = compressPubkey(user->pubkey);
+    uint8_t address[PUBKEY_ADDRESS_LENGTH];
+    compressPubkey(user->pubkey, address);
 
     for(uint8_t i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
         if(!t_node->children[address[i]]) {
@@ -38,8 +39,6 @@ struct TrieNode* insertTrieNode(struct TrieNode *node, User *user, struct UserNo
 
     t_node->user = user;
     t_node->isEndOfKey = true;
-
-    free(address);
 
     return t_node;
 }
@@ -104,7 +103,8 @@ struct TrieNode* getTrieNode(struct TrieNode *node, uint8_t address[PUBKEY_ADDRE
 struct TrieNode* getTrieNodeFromPubkey(struct TrieNode *node, char *pubkey)
 {
     struct TrieNode* t_node = node;
-    uint8_t *address = compressPubkey(pubkey);
+    uint8_t address[PUBKEY_ADDRESS_LENGTH];
+    compressPubkey(pubkey, address);
     
     for(uint8_t i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
         if(t_node->children[address[i]]) {

@@ -57,7 +57,7 @@ void loadFriendList(FILE *file, FriendList *friends)
     fread(&friendsCount, sizeof(int), 1, file);
     friendOffset += sizeof(int);
 
-    struct FriendNode *current = friends->friends; // = createFriendNode(NULL);
+    struct FriendNode *current = friends->friends; 
 
     uint8_t user[PUBKEY_ADDRESS_LENGTH];
     for(int i = 0; i < friendsCount; i++) {
@@ -118,12 +118,12 @@ struct TrieNode* loadFromDisk()
 
     struct TrieNode* root = createTrieNode();
 
-    loadUsersTree(fileTrie, fileUsers, 0, false);
+    loadUsersTree(fileTrie, fileUsers, 0, root);
     
-    int *friendsCount;
-    FriendList *friends = loadFriendListFromDisk(fileFriends, friendsCount);
+    int friendsCount;
+    FriendList *friends = loadFriendListFromDisk(fileFriends, &friendsCount);
 
-    serializeFriendsOnTrie(root, friends, *friendsCount);
+    serializeFriendsOnTrie(root, friends, friendsCount);
 
     fclose(fileTrie);
     fclose(fileUsers);
