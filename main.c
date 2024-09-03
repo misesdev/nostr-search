@@ -37,9 +37,17 @@ int main(int argc, char *args[])
 
     insertTrieNode(root, user, NULL);
     
-    loadTrieInDisk(root);
+    if(!loadTrieInDisk(root)) {
+        printf("Error when trying to load the tree to disk");
+        return -1;
+    }
 
     struct TrieNode *t_root = loadTrieFromDisk();
+
+    if(!t_root) {
+        printf("Error when trying to load the disk tree");
+        return -1;
+    }
 
     uint8_t address[16];
     compressPubkey(pubkey, address);

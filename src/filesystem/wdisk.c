@@ -101,7 +101,7 @@ bool loadTrieInDisk(struct TrieNode *root)
 
     FILE *fileTrie = fopen("./data/trie.db", "wb");
     FILE *fileUsers = fopen("./data/users.db", "wb");
-    FILE *fileFriends = fopen("./data/folows.db", "wb");
+    FILE *fileFriends = fopen("./data/friends.db", "wb");
 
     if(!fileTrie) return false;
     if(!fileUsers) return false;
