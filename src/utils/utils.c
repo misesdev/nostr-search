@@ -96,10 +96,9 @@ float textSimilarity(char *origin, char *compare)
     return (2 * intersection) / sizePairs;
 }
 
-uint8_t* compressPubkey(char *pubkey)
+uint8_t* compressPubkey(char *pubkey, uint8_t *address)
 {
     uint8_t index = 0;
-    uint8_t *address = malloc(PUBKEY_ADDRESS_LENGTH * sizeof(uint8_t));
     uint8_t *numbers = hexToBytes(pubkey);
 
     for(uint8_t i = 0; i < 32; i += 2) {
