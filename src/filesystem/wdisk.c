@@ -95,9 +95,10 @@ void loadFriendsOnDisk(struct UserNode *userList, FILE *file)
 
 bool loadTrieInDisk(struct TrieNode *root) 
 {
-    char *directory = "./data";
-
-    mkdir(directory, 0777);
+    if(mkdir("./data", 0777) == -1) {
+        printf("Failed to create directory of data");
+        return false;
+    }
 
     FILE *fileTrie = fopen("./data/trie.db", "wb");
     FILE *fileUsers = fopen("./data/users.db", "wb");

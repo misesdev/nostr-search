@@ -106,7 +106,7 @@ void serializeFriendsOnTrie(struct TrieNode *root, FriendList *friends, int frie
     }
 }
 
-struct TrieNode* loadTrieFromDisk() 
+struct TrieNode* loadFromDisk() 
 {
     FILE *fileTrie = fopen("./data/trie.db", "rb");
     FILE *fileUsers = fopen("./data/users.db", "rb");

@@ -6,7 +6,6 @@
 #include "./src/types/user_list.c"
 #include "./src/utils/http_utils.c"
 #include "./src/types/user_trie.c"
-//#include "./src/server.c"
 #include "./src/filesystem/wdisk.c"
 #include "./src/filesystem/rdisk.c"
 #include "./src/utils/utils.c"
