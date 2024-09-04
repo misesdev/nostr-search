@@ -133,5 +133,6 @@ bool isEmptyAddress(uint8_t array[PUBKEY_ADDRESS_LENGTH])
     return true;
 }
 
+
 #endif
 

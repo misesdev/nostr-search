@@ -15,15 +15,17 @@ struct UserNode* createUserNode(User *user)
 
 void insertUserNode(struct UserNode *node, User *user)
 {
-    struct UserNode* current = node;    
-    struct UserNode* userNode = createUserNode(user); 
+    if(!node->user) {
+        node->user = user;
+        return;
+    }
 
     while (1) {
-        if(current->next == NULL) {
-            current->next = userNode;
+        if(!node->next) {
+            node->next = createUserNode(user);
             break;
         }
-        current = current->next;
+        node = node->next;
     }
 }
 
@@ -44,7 +46,7 @@ void deleteUserNode(struct UserNode *node, char *pubkey)
     }
 }
 
-void destryUserNodeList(struct UserNode *node) 
+void destroyUserNode(struct UserNode *node) 
 {
     struct UserNode *delete;
 
@@ -54,6 +56,9 @@ void destryUserNodeList(struct UserNode *node)
         free(delete->user);
         free(delete);
     }
+
+    free(node->user);
+    free(node);
 }
 
 User* getUser(struct UserNode *node, char *pubkey)

@@ -7,38 +7,33 @@
 #include "../types/friend_list.c"
 #include "../types/user_list.c"
 
-long userOffset = 0;
-
 User* loadUserFromDisk(FILE *file, long offset) 
 {
     fseek(file, offset, SEEK_SET);
 
     User *user = malloc(sizeof(User));
 
-    fread(&user, sizeof(User), 1, file);
+    fread(user, sizeof(User), 1, file);
 
     return user;
 }
 
-struct TrieNode* loadUsersTree(FILE *fileTrie, FILE *fileUsers, long offset, struct TrieNode *root) 
-{    
-    fseek(fileTrie, offset, SEEK_SET);
+struct TrieNode* loadUsersTree(FILE *file, long *usersCount) 
+{
+    User *currentUser;
+    long count, offset = 0;
 
-    struct TrieNode *diskNode = malloc(sizeof(struct TrieNode));
+    fseek(file, offset, SEEK_SET);
+    fread(&count, sizeof(long), 1, file);
+    offset += sizeof(long);
 
-    fread(&diskNode, sizeof(struct TrieNode), 1, fileTrie);
-    
-    for(int i = 0;i < TRIE_CHILDREN_LENGTH; i++) {
-        if(diskNode->children[i]) {
-            offset += sizeof(struct TrieNode);
-            root->children[i] = loadUsersTree(fileTrie, fileUsers, offset, diskNode->children[i]);
-        }
-    }
+    struct TrieNode *root = createTrieNode();
 
-    // load user for address
-    if(diskNode->isEndOfKey) {
-        diskNode->user = loadUserFromDisk(fileUsers, userOffset);
-        userOffset += sizeof(User);
+    for(int i = 0; i < count; i++) {
+        currentUser = loadUserFromDisk(file, offset);
+        insertTrieNode(root, currentUser);
+        offset += sizeof(User);
+        usersCount++;
     }
 
     return root;
@@ -106,26 +101,22 @@ void serializeFriendsOnTrie(struct TrieNode *root, FriendList *friends, int frie
     }
 }
 
-struct TrieNode* loadFromDisk() 
+struct TrieNode* loadTrieFromDisk() 
 {
-    FILE *fileTrie = fopen("./data/trie.db", "rb");
     FILE *fileUsers = fopen("./data/users.db", "rb");
     FILE *fileFriends = fopen("./data/friends.db", "rb");
 
-    if(!fileTrie) return NULL;
     if(!fileUsers) return NULL;
     if(!fileFriends) return NULL;
 
-    struct TrieNode* root = createTrieNode();
-
-    loadUsersTree(fileTrie, fileUsers, 0, root);
+    long usersCount = 0;
+    struct TrieNode* root = loadUsersTree(fileUsers, &usersCount);
     
-    int friendsCount;
-    FriendList *friends = loadFriendListFromDisk(fileFriends, &friendsCount);
+    //int friendsCount;
+    //FriendList *friends = loadFriendListFromDisk(fileFriends, &friendsCount);
 
-    serializeFriendsOnTrie(root, friends, friendsCount);
+    //serializeFriendsOnTrie(root, friends, friendsCount);
 
-    fclose(fileTrie);
     fclose(fileUsers);
     fclose(fileFriends);
     

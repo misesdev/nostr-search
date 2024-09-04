@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gcc ./src/filesystem/Zdisk_test.c -o ./build/disk_test.bin &&
+gcc ./src/filesystem/disk_test.c -o ./build/disk_test.bin &&
 
 ./build/disk_test.bin
 

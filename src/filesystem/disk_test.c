@@ -1,0 +1,73 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "../types/user_trie.c"
+#include "../filesystem/wdisk.c"
+#include "../filesystem/rdisk.c"
+
+User* createUser(char *name, char *pubkey)
+{
+    User *user = malloc(sizeof(User));
+    strcpy(user->name, name);
+    strcpy(user->pubkey, pubkey);
+    strcpy(user->profile, "");
+    user->friends = createUserNode(NULL);
+    return user;
+}
+
+void showUsersOfTrie(struct TrieNode *root)
+{
+    for(int i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
+        if(root->children[i]) {
+            showUsersOfTrie(root->children[i]);
+        }
+    }
+
+    if(root->isEndOfKey) {
+        printf("username: %s\n", root->user->name);
+        struct UserNode *friends = root->user->friends;
+        while(friends) {
+            printf("    friend: %s\n", friends->user->name);
+            friends = friends->next;
+        }
+    }
+}
+
+int main() 
+{
+    char pubkey[3][65] = {
+        "6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93",
+        "3da979448d9ba263864c4d6f14984c423a3838364ec255f03c7904b1ae77f206",
+        "bf2376e17ba4ec269d10fcc996a4746b451152be9031fa48e74553dde5526bce"
+    };
+    
+    struct TrieNode *root = createTrieNode(); 
+
+    struct TrieNode *first = insertTrieNode(root, createUser("Mises Dev", pubkey[0]));
+    struct TrieNode *second = insertTrieNode(root, createUser("Alexandre de Morais", pubkey[1]));
+    struct TrieNode *three = insertTrieNode(root, createUser("Adouf Hitler", pubkey[2]));
+
+    // Mises Dev friends
+    insertUserNode(first->user->friends, second->user);
+    insertUserNode(first->user->friends, three->user);
+
+    // Alexandre de Morais friends
+    insertUserNode(second->user->friends, three->user);
+
+    // Hitler friends
+    insertUserNode(three->user->friends, second->user);
+    
+    if(!loadTrieInDisk(root)) return -1;
+
+    struct TrieNode *t_root = loadTrieFromDisk();
+
+    if(!t_root) {
+        printf("Error when trying to load the disk tree");
+        return -1;
+    }
+
+    showUsersOfTrie(t_root);
+    
+    return 0;
+}

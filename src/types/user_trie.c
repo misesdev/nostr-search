@@ -21,10 +21,11 @@ struct TrieNode* createTrieNode() {
         node->children[i] = NULL;
     }
     node->isEndOfKey = false;
+    node->user = NULL;
     return node;
 }
 
-struct TrieNode* insertTrieNode(struct TrieNode *node, User *user, struct UserNode *follows)
+struct TrieNode* insertTrieNode(struct TrieNode *node, User *user)
 {
     struct TrieNode* t_node = node;
     uint8_t address[PUBKEY_ADDRESS_LENGTH];
