@@ -44,21 +44,23 @@ int main()
     
     struct TrieNode *root = createTrieNode(); 
 
-    struct TrieNode *first = insertTrieNode(root, createUser("Mises Dev", pubkey[0]));
-    struct TrieNode *second = insertTrieNode(root, createUser("Alexandre de Morais", pubkey[1]));
-    struct TrieNode *three = insertTrieNode(root, createUser("Adouf Hitler", pubkey[2]));
+    struct TrieNode *mises = insertTrieNode(root, createUser("Mises Dev", pubkey[0]));
+    struct TrieNode *alex = insertTrieNode(root, createUser("Alexandre de Morais", pubkey[1]));
+    struct TrieNode *hitler = insertTrieNode(root, createUser("Adouf Hitler", pubkey[2]));
 
     // Mises Dev friends
-    insertUserNode(first->user->friends, second->user);
-    insertUserNode(first->user->friends, three->user);
+    insertUserNode(mises->user->friends, alex->user);
+    insertUserNode(mises->user->friends, hitler->user);
 
     // Alexandre de Morais friends
-    insertUserNode(second->user->friends, three->user);
+    insertUserNode(alex->user->friends, hitler->user);
 
     // Hitler friends
-    insertUserNode(three->user->friends, second->user);
+    insertUserNode(hitler->user->friends, alex->user);
     
     if(!loadTrieInDisk(root)) return -1;
+
+    destroyTrieNode(root);
 
     struct TrieNode *t_root = loadTrieFromDisk();
 

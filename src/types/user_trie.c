@@ -50,9 +50,7 @@ bool deleteTrieNode(struct TrieNode *node, uint8_t *pubkey, uint8_t depth)
    
     if(depth == PUBKEY_ADDRESS_LENGTH - 1) // if the end address 
     {
-        if(node->isEndOfKey) {
-            node->isEndOfKey = false;
-        }
+        if(node->isEndOfKey) node->isEndOfKey = false;
 
         if(!hasChildren(node)) {
             free(node->user);
@@ -82,8 +80,10 @@ void destroyTrieNode(struct TrieNode *node) {
             destroyTrieNode(node->children[i]);
         }
     }
-    free(node->user);
-    free(node);
+    if(!hasChildren(node)) {
+        if(node->isEndOfKey) free(node->user);
+        free(node);
+    }
 }
 
 struct TrieNode* getTrieNode(struct TrieNode *node, uint8_t address[PUBKEY_ADDRESS_LENGTH])
@@ -115,6 +115,8 @@ struct TrieNode* getTrieNodeFromPubkey(struct TrieNode *node, char *pubkey)
 
     return t_node;
 }
+
+
 
 #endif
 
