@@ -1,19 +1,15 @@
 # nostr-search-engine
 A search engine for nostr-protocol clients and posts
 
-## BUILD
+## Build
 
-`bash ./run`
+`./run`
 
 or 
 
-`
-    gcc ./main -o ./build/engine.bin
-`
+`gcc ./main -o ./build/engine.bin`
 
-## RUN
+## Run
 
-`
-    ./build/engine.bin
-`
+`./build/engine.bin`
 

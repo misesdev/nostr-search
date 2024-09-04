@@ -98,7 +98,7 @@ void serializeFriendsOnTrie(struct TrieNode *root, FriendList *friends, int frie
 
         destroyFriendNodeList(friends[i].friends);
         free(&friends[i]);
-    }
+    }    
 }
 
 struct TrieNode* loadTrieFromDisk() 
