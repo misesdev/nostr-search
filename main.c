@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 #include "./src/types/user_list.c"
 #include "./src/utils/http_utils.c"
 #include "./src/types/user_trie.c"
@@ -34,7 +33,7 @@ int main(int argc, char *args[])
 
     struct TrieNode *root = createTrieNode(); 
 
-    insertTrieNode(root, user, NULL);
+    insertTrieNode(root, user);
     
     if(!loadTrieInDisk(root)) {
         printf("Error when trying to load the tree to disk");
