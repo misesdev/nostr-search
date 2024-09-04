@@ -7,9 +7,13 @@ A search engine for nostr-protocol clients and posts
 
 or 
 
-`bash gcc ./main -o ./build/engine.bin`
+`
+    gcc ./main -o ./build/engine.bin
+`
 
 ## RUN
 
-`bash ./build/engine.bin`
+`
+    ./build/engine.bin
+`
 
