@@ -73,5 +73,6 @@ User* getUser(struct UserNode *node, char *pubkey)
     return NULL;
 }
 
-
 #endif
+
+

@@ -23,7 +23,7 @@ static int callback_nostr(struct lws *wsi, enum lws_callback_reasons reason, voi
 
             // Enviar comando de assinatura para o relay
             char subscribe_message[MAX_MESSAGE_LEN];
-            snprintf(subscribe_message, sizeof(subscribe_message), "[\"REQ\", \"6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93\", {\"kinds\": [0, 1]}]");
+            snprintf(subscribe_message, sizeof(subscribe_message), "[\"REQ\", \"6e468422dfb74a5738702a8823b9b28168abab8655faacb6853cd0ee15deee93\", {\"kinds\": [0, 1], authors: [\"55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27\"]}]");
             lws_write(wsi, (unsigned char *)subscribe_message, strlen(subscribe_message), LWS_WRITE_TEXT);
             break;
 

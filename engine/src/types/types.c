@@ -21,8 +21,14 @@ struct UserNode {
 
 struct TrieNode {
     User *user;
-    struct TrieNode *children[TRIE_CHILDREN_LENGTH];
+    uint8_t key;
     bool isEndOfKey;
+    struct TrieList *children;
+};
+
+struct TrieList {
+    struct TrieNode *node;
+    struct TrieList *next;
 };
 
 struct FriendNode {

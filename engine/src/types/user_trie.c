@@ -5,43 +5,41 @@
 #include <stdlib.h>
 #include <strings.h>
 #include "./types.c"
+#include "./trie_node_list.c"
 #include "../utils/utils.c"
 
-bool hasChildren(struct TrieNode *node)
-{
-    for(uint8_t i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
-        if(node->children[i]) return true;
-    }
-    return true;
-}
-
-struct TrieNode* createTrieNode() {
+struct TrieNode* createTrieNode(uint8_t key) {
     struct TrieNode *node = malloc(sizeof(struct TrieNode));
-    for(uint8_t i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
-        node->children[i] = NULL;
-    }
     node->isEndOfKey = false;
+    node->children = NULL;
     node->user = NULL;
+    node->key = key;
     return node;
 }
 
-struct TrieNode* insertTrieNode(struct TrieNode *node, User *user)
+struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
 {
-    struct TrieNode* t_node = node;
+    struct TrieNode *current = root;
     uint8_t address[PUBKEY_ADDRESS_LENGTH];
     compressPubkey(user->pubkey, address);
 
     for(uint8_t i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
-        if(!t_node->children[address[i]]) {
-            t_node->children[address[i]] = createTrieNode();
+        if(!current->children) {
+            current->children = createNode(createTrieNode(address[i]));
+        } 
+        
+        struct TrieNode *node = getNode(current->children, address[i]);
+        if(node) { 
+            current = node; 
+        } else {
+            current = insertNode(current->children, createTrieNode(address[i])); 
         }
-        t_node = t_node->children[address[i]];
     }
 
-    t_node->user = user;
-    t_node->isEndOfKey = true;
+    current->isEndOfKey = true;
+    current->user = user;
 
-    return t_node;
+    return current;
 }
 
 bool deleteTrieNode(struct TrieNode *node, uint8_t *pubkey, uint8_t depth)
