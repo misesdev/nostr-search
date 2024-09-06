@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "nostr": "^0.2.8"
+  },
+  "devDependencies": {
+    "ws": "^8.18.0"
+  }
+}
