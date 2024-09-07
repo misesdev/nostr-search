@@ -1,8 +1,9 @@
 {
-  "dependencies": {
-    "nostr": "^0.2.8"
-  },
-  "devDependencies": {
-    "ws": "^8.18.0"
-  }
+    "devDependencies": {
+        "ws": "^8.18.0"
+    },
+    "scripts": {
+        "dev": "node ./build/index.js",
+        "build": "tsc"
+    }
 }

@@ -1,0 +1,12 @@
+
+services:
+  
+  app:
+    context: .
+
+  engine:
+    context: .
+
+  indexer: 
+    context: .
+ 
