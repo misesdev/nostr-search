@@ -18,8 +18,8 @@ const main = async () => {
 
     events = await pool.fechEvent({ 
         authors: [author], 
-        kinds:[1], 
-        limit: 5 
+        kinds:[3], 
+        limit: 2 
     });
 
     console.log(events);

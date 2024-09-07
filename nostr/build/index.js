@@ -22,8 +22,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield pool.connect();
     events = yield pool.fechEvent({
         authors: [author],
-        kinds: [1],
-        limit: 5
+        kinds: [3],
+        limit: 2
     });
     console.log(events);
 });
