@@ -31,7 +31,7 @@ int main(int argc, char *args[])
     strcpy(user->name, "Mises Dev");
     strcpy(user->pubkey, pubkey);
 
-    struct TrieNode *root = createTrieNode(); 
+    struct TrieNode *root = createTrieNode(0); 
 
     insertTrieNode(root, user);
     

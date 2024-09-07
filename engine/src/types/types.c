@@ -2,7 +2,7 @@
 #define TYPES_C
 
 #define TRIE_CHILDREN_LENGTH 160
-#define PUBKEY_ADDRESS_LENGTH 16
+#define ADDRESS_LENGTH 16
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -23,7 +23,7 @@ struct TrieNode {
     User *user;
     uint8_t key;
     bool isEndOfKey;
-    struct TrieList *children;
+    struct TrieList *childrens;
 };
 
 struct TrieList {
@@ -32,12 +32,12 @@ struct TrieList {
 };
 
 struct FriendNode {
-    uint8_t user[PUBKEY_ADDRESS_LENGTH];
+    uint8_t user[ADDRESS_LENGTH];
     struct FriendNode *next;
 };
 
 typedef struct {
-    uint8_t user[PUBKEY_ADDRESS_LENGTH];
+    uint8_t user[ADDRESS_LENGTH];
     struct FriendNode *friends;
 } FriendList;
 

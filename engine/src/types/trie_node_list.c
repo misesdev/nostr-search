@@ -7,7 +7,7 @@
 
 bool hasChildren(struct TrieNode *node)
 {
-    if(node->children) return true;
+    if(node->childrens) return true;
     
     return false;
 }

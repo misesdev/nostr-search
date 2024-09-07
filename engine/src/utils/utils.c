@@ -125,9 +125,9 @@ char* strconcat(char *str1, char *str2)
     return result;
 }
 
-bool isEmptyAddress(uint8_t array[PUBKEY_ADDRESS_LENGTH])
+bool isEmptyAddress(uint8_t array[ADDRESS_LENGTH])
 {
-    for(int i = 0; i < PUBKEY_ADDRESS_LENGTH; i++) {
+    for(int i = 0; i < ADDRESS_LENGTH; i++) {
         if(array[i] > 0) return false;
     }
     return true;
