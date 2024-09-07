@@ -5,34 +5,34 @@
 #include <stdlib.h>
 #include "./types.c"
 
-int compareUserAddresses(uint8_t first[PUBKEY_ADDRESS_LENGTH], uint8_t second[PUBKEY_ADDRESS_LENGTH])
+int compareUserAddresses(uint8_t first[ADDRESS_LENGTH], uint8_t second[ADDRESS_LENGTH])
 {
     uint8_t map[TRIE_CHILDREN_LENGTH] = {0};
     uint8_t interssections = 0;
-    for(int i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
+    for(int i = 0; i < ADDRESS_LENGTH; i++){
         map[first[i]]++;
     }
-    for(int i = 0; i < PUBKEY_ADDRESS_LENGTH; i++){
+    for(int i = 0; i < ADDRESS_LENGTH; i++){
         map[second[i]]++;
     }
     for(int i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
         if(map[i] > 1) interssections++;
     }
     
-    return (interssections > PUBKEY_ADDRESS_LENGTH - 1);
+    return (interssections > ADDRESS_LENGTH - 1);
 }
 
-struct FriendNode* createFriendNode(uint8_t user[PUBKEY_ADDRESS_LENGTH])
+struct FriendNode* createFriendNode(uint8_t user[ADDRESS_LENGTH])
 {
     struct FriendNode *node = malloc(sizeof(struct FriendNode));
-    for(int i = 0; i < PUBKEY_ADDRESS_LENGTH; i++) {
+    for(int i = 0; i < ADDRESS_LENGTH; i++) {
         node->user[i] = user[i];
     }
 
     return node;
 }
 
-void insertFriendNode(struct FriendNode *root, uint8_t friend[PUBKEY_ADDRESS_LENGTH]) 
+void insertFriendNode(struct FriendNode *root, uint8_t friend[ADDRESS_LENGTH]) 
 {
     while(1) {
         if(!root->next) {
@@ -42,7 +42,7 @@ void insertFriendNode(struct FriendNode *root, uint8_t friend[PUBKEY_ADDRESS_LEN
     }
 }
 
-struct FriendNode* getFriendNode(struct FriendNode *root, uint8_t friend[PUBKEY_ADDRESS_LENGTH])
+struct FriendNode* getFriendNode(struct FriendNode *root, uint8_t friend[ADDRESS_LENGTH])
 {
     struct FriendNode *current = root;
     while (current) {
@@ -53,7 +53,7 @@ struct FriendNode* getFriendNode(struct FriendNode *root, uint8_t friend[PUBKEY_
     return NULL;
 }
 
-void deleteFriendNode(struct FriendNode *root, uint8_t friend[PUBKEY_ADDRESS_LENGTH])
+void deleteFriendNode(struct FriendNode *root, uint8_t friend[ADDRESS_LENGTH])
 {
     struct FriendNode *current = root;
     struct FriendNode *delete;

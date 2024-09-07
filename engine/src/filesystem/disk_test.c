@@ -18,10 +18,10 @@ User* createUser(char *name, char *pubkey)
 
 void showUsersOfTrie(struct TrieNode *root)
 {
-    for(int i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
-        if(root->children[i]) {
-            showUsersOfTrie(root->children[i]);
-        }
+    struct TrieList *list = root->childrens;
+
+    while(list) {
+        showUsersOfTrie(list->node);
     }
 
     if(root->isEndOfKey) {
@@ -42,34 +42,34 @@ int main()
         "bf2376e17ba4ec269d10fcc996a4746b451152be9031fa48e74553dde5526bce"
     };
     
-    struct TrieNode *root = createTrieNode(); 
+    struct TrieNode *root = createTrieNode(0); 
 
     struct TrieNode *mises = insertTrieNode(root, createUser("Mises Dev", pubkey[0]));
     struct TrieNode *alex = insertTrieNode(root, createUser("Alexandre de Morais", pubkey[1]));
     struct TrieNode *hitler = insertTrieNode(root, createUser("Adouf Hitler", pubkey[2]));
 
-    // Mises Dev friends
-    insertUserNode(mises->user->friends, alex->user);
-    insertUserNode(mises->user->friends, hitler->user);
+    // // Mises Dev friends
+    // insertUserNode(mises->user->friends, alex->user);
+    // insertUserNode(mises->user->friends, hitler->user);
 
-    // Alexandre de Morais friends
-    insertUserNode(alex->user->friends, hitler->user);
+    // // Alexandre de Morais friends
+    // insertUserNode(alex->user->friends, hitler->user);
 
-    // Hitler friends
-    insertUserNode(hitler->user->friends, alex->user);
+    // // Hitler friends
+    // insertUserNode(hitler->user->friends, alex->user);
     
-    if(!loadTrieInDisk(root)) return -1;
+    // if(!loadTrieInDisk(root)) return -1;
 
-    destroyTrieNode(root);
+    // destroyTrieNode(root);
 
-    struct TrieNode *t_root = loadTrieFromDisk();
+    // struct TrieNode *t_root = loadTrieFromDisk();
 
-    if(!t_root) {
-        printf("Error when trying to load the disk tree");
-        return -1;
-    }
+    // if(!t_root) {
+    //     printf("Error when trying to load the disk tree");
+    //     return -1;
+    // }
 
-    showUsersOfTrie(t_root);
+    // showUsersOfTrie(t_root);
     
     return 0;
 }

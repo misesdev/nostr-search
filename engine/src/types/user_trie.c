@@ -19,93 +19,123 @@ struct TrieNode* createTrieNode(uint8_t key) {
 
 struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
 {
-    uint8_t address[ADDRESS_LENGTH];
-    compressPubkey(user->pubkey, address);
+    uint8_t *key;
+    compressPubkey(user->pubkey, key);
 
-    struct TrieList *current = root->childrens;
+    struct TrieNode *current = root;
 
-    for(uint8_t i = 0; i < ADDRESS_LENGTH; i++)
+    while(*key)
     {     
-        if(!current) {
-            current = createNode(createTrieNode(address[i]));
+        struct TrieNode *nextNode = NULL;
+        struct TrieList *list = current->childrens;
+
+        while(list) {
+            if(list->node->key == *key) {
+                nextNode = list->node;
+                break;
+            }
+            list = list->next;
         }
 
-        while(current->node->key != address[i]) {
-            if(!current->next) break;
-            current = current->next;
+        if(nextNode == NULL) {
+            nextNode = createTrieNode(*key);
+            struct TrieList *newChildren = createNode(nextNode);
+            newChildren->next = current->childrens;
+            current->childrens = newChildren;
         }
-
-        if(current->node->key != address[i]) {
-            struct TrieNode *currentNode = insertNode(current, createTrieNode(address[i]));
-            current = currentNode->childrens;
-        }
+        
+        current = nextNode;
+        key++;
     }
 
-    current->node->isEndOfKey = true;
-    current->node->user = user;
+    current->isEndOfKey = true;
+    current->user = user;
 
-    return current->node;
+    return current;
 }
 
-bool deleteTrieNode(struct TrieNode *node, uint8_t *pubkey, uint8_t depth)
+bool deleteTrieNode(struct TrieNode *current, uint8_t *key)
 {
-    if(!node) return false;
-   
-    if(depth == ADDRESS_LENGTH - 1) // if the end address 
+    if(*key) 
     {
-        if(node->isEndOfKey) node->isEndOfKey = false;
-
-        if(!hasChildren(node)) {
-            free(node->user);
-            free(node);
+        struct TrieList *prev = NULL;
+        struct TrieList *list = current->childrens;
+        // finds the next node by key
+        while(list) 
+        {
+            if(list->node->key == *key) {
+                if(deleteTrieNode(list->node, key + 1)) {
+                    // if the node not have childrens, remove the link
+                    if(list->node->isEndOfKey && list->node->childrens == NULL) {
+                        free(list->node);
+                        if(prev != NULL) {
+                            prev->next = list->next;
+                        } else {
+                            current->childrens = list->next;
+                        }
+                        free(list);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            prev = list;
+            list = list->next;
+        }
+    } 
+    else if(current->isEndOfKey) 
+    {
+        current->isEndOfKey = false;
+        if(current->childrens == NULL) 
             return true;
-        }
-
-        return false;
     }
-    else {
-        uint8_t index = pubkey[depth];
-        if(deleteTrieNode(node, pubkey, depth+1)) {
-            free(node->childrens[index]);
-            node->children[index] = NULL;
 
-            return !node->isEndOfKey && !hasChildren(node);
-        }
-    }
     return false;
 }
 
-void destroyTrieNode(struct TrieNode *root) {
-    if(root == NULL) return;
+void destroyTrieNode(struct TrieNode *root) 
+{
+    struct TrieList *list = root->childrens;
 
-    for(uint8_t i = 0; i < ADDRESS_LENGTH; i++) {
-        if(node->children[i]) {
-            destroyTrieNode(node->children[i]);
-        }
+    while(list) {
+        struct TrieList *temp = list;
+        destroyTrieNode(list->node);
+        list = list->next;
+        free(temp);
     }
-    if(!hasChildren(node)) {
-        if(node->isEndOfKey) free(node->user);
-        free(node);
-    }
+
+    if(!hasChildren(root) && root->isEndOfKey)
+        free(root->user);
+
+    free(root);
 }
 
-struct TrieNode* getTrieNode(struct TrieNode *root, uint8_t address[ADDRESS_LENGTH])
+struct TrieNode* getTrieNode(struct TrieNode *root, uint8_t *key)
 {
-    struct TrieList* current = root->childrens;
+    struct TrieNode* current = root;
    
-    for(uint8_t i = 0; i < ADDRESS_LENGTH; i++) {
-        while(current->node->key != address[i]) 
+    while(*key) 
+    {
+        struct TrieNode *nextNode = NULL;
+        struct TrieList *list = current->childrens;
+
+        while(list) 
         {
-            current = current->next;
+            if(list->node->key == *key) {
+                nextNode = list->node;
+                break;
+            }
+            list = list->next;
         }
-        if(current->node->key != address[i]) {
-            current = current->node->childrens;
-        } 
-        else break;
+
+        if(nextNode == NULL) return NULL;
+                
+        current = nextNode;
+        key++;
     }
 
-    if(current->node->isEndOfKey) 
-        return current->node;
+    if(current->isEndOfKey) 
+        return current;
 
     return NULL;
 }

@@ -34,12 +34,11 @@ void loadUsersOnDisk(FILE *fileUsers, struct UserNode *rootUsers, long userCount
 
 void serialiseUsersFromTrie(struct TrieNode *root, struct UserNode *rootUsers, long *userCount)
 {
-    if(!root) return;
+    struct TrieList *list = root->childrens;
 
-    for(int i = 0; i < TRIE_CHILDREN_LENGTH; i++) {
-        if(root->children[i]) {
-            serialiseUsersFromTrie(root->children[i], rootUsers, userCount);
-        }
+    while(list) {
+        serialiseUsersFromTrie(list->node, rootUsers, userCount);
+        list = list->next;
     }
 
     if(root->isEndOfKey) {
@@ -48,7 +47,7 @@ void serialiseUsersFromTrie(struct TrieNode *root, struct UserNode *rootUsers, l
     }
 }
 
-void loadFriendsFromUser(FILE *file, struct UserNode *friends, uint8_t user[PUBKEY_ADDRESS_LENGTH], long *offset)
+void loadFriendsFromUser(FILE *file, struct UserNode *friends, uint8_t user[ADDRESS_LENGTH], long *offset)
 {
     long friendsCount = 0;
     struct UserNode *current = friends;
@@ -60,21 +59,21 @@ void loadFriendsFromUser(FILE *file, struct UserNode *friends, uint8_t user[PUBK
     }
 
     // write user address in tree
-    fwrite(&user, sizeof(uint8_t), PUBKEY_ADDRESS_LENGTH, file);
-    *offset += PUBKEY_ADDRESS_LENGTH;
+    fwrite(&user, sizeof(uint8_t), ADDRESS_LENGTH, file);
+    *offset += ADDRESS_LENGTH;
     
     // write user friends count
     fwrite(&friendsCount, sizeof(int), 1, file);
     offset += sizeof(int);
 
     current = friends;
-    uint8_t address[PUBKEY_ADDRESS_LENGTH];
+    uint8_t address[ADDRESS_LENGTH];
     while (current) {
         if(current->user) {
             fseek(file, *offset, SEEK_SET);
             compressPubkey(current->user->pubkey, address);
-            fwrite(&address, sizeof(uint8_t), PUBKEY_ADDRESS_LENGTH, file);
-            *offset += PUBKEY_ADDRESS_LENGTH;
+            fwrite(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
+            *offset += ADDRESS_LENGTH;
         }
         current = current->next;
     }
@@ -89,7 +88,7 @@ void loadFriendsOnDisk(struct UserNode *usersRoot, FILE *file, long userCount)
     offset += sizeof(int);
 
     // save users list friends -> (address in the tree)
-    uint8_t address[PUBKEY_ADDRESS_LENGTH];
+    uint8_t address[ADDRESS_LENGTH];
     struct UserNode *current = usersRoot;
     while (current) {
         if(current->user) {

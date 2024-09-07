@@ -27,7 +27,7 @@ struct TrieNode* loadUsersTree(FILE *file, long *usersCount)
     fread(&count, sizeof(long), 1, file);
     offset += sizeof(long);
 
-    struct TrieNode *root = createTrieNode();
+    struct TrieNode *root = createTrieNode(0);
 
     for(int i = 0; i < count; i++) {
         currentUser = loadUserFromDisk(file, offset);
@@ -44,8 +44,8 @@ long friendOffset = 0;
 void loadFriendList(FILE *file, FriendList *friends)
 {
     fseek(file, friendOffset, SEEK_SET);
-    fread(friends->user, sizeof(uint8_t), PUBKEY_ADDRESS_LENGTH, file);
-    friendOffset += PUBKEY_ADDRESS_LENGTH;
+    fread(friends->user, sizeof(uint8_t), ADDRESS_LENGTH, file);
+    friendOffset += ADDRESS_LENGTH;
 
     int friendsCount;
     fseek(file, friendOffset, SEEK_SET);
@@ -54,11 +54,11 @@ void loadFriendList(FILE *file, FriendList *friends)
 
     struct FriendNode *current = friends->friends; 
 
-    uint8_t user[PUBKEY_ADDRESS_LENGTH];
+    uint8_t user[ADDRESS_LENGTH];
     for(int i = 0; i < friendsCount; i++) {
         fseek(file, friendOffset, SEEK_SET);
-        fread(&user, sizeof(uint8_t), PUBKEY_ADDRESS_LENGTH, file);
-        friendOffset += PUBKEY_ADDRESS_LENGTH;
+        fread(&user, sizeof(uint8_t), ADDRESS_LENGTH, file);
+        friendOffset += ADDRESS_LENGTH;
         current = createFriendNode(user);
         current = current->next;
     }
