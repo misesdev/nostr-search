@@ -19,7 +19,7 @@ struct TrieNode* createTrieNode(uint8_t key) {
 
 struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
 {
-    uint8_t *key;
+    uint8_t key[ADDRESS_LENGTH];
     compressPubkey(user->pubkey, key);
 
     struct TrieNode *current = root;
@@ -45,7 +45,7 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
         }
         
         current = nextNode;
-        key++;
+        *key += 1;
     }
 
     current->isEndOfKey = true;

@@ -31,6 +31,7 @@ struct TrieNode* loadUsersTree(FILE *file, long *usersCount)
 
     for(int i = 0; i < count; i++) {
         currentUser = loadUserFromDisk(file, offset);
+        currentUser->friends = NULL;
         insertTrieNode(root, currentUser);
         offset += sizeof(User);
         usersCount++;

@@ -118,7 +118,7 @@ bool loadTrieInDisk(struct TrieNode *root)
 
     loadFriendsOnDisk(rootUsers, fileFriends, userCount);
 
-    destroyUserNode(rootUsers);
+    //destroyUserNode(rootUsers);
 
     fclose(fileFriends);
     fclose(fileUsers);
