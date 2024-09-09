@@ -1,6 +1,6 @@
 {
     "devDependencies": {
-        "ws": "^8.18.0"
+        "ws": "^8.18.0"    
     },
     "scripts": {
         "dev": "node ./build/index.js",

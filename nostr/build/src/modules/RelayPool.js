@@ -13,8 +13,8 @@ exports.RelayPool = void 0;
 const ws_1 = require("ws");
 class RelayPool {
     constructor(relays) {
+        this.resultEvents = [];
         this.websockets = [];
-        this.result = [];
         this.subscription = "3da979448d9ba263864c4d6f14984c42";
         if (relays.length < 1)
             throw Error("expected relays");
@@ -43,7 +43,7 @@ class RelayPool {
     }
     fetchEventRelay(socket, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 socket.send(`["REQ", 
                 "${this.subscription}", 
                 ${JSON.stringify(filter)}]`);
@@ -51,8 +51,8 @@ class RelayPool {
                     let data = JSON.parse(message.toString());
                     if (data[0] == "EVENT") {
                         let event = data[2];
-                        if (this.result.filter(e => e.id == event.id).length <= 0) {
-                            this.result.push(event);
+                        if (this.resultEvents.filter(e => e.id == event.id).length <= 0) {
+                            this.resultEvents.push(event);
                         }
                     }
                     resolve(true);
@@ -65,7 +65,7 @@ class RelayPool {
             for (let i = 0; i < this.websockets.length; i++) {
                 yield this.fetchEventRelay(this.websockets[i], filter);
             }
-            return this.result;
+            return this.resultEvents;
         });
     }
 }

@@ -25,6 +25,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         kinds: [3],
         limit: 2
     });
-    console.log(events);
+    const tags = events.map(event => event.tags);
+    console.log(tags[0].map(tag => tag[1]));
 });
 main();

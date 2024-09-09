@@ -4,8 +4,8 @@ import { Event, Filter } from "./types"
 export class RelayPool {
 
     private relays: string[];
+    public resultEvents: Event[] = [];
     public websockets: WebSocket[] = [];
-    public result: Event[] = [];
     private subscription: string = "3da979448d9ba263864c4d6f14984c42";
 
     constructor(relays: string[]) {
@@ -35,17 +35,17 @@ export class RelayPool {
     }
 
     private async fetchEventRelay(socket: WebSocket, filter: Filter) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             socket.send(`["REQ", 
                 "${this.subscription}", 
                 ${JSON.stringify(filter)}]`);
 
-            socket.on("message", (message) => {
+            socket.on("message", (message: any) => {
                 let data = JSON.parse(message.toString());
                 if(data[0] == "EVENT") {
                     let event: Event = data[2];
-                    if(this.result.filter(e => e.id == event.id).length <= 0) {
-                        this.result.push(event);
+                    if(this.resultEvents.filter(e => e.id == event.id).length <= 0) {
+                        this.resultEvents.push(event)
                     }
                 }
                 resolve(true)
@@ -58,7 +58,7 @@ export class RelayPool {
         for(let i = 0; i < this.websockets.length; i++) {
             await this.fetchEventRelay(this.websockets[i], filter)
         } 
-
-        return this.result;
+        return this.resultEvents;
     }
+
 }
