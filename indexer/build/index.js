@@ -12,30 +12,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const RelayPool_1 = require("./src/modules/RelayPool");
 const Relays_1 = require("./src/constants/Relays");
 const disk_1 = require("./src/filesytem/disk");
+const utils_1 = require("./src/utils");
 const author = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27";
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    let pubkeys = [author];
-    let file = new disk_1.FileSystem("pubkeys.db");
-    const pool = new RelayPool_1.RelayPool(Relays_1.relays, author);
+    let fileUsers = new disk_1.FileSystem("./data/users.db");
+    let filePubkeys = new disk_1.FileSystem("./data/pubkeys.db");
+    const pool = new RelayPool_1.RelayPool(Relays_1.relays);
     yield pool.connect();
-    //let user = await pool.fetchUser(author);
-    //pubkeys.push(user.pubkey)
-    ///file.writeLine(nostrEvent.content)
-    let key = 0;
-    while (pool.pubkeys.length < 5000) {
-        console.log("search event from key", pool.pubkeys[key]);
-        yield pool.fechEvent({
-            authors: [pool.pubkeys[key]],
+    let userEvent = yield pool.fechUser(author);
+    let pubkeys = (0, utils_1.getPubkeys)(userEvent);
+    pubkeys.push(userEvent.pubkey);
+    let skip = 10;
+    for (let i = 0; pubkeys.length < 20000; i += skip) {
+        let events = yield pool.fechEvent({
+            authors: pubkeys.slice(i, i + skip),
             kinds: [3],
-            limit: 1
+            limit: skip
         });
-        //let npubs = getPubkeys(events[0]).filter(f => !pubkeys.includes(f))
-        //console.log("npubs", npubs.length)
-        //npubs.forEach(pub => pubkeys.push(pub));
-        //pubkeys = [...pubkeys, ...npubs];
-        key++;
+        if (events.length > 0) {
+            events.forEach(event => {
+                console.log(`${event.tags.length} follows:`, event.pubkey.substring(0, 15));
+                let npubs = (0, utils_1.getPubkeys)(event).filter(npub => !pubkeys.includes(npub));
+                npubs.forEach(pub => pubkeys.push(pub));
+            });
+        }
+        else
+            console.log("not found");
+        skip++;
     }
-    pool.pubkeys.forEach(pubkey => file.writeLine(pubkey));
-    console.log("found users from nostr:", pool.pubkeys);
+    pubkeys.forEach(pubkey => filePubkeys.writeLine(pubkey));
+    skip = 100;
+    for (let i = 0; i < pubkeys.length; i += skip) {
+        let events = yield pool.fechEvent({
+            authors: pubkeys.slice(i, i + skip),
+            kinds: [0],
+            limit: skip
+        });
+        if (events.length > 0) {
+            console.log("found users:", events.length);
+            events.forEach(event => fileUsers.writeLine(event.content));
+        }
+        else
+            console.log("not found users");
+    }
+    console.log("found users from nostr:", pubkeys.length);
 });
 main();

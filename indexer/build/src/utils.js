@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPubkeys = void 0;
+exports.distinctEvent = exports.getPubkeys = void 0;
 const getPubkeys = (event) => {
     let pubkeys = event.tags.map((tag) => {
         if (tag[1].length < 64)
@@ -14,3 +14,9 @@ const getPubkeys = (event) => {
     return pubkeys.filter((f) => f != null);
 };
 exports.getPubkeys = getPubkeys;
+const distinctEvent = (events) => {
+    return events.filter((event, index, self) => {
+        return index == self.findIndex(x => x.pubkey == event.pubkey);
+    });
+};
+exports.distinctEvent = distinctEvent;

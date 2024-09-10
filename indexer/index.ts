@@ -8,42 +8,56 @@ const author: string = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39
 
 const main = async () => {
 
-    let pubkeys: string[] = [author];
+    let fileUsers = new FileSystem("./data/users.db");
+    let filePubkeys = new FileSystem("./data/pubkeys.db");
 
-    let file = new FileSystem("pubkeys.db");
-
-    const pool = new RelayPool(relays, author);
+    const pool = new RelayPool(relays);
 
     await pool.connect();
 
-    //let user = await pool.fetchUser(author);
+    let userEvent = await pool.fechUser(author);
+    let pubkeys: string[] = getPubkeys(userEvent);
+    pubkeys.push(userEvent.pubkey);
 
-    //pubkeys.push(user.pubkey)
-
-    ///file.writeLine(nostrEvent.content)
-
-    let key = 0;
-    while(pool.pubkeys.length < 5000) {
-        console.log("search event from key", pool.pubkeys[key]);
-        await pool.fechEvent({
-            authors: [pool.pubkeys[key]],
+    let skip = 10;
+    for(let i = 0; pubkeys.length < 20000; i += skip) {
+        let events = await pool.fechEvent({
+            authors: pubkeys.slice(i, i + skip),
             kinds: [3],
-            limit: 1
+            limit: skip
         });
+        if(events.length > 0) 
+        {
+            events.forEach(event => {               
+                console.log(`${event.tags.length} follows:`, event.pubkey.substring(0, 15))
+                
+                let npubs = getPubkeys(event).filter(npub => !pubkeys.includes(npub))
+                
+                npubs.forEach(pub => pubkeys.push(pub))
+            })
+        } else 
+            console.log("not found")
 
-        //let npubs = getPubkeys(events[0]).filter(f => !pubkeys.includes(f))
-        
-        //console.log("npubs", npubs.length)
-
-        //npubs.forEach(pub => pubkeys.push(pub));
-        //pubkeys = [...pubkeys, ...npubs];
-
-        key++;
+        skip++;
     }
 
-    pool.pubkeys.forEach(pubkey => file.writeLine(pubkey));
+    pubkeys.forEach(pubkey => filePubkeys.writeLine(pubkey));
 
-    console.log("found users from nostr:", pool.pubkeys.length);
+    skip = 100;
+    for(let i = 0; i < pubkeys.length; i += skip) {
+        let events = await pool.fechEvent({
+            authors: pubkeys.slice(i, i + skip),
+            kinds: [0],
+            limit: skip
+        })
+        if(events.length > 0) {
+            console.log("found users:", events.length)
+            events.forEach(event => fileUsers.writeLine(event.content))
+        } else
+            console.log("not found users")
+    } 
+
+    console.log("found users from nostr:", pubkeys.length);
 }
 
 main();

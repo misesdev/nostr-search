@@ -13,36 +13,19 @@ exports.RelayPool = void 0;
 const ws_1 = require("ws");
 const utils_1 = require("../utils");
 class RelayPool {
-    //private pubkey: string;
-    constructor(relays, author) {
-        this.resultEvents = [];
-        this.websockets = [];
-        this.pubkeys = [];
+    constructor(relays) {
+        this.timeout = 500;
         this.subscription = "3da979448d9ba263864c4d6f14984c42";
         if (relays.length < 1)
             throw Error("expected relays");
         this.relays = relays;
-        //this.pubkey = author;
-        this.pubkeys = [author];
+        this.websockets = [];
     }
     connectRelay(relay) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 let websock = new ws_1.WebSocket(relay);
                 websock.on("open", () => resolve(websock));
-                websock.on("message", (message) => {
-                    let data = JSON.parse(message.toString());
-                    if (data[0] == "EVENT") {
-                        let event = data[2];
-                        let npubs = (0, utils_1.getPubkeys)(event)
-                            .filter((pub) => !this.pubkeys.includes(pub));
-                        npubs.forEach(pub => this.pubkeys.push(pub));
-                        console.log("found users", event.tags.length);
-                        if (this.resultEvents.filter(e => e.id == event.id).length <= 0) {
-                            this.resultEvents.push(event);
-                        }
-                    }
-                });
                 websock.on("close", () => reject(`not connetd: ${relay}`));
                 websock.on("error", () => reject(`not connetd: ${relay}`));
             });
@@ -50,45 +33,70 @@ class RelayPool {
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            for (let i = 0; i < this.relays.length; i++) {
-                let socket = yield this.connectRelay(this.relays[i])
-                    .catch(error => console.log(error));
-                if (socket) {
-                    this.websockets.push(socket);
-                }
-            }
+            console.log("connecting");
+            let websockets = this.relays.map(relay => this.connectRelay(relay).catch(error => {
+                console.log(error);
+                return null;
+            }));
+            this.websockets = yield Promise.all(websockets);
+            this.websockets = this.websockets.filter(socket => socket != null);
+            console.log("connected");
         });
     }
-    fetchEventRelay(socket, filter) {
+    fetchEventRelay(websocket, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve) => {
-                socket.send(`[
+            return new Promise((resolve, reject) => {
+                let events = [];
+                // send the message
+                websocket.send(`[
                 "REQ", 
                 "${this.subscription}", 
                 ${JSON.stringify(filter)}
             ]`);
-                setTimeout(() => resolve(true), 500);
+                // receive the event and return
+                const handleMessage = (message) => {
+                    let data = JSON.parse(message.toString());
+                    if (data[0] == "EVENT") {
+                        let event = data[2];
+                        events.push(event);
+                    }
+                    if (data[0] == "EOSE") {
+                        resolve(events);
+                        websocket.removeListener("message", handleMessage);
+                    }
+                };
+                websocket.on("message", handleMessage);
+                // remove the listener in timeout
+                setTimeout(() => {
+                    reject(`timeout: ${websocket.url}`);
+                    websocket.removeAllListeners("message");
+                }, this.timeout);
             });
         });
     }
     fechEvent(filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            for (let i = 0; i < this.websockets.length; i++) {
-                yield this.fetchEventRelay(this.websockets[i], filter);
-            }
-            return this.resultEvents;
+            let eventPromises = this.websockets.map(websocket => {
+                return this.fetchEventRelay(websocket, filter).catch((error) => {
+                    console.log(error);
+                    return [];
+                });
+            });
+            let allEvents = yield Promise.all(eventPromises);
+            let events = allEvents.flat();
+            return (0, utils_1.distinctEvent)(events);
         });
     }
-    fetchUser(pubkey) {
+    fechUser(pubkey) {
         return __awaiter(this, void 0, void 0, function* () {
             let events = yield this.fechEvent({
                 kinds: [0],
                 authors: [pubkey],
                 limit: 1
             });
-            if (events.length <= 0)
-                return null;
-            return events[0];
+            if (events.length > 0)
+                return events[0];
+            return null;
         });
     }
 }

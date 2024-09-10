@@ -16,6 +16,12 @@ export const getPubkeys = (event: Event): string[] => {
     return pubkeys.filter((f: string) => f != null)
 }
 
+export const distinctEvent = (events: Event[]) => {
+    return events.filter((event, index, self) => {
+        return index == self.findIndex(x => x.pubkey == event.pubkey)
+    })
+}
+
 
 
 
