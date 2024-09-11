@@ -9,13 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const up_1 = require("./src/service/up");
+const RelayPool_1 = require("./src/modules/RelayPool");
+const Relays_1 = require("./src/constants/Relays");
+const pubkeys_1 = require("./src/service/pubkeys");
+const users_1 = require("./src/service/users");
 const author = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27";
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    //const relayPool = new RelayPool(relays)
-    //await relayPool.connect();
-    //await listPubkeys(relayPool, author, 5000) 
-    //await listUsers(relayPool)
-    (0, up_1.loadData)();
+    const relayPool = new RelayPool_1.RelayPool(Relays_1.relays);
+    yield relayPool.connect();
+    yield (0, pubkeys_1.listPubkeys)(relayPool, author, 100000);
+    yield (0, users_1.listUsers)(relayPool);
+    //loadData()
 });
 main();

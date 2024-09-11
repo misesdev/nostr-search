@@ -4,8 +4,6 @@ import { getPubkeys } from "../utils";
 
 export const listPubkeys = async (pool: RelayPool, author: string, userCount: number) => {
     
-    const file = new FileSystem("pubkeys.db")
-
     const events = await pool.fechEvents({
         authors: [author],
         kinds: [3],
@@ -15,7 +13,8 @@ export const listPubkeys = async (pool: RelayPool, author: string, userCount: nu
     if(events.length) {
         const pubkeys: string[] = getPubkeys(events[0])
 
-        let skipe = 50;
+        let skipe = pubkeys.length
+
         for(let i = 0; pubkeys.length < userCount; i += skipe) {
             let authors = pubkeys.slice(i, i + skipe)
             
@@ -34,6 +33,8 @@ export const listPubkeys = async (pool: RelayPool, author: string, userCount: nu
                 })
             })
         }
+
+        const file = new FileSystem("pubkeys.db")
 
         pubkeys.forEach(pubkey => file.writeLine(pubkey))
 

@@ -5,19 +5,20 @@ export const listUsers = async (pool: RelayPool) => {
     
     const pubkeys: string[] = []
 
-    const filePubkeys = new FileSystem("pubkeys.db");
     const fileUsers = new FileSystem("users.db");
+    const filePubkeys = new FileSystem("pubkeys.db");
 
     await filePubkeys.readLines(line => pubkeys.push(line))
 
-    let skipe = 100
-    for (let i = 0; i < pubkeys.length; i += skipe) {
+    let skipe = 200
+    for (let i = 0; i <= pubkeys.length; i += skipe) 
+    {
         let authors = pubkeys.slice(i, i + skipe)
 
         let events = await pool.fechEvents({
             authors: authors,
-            kinds:[0],
-            limit: skipe
+            limit: skipe,
+            kinds: [0]
         })
 
         console.log("events:", events.length);
@@ -31,4 +32,5 @@ export const listUsers = async (pool: RelayPool) => {
         });
     }
 
+    console.log("found users:", pubkeys.length)
 }

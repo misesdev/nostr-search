@@ -6,7 +6,7 @@ export class RelayPool {
 
     private relays: string[];
     public websockets: WebSocket[];
-    public timeout: number = 1500;
+    public timeout: number = 1000;
     private subscription: string = "3da9794398579582309458d6f1498";
 
     constructor(relays: string[]) {
@@ -86,7 +86,7 @@ export class RelayPool {
 
     public async fechEvents(filter: Filter): Promise<Event[]> 
     {
-        let eventPromises = this.websockets.map(websocket => { 
+        let eventPromises = this.websockets.map(async (websocket) => { 
             return this.fetchEventRelay(websocket, filter).catch((error:string) => {
                 console.log(error)
                 return [];

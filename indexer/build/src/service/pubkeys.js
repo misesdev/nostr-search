@@ -13,7 +13,6 @@ exports.listPubkeys = void 0;
 const disk_1 = require("../filesytem/disk");
 const utils_1 = require("../utils");
 const listPubkeys = (pool, author, userCount) => __awaiter(void 0, void 0, void 0, function* () {
-    const file = new disk_1.FileSystem("pubkeys.db");
     const events = yield pool.fechEvents({
         authors: [author],
         kinds: [3],
@@ -21,7 +20,7 @@ const listPubkeys = (pool, author, userCount) => __awaiter(void 0, void 0, void 
     });
     if (events.length) {
         const pubkeys = (0, utils_1.getPubkeys)(events[0]);
-        let skipe = 50;
+        let skipe = pubkeys.length;
         for (let i = 0; pubkeys.length < userCount; i += skipe) {
             let authors = pubkeys.slice(i, i + skipe);
             let events = yield pool.fechEvents({
@@ -38,6 +37,7 @@ const listPubkeys = (pool, author, userCount) => __awaiter(void 0, void 0, void 
                 });
             });
         }
+        const file = new disk_1.FileSystem("pubkeys.db");
         pubkeys.forEach(pubkey => file.writeLine(pubkey));
         console.log("users:", pubkeys.length);
     }

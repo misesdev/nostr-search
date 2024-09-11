@@ -13,26 +13,29 @@ exports.listUsers = void 0;
 const disk_1 = require("../filesytem/disk");
 const listUsers = (pool) => __awaiter(void 0, void 0, void 0, function* () {
     const pubkeys = [];
-    const filePubkeys = new disk_1.FileSystem("pubkeys.db");
     const fileUsers = new disk_1.FileSystem("users.db");
+    const filePubkeys = new disk_1.FileSystem("pubkeys.db");
     yield filePubkeys.readLines(line => pubkeys.push(line));
-    let skipe = 100;
-    for (let i = 0; i < pubkeys.length; i += skipe) {
+    let skipe = 200;
+    for (let i = 0; i <= pubkeys.length; i += skipe) {
         let authors = pubkeys.slice(i, i + skipe);
         let events = yield pool.fechEvents({
             authors: authors,
             kinds: [0],
             limit: skipe
         });
-        console.log("events:", events.length);
-        events.forEach(event => {
-            try {
-                let user = JSON.parse(event.content);
-                user["pubkey"] = event.pubkey;
-                fileUsers.writeLine(JSON.stringify(user));
-            }
-            catch (_a) { }
-        });
+        if (events) {
+            console.log("events:", events.length);
+            events.forEach(event => {
+                try {
+                    let user = JSON.parse(event.content);
+                    user["pubkey"] = event.pubkey;
+                    fileUsers.writeLine(JSON.stringify(user));
+                }
+                catch (_a) { }
+            });
+        }
     }
+    console.log("found users:", pubkeys.length);
 });
 exports.listUsers = listUsers;

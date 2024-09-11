@@ -14,7 +14,7 @@ const ws_1 = require("ws");
 const utils_1 = require("../utils");
 class RelayPool {
     constructor(relays) {
-        this.timeout = 1500;
+        this.timeout = 1000;
         this.subscription = "3da9794398579582309458d6f1498";
         if (relays.length < 1)
             throw Error("expected relays");
@@ -80,12 +80,12 @@ class RelayPool {
     }
     fechEvents(filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            let eventPromises = this.websockets.map(websocket => {
+            let eventPromises = this.websockets.map((websocket) => __awaiter(this, void 0, void 0, function* () {
                 return this.fetchEventRelay(websocket, filter).catch((error) => {
                     console.log(error);
                     return [];
                 });
-            });
+            }));
             let allEvents = yield Promise.all(eventPromises);
             let events = allEvents.flat();
             return (0, utils_1.distinctEvent)(events);
