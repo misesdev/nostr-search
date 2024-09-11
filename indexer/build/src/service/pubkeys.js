@@ -20,16 +20,14 @@ const listPubkeys = (pool, author, userCount) => __awaiter(void 0, void 0, void 
     });
     if (events.length) {
         const pubkeys = (0, utils_1.getPubkeys)(events[0]);
-        let skipe = pubkeys.length, nofound = 0;
-        for (let i = 0; nofound < 10; i += skipe) {
+        let skipe = pubkeys.length;
+        for (let i = 0; i < pubkeys.length; i += skipe) {
             let authors = pubkeys.slice(i, i + skipe);
             let events = yield pool.fechEvents({
                 authors: authors,
                 kinds: [3],
                 limit: skipe
             });
-            if (!events.length)
-                nofound++;
             events.forEach(event => {
                 let npubs = (0, utils_1.getPubkeys)(event);
                 console.log("npubs", npubs.length);

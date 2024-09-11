@@ -2,7 +2,7 @@ import { FileSystem } from "../filesytem/disk";
 import { RelayPool } from "../modules/RelayPool";
 import { getPubkeys } from "../utils";
 
-export const listPubkeys = async (pool: RelayPool, author: string, userCount: number) => {
+export const listPubkeys = async (pool: RelayPool, author: string) => {
     
     const events = await pool.fechEvents({
         authors: [author],
@@ -13,9 +13,9 @@ export const listPubkeys = async (pool: RelayPool, author: string, userCount: nu
     if(events.length) {
         const pubkeys: string[] = getPubkeys(events[0])
 
-        let skipe = pubkeys.length, nofound = 0
-
-        for(let i = 0; nofound < 10; i += skipe) {
+        let skipe = pubkeys.length
+        for(let i = 0; i < pubkeys.length; i += skipe) 
+        {
             let authors = pubkeys.slice(i, i + skipe)
             
             let events = await pool.fechEvents({
@@ -24,8 +24,6 @@ export const listPubkeys = async (pool: RelayPool, author: string, userCount: nu
                 limit: skipe
             })
 
-            if(!events.length) nofound++; 
-            
             events.forEach(event => {
                 let npubs = getPubkeys(event)
                 console.log("npubs", npubs.length)

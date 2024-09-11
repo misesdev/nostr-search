@@ -12,7 +12,7 @@ const main = async () => {
 
     await relayPool.connect();
 
-    await listPubkeys(relayPool, author, 1000000) 
+    await listPubkeys(relayPool, author) 
 
     await listUsers(relayPool)
 
