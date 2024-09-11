@@ -6,8 +6,8 @@ export class RelayPool {
 
     private relays: string[];
     public websockets: WebSocket[];
-    public timeout: number = 500;
-    private subscription: string = "3da979448d9ba263864c4d6f14984c42";
+    public timeout: number = 1500;
+    private subscription: string = "3da9794398579582309458d6f1498";
 
     constructor(relays: string[]) {
         if(relays.length < 1)
@@ -24,12 +24,18 @@ export class RelayPool {
             websock.on("open", () => resolve(websock));
             websock.on("close", () => reject(`not connetd: ${relay}`))
             websock.on("error", () => reject(`not connetd: ${relay}`))
+
+            setTimeout(() => {
+                //websock.removeAllListeners("open");
+                resolve(null)
+            }, this.timeout)
         });
     }
 
     public async connect() 
     {
         console.log("connecting")
+
         let websockets = this.relays.map(relay => this.connectRelay(relay).catch(error => {
             console.log(error)
             return null;
@@ -78,7 +84,7 @@ export class RelayPool {
         });
     }
 
-    public async fechEvent(filter: Filter): Promise<Event[]> 
+    public async fechEvents(filter: Filter): Promise<Event[]> 
     {
         let eventPromises = this.websockets.map(websocket => { 
             return this.fetchEventRelay(websocket, filter).catch((error:string) => {
@@ -96,7 +102,7 @@ export class RelayPool {
 
     public async fechUser(pubkey: string): Promise<Event> 
     {
-        let events = await this.fechEvent({
+        let events = await this.fechEvents({
             kinds: [0],
             authors: [pubkey],
             limit: 1

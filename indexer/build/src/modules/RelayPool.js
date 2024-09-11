@@ -14,8 +14,8 @@ const ws_1 = require("ws");
 const utils_1 = require("../utils");
 class RelayPool {
     constructor(relays) {
-        this.timeout = 500;
-        this.subscription = "3da979448d9ba263864c4d6f14984c42";
+        this.timeout = 1500;
+        this.subscription = "3da9794398579582309458d6f1498";
         if (relays.length < 1)
             throw Error("expected relays");
         this.relays = relays;
@@ -28,6 +28,10 @@ class RelayPool {
                 websock.on("open", () => resolve(websock));
                 websock.on("close", () => reject(`not connetd: ${relay}`));
                 websock.on("error", () => reject(`not connetd: ${relay}`));
+                setTimeout(() => {
+                    //websock.removeAllListeners("open");
+                    resolve(null);
+                }, this.timeout);
             });
         });
     }
@@ -74,7 +78,7 @@ class RelayPool {
             });
         });
     }
-    fechEvent(filter) {
+    fechEvents(filter) {
         return __awaiter(this, void 0, void 0, function* () {
             let eventPromises = this.websockets.map(websocket => {
                 return this.fetchEventRelay(websocket, filter).catch((error) => {
@@ -89,7 +93,7 @@ class RelayPool {
     }
     fechUser(pubkey) {
         return __awaiter(this, void 0, void 0, function* () {
-            let events = yield this.fechEvent({
+            let events = yield this.fechEvents({
                 kinds: [0],
                 authors: [pubkey],
                 limit: 1
