@@ -21,20 +21,18 @@ const listUsers = (pool) => __awaiter(void 0, void 0, void 0, function* () {
         let authors = pubkeys.slice(i, i + skipe);
         let events = yield pool.fechEvents({
             authors: authors,
-            kinds: [0],
-            limit: skipe
+            limit: skipe,
+            kinds: [0]
         });
-        if (events) {
-            console.log("events:", events.length);
-            events.forEach(event => {
-                try {
-                    let user = JSON.parse(event.content);
-                    user["pubkey"] = event.pubkey;
-                    fileUsers.writeLine(JSON.stringify(user));
-                }
-                catch (_a) { }
-            });
-        }
+        console.log("events:", events.length);
+        events.forEach(event => {
+            try {
+                let user = JSON.parse(event.content);
+                user["pubkey"] = event.pubkey;
+                fileUsers.writeLine(JSON.stringify(user));
+            }
+            catch (_a) { }
+        });
     }
     console.log("found users:", pubkeys.length);
 });

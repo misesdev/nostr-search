@@ -3,6 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.distinctEvent = exports.getPubkeys = void 0;
 const getPubkeys = (event) => {
     let pubkeys = event.tags.map((tag) => {
+        // if not have a value
+        if (!!!tag[1])
+            return null;
+        // if not have a pubkey value
         if (tag[1].length < 64)
             return null;
         if (tag[1].includes(":")) {

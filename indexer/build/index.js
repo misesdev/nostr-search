@@ -17,7 +17,7 @@ const author = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const relayPool = new RelayPool_1.RelayPool(Relays_1.relays);
     yield relayPool.connect();
-    yield (0, pubkeys_1.listPubkeys)(relayPool, author, 100000);
+    yield (0, pubkeys_1.listPubkeys)(relayPool, author, 1000000);
     yield (0, users_1.listUsers)(relayPool);
     //loadData()
 });

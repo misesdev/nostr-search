@@ -13,9 +13,9 @@ export const listPubkeys = async (pool: RelayPool, author: string, userCount: nu
     if(events.length) {
         const pubkeys: string[] = getPubkeys(events[0])
 
-        let skipe = pubkeys.length
+        let skipe = pubkeys.length, nofound = 0
 
-        for(let i = 0; pubkeys.length < userCount; i += skipe) {
+        for(let i = 0; nofound < 10; i += skipe) {
             let authors = pubkeys.slice(i, i + skipe)
             
             let events = await pool.fechEvents({
@@ -23,6 +23,8 @@ export const listPubkeys = async (pool: RelayPool, author: string, userCount: nu
                 kinds: [3],
                 limit: skipe
             })
+
+            if(!events.length) nofound++; 
             
             events.forEach(event => {
                 let npubs = getPubkeys(event)
