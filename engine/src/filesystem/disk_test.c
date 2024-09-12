@@ -9,31 +9,31 @@
 
 int main() 
 {
-    char pubkey[3][65] = {
-        "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27",
-        "3da979448d9ba263864c4d6f14984c423a3838364ec255f03c7904b1ae77f206",
-        "bf2376e17ba4ec269d10fcc996a4746b451152be9031fa48e74553dde5526bce"
-    };
+    // char pubkey[3][65] = {
+    //     "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27",
+    //     "3da979448d9ba263864c4d6f14984c423a3838364ec255f03c7904b1ae77f206",
+    //     "bf2376e17ba4ec269d10fcc996a4746b451152be9031fa48e74553dde5526bce"
+    // };
 
-    struct TrieNode *root = createTrieNode(0); 
+    // struct TrieNode *root = createTrieNode(0); 
 
-    struct TrieNode *mises = insertTrieNode(root, createUser("Mises Dev", "", pubkey[0]));
-    struct TrieNode *alex = insertTrieNode(root, createUser("Alexandre de Morais", "", pubkey[1]));
-    struct TrieNode *hitler = insertTrieNode(root, createUser("Adouf Hitler", "", pubkey[2]));
+    // struct TrieNode *mises = insertTrieNode(root, createUser("Mises Dev", "", pubkey[0]));
+    // struct TrieNode *alex = insertTrieNode(root, createUser("Alexandre de Morais", "", pubkey[1]));
+    // struct TrieNode *hitler = insertTrieNode(root, createUser("Adouf Hitler", "", pubkey[2]));
 
-    // Mises Dev friends
-    insertFriend(mises->user, alex->user);
-    insertFriend(mises->user, hitler->user);
+    // // Mises Dev friends
+    // insertFriend(mises->user, alex->user);
+    // insertFriend(mises->user, hitler->user);
 
-    // Alexandre de Morais friends
-    insertFriend(alex->user, hitler->user);
+    // // Alexandre de Morais friends
+    // insertFriend(alex->user, hitler->user);
 
-    // Hitler friends
-    insertFriend(hitler->user, alex->user);
+    // // Hitler friends
+    // insertFriend(hitler->user, alex->user);
 
-    if(!loadTrieInDisk(root)) return -1;
+    // if(!loadTrieInDisk(root)) return -1;
 
-    showUsersOfTrie(root);
+    // showUsersOfTrie(root);
 
     // destroyTrieNode(root);
 

@@ -4,7 +4,6 @@
 #include <string.h>
 #include "../types/types.c"
 #include "../types/user_trie.c"
-#include "../types/friend_list.c"
 #include "../types/user_list.c"
 #include "../utils/user_utils.c"
 
@@ -50,42 +49,36 @@ void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
     fread(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
     *offset += ADDRESS_LENGTH;
 
-    for (int i = 0; i < ADDRESS_LENGTH; i++)
-        printf("%d ", address[i]);
-    printf("\n");
-
     struct TrieNode *userNode = getTrieNode(root, address);
 
-    if(userNode->user) 
+    if(userNode) 
     {
-        // long friendscount;
-        // fseek(file, *offset, SEEK_SET);
-        // fread(&friendscount, sizeof(long), 1, file);
-        // *offset += sizeof(long);
+        long friendsCount;
+        fseek(file, *offset, SEEK_SET);
+        fread(&friendsCount, sizeof(long), 1, file);
+        *offset += sizeof(long);
 
-        // for(long i = 0; i < friendscount; i++) 
-        // {
-        //     fseek(file, *offset, SEEK_SET);
-        //     fread(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
-        //     *offset += ADDRESS_LENGTH;
+        for(long i = 0; i < friendsCount; i++) 
+        {
+            fseek(file, *offset, SEEK_SET);
+            fread(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
+            *offset += ADDRESS_LENGTH;
 
-        //     struct TrieNode *friendNode = getTrieNode(root, address);
-        //     
-        //     if(friendNode->user) {
-        //         insertFriend(userNode->user, friendNode->user);
-        //     }
-        // }
+            struct TrieNode *friendNode = getTrieNode(root, address);
+            
+            if(friendNode->user) {
+                insertFriend(userNode->user, friendNode->user);
+            }
+        }
     }
 }
 
 void loadFriendsFromDisk(FILE *file, struct TrieNode *root)
 {
-    long offset = 0;
-    long usersCount;
+    long usersCount, offset = 0;
     fseek(file, offset, SEEK_SET);
     fread(&usersCount, sizeof(long), 1, file);
     offset += sizeof(long);
-    printf("users: %ld\n", usersCount);
 
     for(long i = 0; i < usersCount; i++) {
         loadFriendOnTree(file, root, &offset);

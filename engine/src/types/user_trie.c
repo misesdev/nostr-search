@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include "./types.c"
-#include "./trie_node_list.c"
+#include "./user_trie_list.c"
 #include "../utils/utils.c"
 
 struct TrieNode* createTrieNode(uint8_t key) {
@@ -24,17 +24,13 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
     compressPubkey(user->pubkey, key);
     struct TrieNode *current = root;
 
-    for (int i = 0; i < ADDRESS_LENGTH; i++)
-        printf("%d ", key[i]);
-    printf("\n");
-
-    while(*key)
+    for(uint8_t i = 0; i < ADDRESS_LENGTH; i++)
     {     
         struct TrieNode *nextNode = NULL;
         struct TrieList *list = current->childrens;
 
         while(list) {
-            if(list->node->key == *key) {
+            if(list->node->key == key[i]) {
                 nextNode = list->node;
                 break;
             }
@@ -42,14 +38,13 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
         }
 
         if(nextNode == NULL) {
-            nextNode = createTrieNode(*key);
+            nextNode = createTrieNode(key[i]);
             struct TrieList *newChildren = createNode(nextNode);
             newChildren->next = current->childrens;
             current->childrens = newChildren;
         }
         
         current = nextNode;
-        *key += 1;
     }
 
     current->isEndOfKey = true;
@@ -118,14 +113,14 @@ struct TrieNode* getTrieNode(struct TrieNode *root, uint8_t *key)
 {
     struct TrieNode* current = root;
    
-    while(*key) 
+    for(uint8_t i = 0; i < ADDRESS_LENGTH; i++) 
     {
         struct TrieNode *nextNode = NULL;
         struct TrieList *list = current->childrens;
 
         while(list) 
         {
-            if(list->node->key == *key) {
+            if(list->node->key == key[i]) {
                 nextNode = list->node;
                 break;
             }
@@ -134,8 +129,7 @@ struct TrieNode* getTrieNode(struct TrieNode *root, uint8_t *key)
 
         if(!nextNode) return NULL;
                 
-        current = nextNode;
-        key++;
+        current = nextNode;   
     }
 
     if(current->isEndOfKey) 

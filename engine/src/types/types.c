@@ -1,7 +1,7 @@
 #ifndef TYPES_C
 #define TYPES_C
 
-#define TRIE_CHILDREN_LENGTH 160
+#define TRIE_CHILDREN_LENGTH 255
 #define ADDRESS_LENGTH 16
 
 #include <stdbool.h>
@@ -30,16 +30,6 @@ struct TrieList {
     struct TrieNode *node;
     struct TrieList *next;
 };
-
-struct FriendNode {
-    uint8_t user[ADDRESS_LENGTH];
-    struct FriendNode *next;
-};
-
-typedef struct {
-    uint8_t user[ADDRESS_LENGTH];
-    struct FriendNode *friends;
-} FriendList;
 
 typedef struct {
     char pubkey[65];

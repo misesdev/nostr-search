@@ -7,6 +7,7 @@
 #include <string.h>
 #include "../types/types.c" 
 #include "../types/user_list.c"
+#include "utils.c"
 
 User* createUser(char *name, char *profile, char *pubkey)
 {
@@ -46,6 +47,8 @@ void showUsersOfTrie(struct TrieNode *root)
     }
 
     if(root->isEndOfKey) {
+        uint8_t address[ADDRESS_LENGTH];
+        compressPubkey(root->user->pubkey, address);
         printf("username: %s\n", root->user->name);
         printf("    pubkey: %s\n", root->user->pubkey);
         struct UserNode *friends = root->user->friends;
