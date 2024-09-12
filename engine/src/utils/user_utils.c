@@ -1,6 +1,8 @@
 #ifndef USER_UTILS_C
 #define USER_UTILS_C
 
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../types/types.c" 
@@ -33,6 +35,27 @@ void insertFriend(User *user, User *friend)
         current = current->next;
     }
 }
+
+void showUsersOfTrie(struct TrieNode *root)
+{
+    struct TrieList *list = root->childrens;
+
+    while(list) {
+        showUsersOfTrie(list->node);
+        list = list->next;
+    }
+
+    if(root->isEndOfKey) {
+        printf("username: %s\n", root->user->name);
+        printf("    pubkey: %s\n", root->user->pubkey);
+        struct UserNode *friends = root->user->friends;
+        while(friends) {
+            printf("    friend: %s\n", friends->user->name);
+            friends = friends->next;
+        }
+    }
+}
+//void compressPubkey(char *pubkey, uint8_t *address)
 
 #endif  
 

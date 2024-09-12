@@ -2,6 +2,7 @@
 #define USERS_TRIE_C
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
 #include "./types.c"
@@ -21,8 +22,11 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
 {
     uint8_t key[ADDRESS_LENGTH];
     compressPubkey(user->pubkey, key);
-
     struct TrieNode *current = root;
+
+    for (int i = 0; i < ADDRESS_LENGTH; i++)
+        printf("%d ", key[i]);
+    printf("\n");
 
     while(*key)
     {     
@@ -128,7 +132,7 @@ struct TrieNode* getTrieNode(struct TrieNode *root, uint8_t *key)
             list = list->next;
         }
 
-        if(nextNode == NULL) return NULL;
+        if(!nextNode) return NULL;
                 
         current = nextNode;
         key++;

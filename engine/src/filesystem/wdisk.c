@@ -46,7 +46,6 @@ void serialiseUsersFromTrie(struct TrieNode *root, struct UserNode *rootUsers, l
 
     if(root->isEndOfKey) {
         insertUserNode(rootUsers, root->user);
-        printf("user: %s\n", root->user->name);
         *userCount += 1;
     }
 }
@@ -56,7 +55,7 @@ void loadFriendsFromUser(FILE *file, User *user, long *offset)
     uint8_t address[ADDRESS_LENGTH];
     compressPubkey(user->pubkey, address);
     long friendsCount = getFriendsCount(user->friends);
-
+    
     // write user address in tree
     fseek(file, *offset, SEEK_SET);    
     fwrite(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
@@ -69,13 +68,14 @@ void loadFriendsFromUser(FILE *file, User *user, long *offset)
 
     struct UserNode *current = user->friends;
     while (current) {
-        // if(current->user) 
-        // {
+        if(current->user) 
+        {
             fseek(file, *offset, SEEK_SET);
-            compressPubkey(current->user->pubkey, address);
-            fwrite(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
+            uint8_t user[ADDRESS_LENGTH];
+            compressPubkey(current->user->pubkey, user);
+            fwrite(&user, sizeof(uint8_t), ADDRESS_LENGTH, file);
             *offset += ADDRESS_LENGTH;
-        // }
+        }
         current = current->next;
     }
 }
@@ -91,9 +91,9 @@ void loadFriendsOnDisk(FILE *file, struct UserNode *rootUsers, long userCount)
     // save users list friends -> (address in the tree)
     struct UserNode *current = rootUsers;
     while (current) {
-        if(current->user) {
+        if(current->user) 
             loadFriendsFromUser(file, current->user, &offset);
-        }
+
         current = current->next;
     }
 }

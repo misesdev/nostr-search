@@ -78,10 +78,10 @@ float textSimilarity(char *origin, char *compare)
 
 void compressPubkey(char *pubkey, uint8_t *address)
 {
-    uint8_t index = 0;
+    int index = 0;
     uint8_t *numbers = hexToBytes(pubkey);
 
-    for(uint8_t i = 0; i < 32; i += 2) {
+    for(int i = 0; i < 30; i += 2) {
         address[index] = (numbers[i] * numbers[i+1]) % TRIE_CHILDREN_LENGTH;
         index++;
     }

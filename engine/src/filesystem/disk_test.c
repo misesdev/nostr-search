@@ -7,25 +7,6 @@
 #include "../filesystem/wdisk.c"
 #include "../filesystem/rdisk.c"
 
-void showUsersOfTrie(struct TrieNode *root)
-{
-    struct TrieList *list = root->childrens;
-
-    while(list) {
-        showUsersOfTrie(list->node);
-        list = list->next;
-    }
-
-    if(root->isEndOfKey) {
-        printf("username: %s\n", root->user->name);
-        struct UserNode *friends = root->user->friends;
-        while(friends) {
-            printf("    friend: %s\n", friends->user->name);
-            friends = friends->next;
-        }
-    }
-}
-
 int main() 
 {
     char pubkey[3][65] = {
@@ -36,19 +17,19 @@ int main()
 
     struct TrieNode *root = createTrieNode(0); 
 
-    struct TrieNode *mises = insertTrieNode(root, createUser("Mises Dev", pubkey[0], ""));
-    struct TrieNode *alex = insertTrieNode(root, createUser("Alexandre de Morais", pubkey[1], ""));
-    //struct TrieNode *hitler = insertTrieNode(root, createUser("Adouf Hitler", pubkey[2], ""));
+    struct TrieNode *mises = insertTrieNode(root, createUser("Mises Dev", "", pubkey[0]));
+    struct TrieNode *alex = insertTrieNode(root, createUser("Alexandre de Morais", "", pubkey[1]));
+    struct TrieNode *hitler = insertTrieNode(root, createUser("Adouf Hitler", "", pubkey[2]));
 
     // Mises Dev friends
-    //insertFriend(mises->user, alex->user);
-    //insertFriend(mises->user, hitler->user);
+    insertFriend(mises->user, alex->user);
+    insertFriend(mises->user, hitler->user);
 
     // Alexandre de Morais friends
-    // insertFriend(alex->user, hitler->user);
+    insertFriend(alex->user, hitler->user);
 
     // Hitler friends
-    // insertFriend(hitler->user, alex->user);
+    insertFriend(hitler->user, alex->user);
 
     if(!loadTrieInDisk(root)) return -1;
 
@@ -56,14 +37,14 @@ int main()
 
     // destroyTrieNode(root);
 
-    // struct TrieNode *t_root = loadTrieFromDisk();
+    struct TrieNode *t_root = loadTrieFromDisk();
 
-    // if(!t_root) {
-    //     printf("Error when trying to load the disk tree");
-    //     return -1;
-    // }
+    if(!t_root) {
+        printf("Error when trying to load the disk tree");
+        return -1;
+    }
 
-    // showUsersOfTrie(t_root);
+    showUsersOfTrie(t_root);
     
     return 0;
 }
