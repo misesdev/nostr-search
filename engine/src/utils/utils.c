@@ -49,26 +49,6 @@ int parseInt(char *decimal)
     return result;
 }
 
-float stringSimilarity(char origin[], char compare[])
-{
-    // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
-    uint8_t intersection = 0;
-    float sizePairs = strlen(origin) + strlen(compare);
-
-    for (uint8_t i = 0; origin[i] != '\0'; i++) { 
-        for(uint8_t c = 0; compare[c] != '\0'; c++) {
-            if(toupper(origin[i]) == toupper(compare[c])
-                && toupper(origin[i+1]) == toupper(compare[c+1])) {
-                intersection++;
-            }
-        }
-    }
-
-    float similarity = (2 * intersection) / sizePairs;
-
-    return similarity;
-}
-
 float textSimilarity(char *origin, char *compare)
 {
     // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
@@ -96,7 +76,7 @@ float textSimilarity(char *origin, char *compare)
     return (2 * intersection) / sizePairs;
 }
 
-uint8_t* compressPubkey(char *pubkey, uint8_t *address)
+void compressPubkey(char *pubkey, uint8_t *address)
 {
     uint8_t index = 0;
     uint8_t *numbers = hexToBytes(pubkey);
@@ -106,8 +86,6 @@ uint8_t* compressPubkey(char *pubkey, uint8_t *address)
         index++;
     }
     free(numbers);
-
-    return address;
 }
 
 char* strconcat(char *str1, char *str2)
