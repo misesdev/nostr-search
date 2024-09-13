@@ -1,32 +1,42 @@
 #ifndef HTTP_UTILS_C
 #define HTTP_UTILS_C
 
+#define HTTP_STATUS_OK 200
+#define HTTP_STATUS_BAD_REQUEST 400
+#define HTTP_STATUS_FORBIDDEN 403
+#define HTTP_STATUS_NOT_FOUND 404
+#define HTTP_STATUS_UNAUTHORIZED 401
+#define HTTP_STATUS_INTERNAL_ERROR 500
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "./utils.c"
 #include "../types/types.c"
 
-Search* requestParams(char *request) 
+
+bool isPostRequest(char *request)
 {
+    return (strncmp(request, "POST ", 5) == 0);
+}
+
+char* requestParams(char *request, char *error) 
+{
+    if(!isPostRequest(request))
+    {
+        strcpy(error, "Expected POST request with Content-Type: application/json");
+        return NULL;
+    }
+
     char *start = NULL;
-    Search *search = malloc(sizeof(Search));
+    char *json_result = malloc(1024 * sizeof(char));
 
-    // Extract  data for GET
-    if((start = strstr(request, "GET /?")) != NULL) {
-        sscanf(start, "GET /?pubkey=%[^&]&search=%s", search->pubkey, search->search);
-    } 
-    // Extract data for POST
-    else if ((start = strstr(request, "\r\n\r\n")) != NULL) {
-        start += 4; // skip the "\r\n\r\n"
-        sscanf(start, "pubkey=%[^&]&search=%s", search->pubkey, search->search);
-    } 
-    else return NULL;
-
-    if(strlen(search->pubkey) < 64) return NULL;
-    if(strlen(search->search) < 5) return NULL;
-
-    return search; 
+    if ((start = strstr(request, "\r\n\r\n")) != NULL) {
+        start += 4;
+        sscanf(start, "%s", json_result);
+    }
+        
+    return json_result; 
 }
 
 char* jsonResult(struct UserNode *root)
@@ -68,19 +78,42 @@ char* jsonResult(struct UserNode *root)
     return response; 
 }
 
-char* httpResponse(char *json_result)
+char * getStatusCode(int status) 
 {
-    char *response = malloc(1024 * sizeof(char));
+    switch(status) {
+        case HTTP_STATUS_OK:
+            return "200 OK";
+        case HTTP_STATUS_UNAUTHORIZED:
+            return "401 Unauthorized";
+        case HTTP_STATUS_FORBIDDEN: 
+            return "403 Forbidden"; 
+        case HTTP_STATUS_NOT_FOUND:
+            return "404 Not Found";
+        case HTTP_STATUS_BAD_REQUEST:
+            return "400 Bad Request";
+        case HTTP_STATUS_INTERNAL_ERROR:
+            return "500 Internal Server Error";
+    }
+
+    return "500 Internal Server Error";
+}
+
+char* httpResponse(HttpResponse *json_result)
+{
+    char *response = malloc(MAX_RESPONSE_LENGTH * sizeof(char));
+
+    char *statusResponse = getStatusCode(json_result->StatusCode);
     
-    snprintf(response, 2048,
-        "HTTP/1.1 200 OK\r\n"
+    snprintf(response, MAX_RESPONSE_LENGTH * 2,
+        "HTTP/1.1 %s\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: %zu\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "\r\n"
         "%s",
-        strlen(json_result), 
-        json_result
+        statusResponse,
+        strlen(json_result->Content), 
+        json_result->Content
     );
 
     return response;

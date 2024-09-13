@@ -5,8 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include "./http_utils.c"
 #include "../types/types.c" 
 #include "../types/user_list.c"
+#include "cjson/cJSON.h"
 #include "utils.c"
 
 User* createUser(char *name, char *profile, char *pubkey)
@@ -58,7 +61,97 @@ void showUsersOfTrie(struct TrieNode *root)
         }
     }
 }
-//void compressPubkey(char *pubkey, uint8_t *address)
+
+User* jsonToUser(char *jsonString, char *error) 
+{
+    User *user = malloc(sizeof(User));
+    cJSON *json = cJSON_Parse(jsonString);
+
+    if(!json) {
+        strcpy(error, "Error when parsing json");
+        return NULL;
+    }
+
+    cJSON *name = cJSON_GetObjectItemCaseSensitive(json, "name");
+    cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(json, "pubkey");
+    cJSON *profile = cJSON_GetObjectItemCaseSensitive(json, "profile");
+
+    if(name->valuestring && pubkey->valuestring && profile->valuestring) 
+    {
+        strcpy(user->name, name->valuestring);
+        strcpy(user->pubkey, pubkey->valuestring);
+        strcpy(user->profile, profile->valuestring);
+        
+        // ensures that the string ends with null
+        user->name[strlen(user->name) - 1] = '\0';
+        user->pubkey[strlen(user->pubkey) - 1] = '\0';
+        user->profile[strlen(user->profile) - 1] = '\0';
+    } 
+    else 
+    {
+        strcpy(error, "Error invalid json, expected properties 'name', 'pubkey' and 'profile'");
+        return NULL;
+    }
+
+    return user;
+}
+
+cJSON* userToCJSON(User *user)
+{
+    cJSON *userJson = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(userJson, "name", user->name);
+    cJSON_AddStringToObject(userJson, "pubkey", user->pubkey);
+    cJSON_AddStringToObject(userJson, "profile", user->profile);
+
+    return userJson;
+}
+
+char* userToJson(User *user)
+{
+    cJSON *userJson = userToCJSON(user);
+
+    char *jsonResult = cJSON_Print(userJson);
+
+    cJSON_Delete(userJson);
+
+    return jsonResult;
+}
+
+char* userListToJson(struct UserNode *root)
+{
+    cJSON *jsonList = cJSON_CreateArray();
+
+    struct UserNode *current = root;
+    while(current) {
+        if(current->user) {
+            cJSON_AddItemToArray(jsonList, userToCJSON(current->user));
+        }
+        current = current->next;
+    }
+
+    char *jsonResult = cJSON_Print(jsonList);
+
+    cJSON_Delete(jsonList);
+    
+    return jsonResult;
+}
+                 
+User* getUserFromRequest(char *request, char *error) 
+{
+    char *json_params = requestParams(request, error);
+    
+    if(!json_params) return NULL;
+        
+    User *user = jsonToUser(json_params, error);
+
+    if(!user) return NULL;
+
+    free(json_params);
+
+    return user;
+}
+
 
 #endif  
 

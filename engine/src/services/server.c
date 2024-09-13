@@ -10,7 +10,7 @@
 #include <pthread.h> // Para threads
 #include <sys/types.h>
 #include <sys/sysinfo.h> // Para verificar a memória usada
-#include "./utils/http_utils.c"
+#include "../utils/http_utils.c"
 
 #define PORT 8080
 #define SIZE_BUFFER 1024
@@ -19,7 +19,8 @@
 typedef struct {
     int socket;
     struct sockaddr_in address;
-    char* (* executeRequest)(char *);
+    HttpResponse* (* executeRequest)(char *, struct TrieNode *);
+    struct TrieNode *root;
 } client_info;
 
 // Função para processar cada conexão de cliente em uma thread separada
@@ -32,13 +33,14 @@ void* handle_client(void* arg) {
     if (bytes_read > 0) {
         logRequest(buffer);
                 
-        char *json_response = client->executeRequest(buffer);
+        HttpResponse *response = client->executeRequest(buffer, client->root);
 
-        char *http_response = httpResponse(json_response);
+        char *http_response = httpResponse(response);
 
         send(client->socket, http_response, strlen(http_response), 0);
 
         free(http_response);
+        free(response);
     }
 
     close(client->socket);
@@ -47,7 +49,8 @@ void* handle_client(void* arg) {
 }
 
 // Função principal do servidor
-void serverUp(char *(* executeRequest)(char*)) {
+void serverUp(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct TrieNode *root) 
+{
     int socket_server;
     struct sockaddr_in address;
     int size_address = sizeof(address);
@@ -91,6 +94,7 @@ void serverUp(char *(* executeRequest)(char*)) {
         }
 
         client->executeRequest = executeRequest;
+        client->root = root;
 
         // Cria uma nova thread para cada cliente
         pthread_t thread_id;

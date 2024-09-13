@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gcc ./main.c -o ./build/search.bin &&
+gcc ./main.c -o ./build/search.bin -lcjson &&
 
 ./build/search.bin
 

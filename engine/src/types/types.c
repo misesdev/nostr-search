@@ -1,6 +1,7 @@
 #ifndef TYPES_C
 #define TYPES_C
 
+#define MAX_RESPONSE_LENGTH 2048
 #define TRIE_CHILDREN_LENGTH 255
 #define ADDRESS_LENGTH 16
 
@@ -35,6 +36,11 @@ typedef struct {
     char pubkey[65];
     char search[100];
 } Search;
+
+typedef  struct {
+    int StatusCode;
+    char Content[MAX_RESPONSE_LENGTH];
+} HttpResponse;
 
 #endif
 
