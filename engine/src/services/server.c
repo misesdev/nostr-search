@@ -49,7 +49,7 @@ void* handle_client(void* arg) {
 }
 
 // Função principal do servidor
-void serverUp(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct TrieNode *root) 
+void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct TrieNode *root) 
 {
     int socket_server;
     struct sockaddr_in address;

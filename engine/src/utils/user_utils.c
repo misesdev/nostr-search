@@ -63,14 +63,15 @@ void showUsersOfTrie(struct TrieNode *root)
 }
 
 User* jsonToUser(char *jsonString, char *error) 
-{
-    User *user = malloc(sizeof(User));
+{    
     cJSON *json = cJSON_Parse(jsonString);
 
     if(!json) {
-        strcpy(error, "Error when parsing json");
+        strcpy(error, "Error when parsing json, expected properties 'name', 'pubkey' and 'profile'");
         return NULL;
     }
+
+    User *user = malloc(sizeof(User));
 
     cJSON *name = cJSON_GetObjectItemCaseSensitive(json, "name");
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(json, "pubkey");
@@ -78,9 +79,9 @@ User* jsonToUser(char *jsonString, char *error)
 
     if(name->valuestring && pubkey->valuestring && profile->valuestring) 
     {
-        strcpy(user->name, name->valuestring);
-        strcpy(user->pubkey, pubkey->valuestring);
-        strcpy(user->profile, profile->valuestring);
+        snprintf(user->name, 45, "%s", name->valuestring);
+        snprintf(user->pubkey, 65, "%s", pubkey->valuestring);
+        snprintf(user->profile, 150, "%s", profile->valuestring);
         
         // ensures that the string ends with null
         user->name[strlen(user->name) - 1] = '\0';
@@ -90,6 +91,8 @@ User* jsonToUser(char *jsonString, char *error)
     else 
     {
         strcpy(error, "Error invalid json, expected properties 'name', 'pubkey' and 'profile'");
+        free(user);
+        cJSON_Delete(json);
         return NULL;
     }
 

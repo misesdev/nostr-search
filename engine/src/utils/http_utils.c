@@ -28,15 +28,12 @@ char* requestParams(char *request, char *error)
         return NULL;
     }
 
-    char *start = NULL;
-    char *json_result = malloc(1024 * sizeof(char));
+    char *jsonResult = NULL;
 
-    if ((start = strstr(request, "\r\n\r\n")) != NULL) {
-        start += 4;
-        sscanf(start, "%s", json_result);
-    }
-        
-    return json_result; 
+    if ((jsonResult = strstr(request, "\r\n\r\n")) != NULL)
+        jsonResult += 4;
+
+    return jsonResult; 
 }
 
 char* jsonResult(struct UserNode *root)

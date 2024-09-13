@@ -1,10 +1,12 @@
+#ifndef R_DISK_C
+#define R_DISK_C
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../types/types.c"
 #include "../types/user_trie.c"
-#include "../types/user_list.c"
 #include "../utils/user_utils.c"
 
 User* loadUserFromDisk(FILE *file, long offset) 
@@ -104,3 +106,4 @@ struct TrieNode* loadTrieFromDisk()
     return root;
 }
 
+#endif

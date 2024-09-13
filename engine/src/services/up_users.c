@@ -7,14 +7,14 @@
 #include "../filesystem/rdisk.c"
 #include <string.h>
 
-HttpResponse* requestProcess(char *request, struct TrieNode *root)
+HttpResponse* requestProcessSearch(char *request, struct TrieNode *root)
 {
     HttpResponse *response = malloc(sizeof(HttpResponse));
 
     User *user = getUserFromRequest(request, response->Content);
     
     if(!user) {
-        response->StatusCode = 400;
+        response->StatusCode = 403;
         return response;
     }
 
@@ -30,7 +30,7 @@ void upUsers()
 {
     struct TrieNode *root = loadTrieFromDisk();
 
-    serverUp(requestProcess, root);
+    upServer(requestProcessSearch, root);
 }
 
 #endif

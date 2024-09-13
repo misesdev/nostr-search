@@ -9,9 +9,9 @@
 #include <stdint.h>
 
 typedef struct {
-    char name[35];
+    char name[45];
     char pubkey[65]; // 64 bytes + byte null end
-    char profile[100];
+    char profile[150];
     struct UserNode *friends;
 } User;
 
@@ -35,6 +35,7 @@ struct TrieList {
 typedef struct {
     char pubkey[65];
     char search[100];
+    int limit;
 } Search;
 
 typedef  struct {
