@@ -37,7 +37,7 @@ int main(int argc, char *args[])
         return -1;
     }
 
-    if(textSimilarity(args[1], "add-users") > .85)
+    if(textSimilarity(args[1], "add-users") > .95)
     {
         int port = getPortParam(args[2]);
 
@@ -50,7 +50,7 @@ int main(int argc, char *args[])
 
         upUsers(port);
     } 
-    else if(textSimilarity(args[1], "add-users") > .85) 
+    else if(textSimilarity(args[1], "search-users") > .95) 
     {
         int port = getPortParam(args[2]);
 

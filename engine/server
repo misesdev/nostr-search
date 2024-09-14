@@ -1,5 +1,0 @@
-#!/bin/bash
-
-gcc ./src/server.c -o ./build/server.bin &&
-
-./build/server.bin

@@ -1,7 +1,6 @@
 #ifndef UP_SEARCH_C
 #define UP_SEARCH_C
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "./server.c"
@@ -17,16 +16,12 @@ HttpResponse* requestProcessInsert(char *request, struct TrieNode *root)
     
     Search *searchParams = getSearchParams(request, response->Content);
 
-    printf("searchTerm: %s\n", searchParams->search);
-
     if(!searchParams) {
         response->StatusCode = 403;
         return response;
     }
 
     struct TrieNode *userNode = getTrieNodeFromPubkey(root, searchParams->pubkey);
-
-    printf("user: %s\n", userNode->user->name);
 
     if(!userNode) {
         strcpy(response->Content, "Focal user not found, please provide a valid public key");

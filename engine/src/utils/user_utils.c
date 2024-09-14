@@ -77,7 +77,9 @@ User* jsonToUser(char *jsonString, char *error)
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(json, "pubkey");
     cJSON *profile = cJSON_GetObjectItemCaseSensitive(json, "profile");
 
-    if(name->valuestring && pubkey->valuestring && profile->valuestring) 
+    if(cJSON_IsString(name) && (name->valuestring != NULL) && 
+        cJSON_IsString(pubkey) && (pubkey->valuestring != NULL) && 
+        cJSON_IsString(profile) && (profile->valuestring != NULL))
     {
         snprintf(user->name, 45, "%s", name->valuestring);
         snprintf(user->pubkey, 65, "%s", pubkey->valuestring);

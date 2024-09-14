@@ -26,7 +26,10 @@ Search* jsonToSearchParams(char *json, char *error)
     cJSON *search = cJSON_GetObjectItemCaseSensitive(jsonParams, "searchTerm");
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(jsonParams, "pubkey");
     cJSON *limit = cJSON_GetObjectItem(jsonParams, "limit");
-    if(search->valuestring && pubkey->valuestring && limit->valueint) {
+    if(cJSON_IsString(search) && (search->valuestring != NULL) && 
+        cJSON_IsString(pubkey) && (pubkey->valuestring != NULL) && 
+        cJSON_IsNumber(limit) && (limit->valueint != 0)) 
+    {
         snprintf(searchParams->pubkey, 65, "%s", pubkey->valuestring);
         snprintf(searchParams->search, 100, "%s", search->valuestring);
         // guarantees that the last byte of the string is null 
@@ -49,8 +52,6 @@ Search* getSearchParams(char *request, char *error)
 
     if(!jsonParams) return NULL;
 
-    printf("received json: \n%s", jsonParams);
-
     Search *searchParams = jsonToSearchParams(jsonParams, error);
 
     if(!searchParams) return NULL;
@@ -69,8 +70,6 @@ void enqueue(struct UserNode ***queue, int *queueSize, User *user)
 
 struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
 {
-    printf("searchTerm: %s", searchTerm);
-
     int foundCount = 0, visitedCount = 0;
     struct UserNode *resultList = createUserNode(NULL);
     limit = limit > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit;
@@ -99,7 +98,7 @@ struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
         visitedCount++;
 
         if (textSimilarity(currentNode->user->name, searchTerm) > MIN_SIMILARITY_TERM) {
-            insertUserNode(resultList, currentNode->user);
+            insertUniqueUserNode(resultList, currentNode->user);
             foundCount++;  
         }
 

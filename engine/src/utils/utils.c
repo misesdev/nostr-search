@@ -54,21 +54,21 @@ float textSimilarity(char *origin, char *compare)
     // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
     int intersection = 0, number;
     float sizePairs = (strlen(origin) + strlen(compare));
-    int hashMap[50] = {0};
+    int hashMap[255] = {0};
     
     while(*origin) { 
         number = toupper(*origin) * toupper(*origin+1);
-        hashMap[number % 50] += 1;
+        hashMap[number % 255] += 1;
         origin++;
     }
     
     while(*compare) { 
         number = toupper(*compare) * toupper(*compare+1);
-        hashMap[number % 50] += 1;
+        hashMap[number % 255] += 1;
         compare++;
     }
     
-    for(int i = 0; i < 50; i++)
+    for(int i = 0; i < 255; i++)
     {
         if(hashMap[i] > 1) intersection += hashMap[i] / 2;
     }    

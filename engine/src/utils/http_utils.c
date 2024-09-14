@@ -1,13 +1,6 @@
 #ifndef HTTP_UTILS_C
 #define HTTP_UTILS_C
 
-#define HTTP_STATUS_OK 200
-#define HTTP_STATUS_BAD_REQUEST 400
-#define HTTP_STATUS_FORBIDDEN 403
-#define HTTP_STATUS_NOT_FOUND 404
-#define HTTP_STATUS_UNAUTHORIZED 401
-#define HTTP_STATUS_INTERNAL_ERROR 500
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
