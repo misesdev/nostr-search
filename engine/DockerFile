@@ -1,0 +1,26 @@
+
+# Use the image base with gcc compiler
+FROM gcc:latest
+
+
+# Create work directory
+WORKDIR /usr/src/app
+
+
+# Copy files to work firectory
+COPY . .
+
+
+# Install dependeces
+RUN sudo apt install libcjson
+
+
+# Compily the program
+RUN gcc ./main.c -o ./build/nostr-find.bin -lcjson
+
+
+# Execute
+CMD ["./build/nostr-find.bin search-user 8080"]
+
+
+
