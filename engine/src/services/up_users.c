@@ -26,11 +26,11 @@ HttpResponse* requestProcessSearch(char *request, struct TrieNode *root)
     return response;
 }
 
-void upUsers() 
+void upUsers(int port) 
 {
     struct TrieNode *root = loadTrieFromDisk();
 
-    upServer(requestProcessSearch, root);
+    upServer(requestProcessSearch, root, port);
 }
 
 #endif

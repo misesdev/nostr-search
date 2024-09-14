@@ -2,6 +2,6 @@
 
 gcc ./main.c -o ./build/search.bin -lcjson &&
 
-./build/search.bin
+./build/search.bin search-users 8080
 
 

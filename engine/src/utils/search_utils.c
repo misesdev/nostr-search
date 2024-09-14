@@ -1,13 +1,16 @@
 #ifndef SEARCH_UTILS_C 
 #define SEARCH_UTILS_C
 
-#include "../types/types.c"
-#include "./http_utils.c"
-#include <cjson/cJSON.h>
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <cjson/cJSON.h>
+
+#include "./utils.c"
+#include "./http_utils.c"
+#include "../types/types.c"
+#include "../types/user_list.c"
 
 Search* jsonToSearchParams(char *json, char *error)
 {
@@ -46,11 +49,83 @@ Search* getSearchParams(char *request, char *error)
 
     if(!jsonParams) return NULL;
 
+    printf("received json: \n%s", jsonParams);
+
     Search *searchParams = jsonToSearchParams(jsonParams, error);
 
     if(!searchParams) return NULL;
 
     return searchParams;
 }
+
+void enqueue(struct UserNode ***queue, int *queueSize, User *user)
+{
+    *queue = realloc(*queue, sizeof(struct UserNode*) * (*queueSize + 1));
+    (*queue)[*queueSize] = (struct UserNode*) malloc(sizeof( struct UserNode));
+    (*queue)[*queueSize]->user = user;
+    (*queue)[*queueSize]->next = NULL;
+    (*queueSize)++;
+}
+
+struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
+{
+    printf("searchTerm: %s", searchTerm);
+
+    int foundCount = 0, visitedCount = 0;
+    struct UserNode *resultList = createUserNode(NULL);
+    limit = limit > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit;
+
+    // Fila de busca (implementada como um array dinâmico de UserNode*)
+    struct UserNode **queue = NULL;
+    int queueSize = 0;
+
+    // Add all users of initial list to the search queue
+    struct UserNode *current = rootUser->friends;
+    while (current != NULL) {
+        enqueue(&queue, &queueSize, current->user);
+        current = current->next;
+    }
+
+    // start breadth-first search 
+    while (queueSize > 0 && foundCount < limit && visitedCount < MAX_USERS_TO_VISIT) 
+    {
+        // Remove the first element of queue
+        struct UserNode *currentNode = queue[0];
+        for (int i = 0; i < queueSize - 1; i++) {
+            queue[i] = queue[i + 1];
+        }
+        queueSize--;
+
+        visitedCount++;
+
+        if (textSimilarity(currentNode->user->name, searchTerm) > MIN_SIMILARITY_TERM) {
+            insertUserNode(resultList, currentNode->user);
+            foundCount++;  
+        }
+
+        struct UserNode *friendList = currentNode->user->friends;
+        while (friendList != NULL && visitedCount < MAX_USERS_TO_VISIT) {
+            enqueue(&queue, &queueSize, friendList->user);
+            friendList = friendList->next;
+        }
+
+        // Free the memory of current node of queue
+        free(currentNode);
+
+        // If you reach the limit of results or users visited, the search ends
+        if (foundCount >= limit || visitedCount >= MAX_USERS_TO_VISIT) {
+            break;
+        }
+    }
+
+    // Free the memory of queue
+    for (int i = 0; i < queueSize; i++) {
+        free(queue[i]);
+    }
+    free(queue);
+
+    return resultList;
+}
+
 
 #endif 

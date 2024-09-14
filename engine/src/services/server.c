@@ -7,12 +7,11 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <pthread.h> // Para threads
+#include <pthread.h> 
 #include <sys/types.h>
-#include <sys/sysinfo.h> // Para verificar a memória usada
+#include <sys/sysinfo.h> 
 #include "../utils/http_utils.c"
 
-#define PORT 8080
 #define SIZE_BUFFER 1024
 #define MAX_THREADS 250  // Limite máximo de threads para controlar o uso de memória
 
@@ -44,12 +43,12 @@ void* handle_client(void* arg) {
     }
 
     close(client->socket);
-    free(client);  // Libere a memória alocada para client_info
+    free(client);  // Free the allocated memory for client_info
     return NULL;
 }
 
-// Função principal do servidor
-void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct TrieNode *root) 
+// master function of server
+void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct TrieNode *root, int port) 
 {
     int socket_server;
     struct sockaddr_in address;
@@ -63,7 +62,7 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(port);
 
     if (bind(socket_server, (struct sockaddr*)&address, sizeof(address)) < 0) {
         perror("failed to bind\n");
@@ -77,7 +76,7 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
         exit(EXIT_FAILURE);
     }
 
-    printf("tcp server listening in port: %d\n", PORT);
+    printf("tcp server listening in port: %d\n", port);
 
     while (1) {
         client_info* client = malloc(sizeof(client_info)); // Aloca memória para cada cliente

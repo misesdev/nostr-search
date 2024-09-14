@@ -1,6 +1,7 @@
 #ifndef UP_SEARCH_C
 #define UP_SEARCH_C
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "./server.c"
@@ -16,26 +17,38 @@ HttpResponse* requestProcessInsert(char *request, struct TrieNode *root)
     
     Search *searchParams = getSearchParams(request, response->Content);
 
+    printf("searchTerm: %s\n", searchParams->search);
+
     if(!searchParams) {
         response->StatusCode = 403;
         return response;
     }
 
-    struct UserNode *resultListUsers = searchOnTrie(root, searchParams->pubkey, searchParams->search, searchParams->limit);
+    struct TrieNode *userNode = getTrieNodeFromPubkey(root, searchParams->pubkey);
+
+    printf("user: %s\n", userNode->user->name);
+
+    if(!userNode) {
+        strcpy(response->Content, "Focal user not found, please provide a valid public key");
+        response->StatusCode = 403;
+        return response;
+    }
+
+    struct UserNode *resultListUsers = searchOnGraph(userNode->user, searchParams->search, searchParams->limit);
 
     strcpy(response->Content, userListToJson(resultListUsers));
     response->StatusCode = 200;
 
-    free(resultListUsers);
-
     return response;
 }
 
-void upSearch()
+void upSearch(int port)
 {
     struct TrieNode *root = loadTrieFromDisk();
 
-    upServer(requestProcessInsert, root);
+    upServer(requestProcessInsert, root, port);
 }
 
 #endif 
+
+

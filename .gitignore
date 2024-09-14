@@ -5,6 +5,8 @@ node_modules
 *.bin
 *.db
 /**/*.db
+build
+/**/build
 
 # dependencies
 /node_modules

@@ -11,68 +11,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "./utils.c"
 #include "../types/types.c"
 
 
 bool isPostRequest(char *request)
 {
-    return (strncmp(request, "POST ", 5) == 0);
+    return (strstr(request, "POST") != NULL);
 }
 
 char* requestParams(char *request, char *error) 
 {
+    char *jsonResult = NULL;
+
     if(!isPostRequest(request))
     {
         strcpy(error, "Expected POST request with Content-Type: application/json");
         return NULL;
     }
 
-    char *jsonResult = NULL;
-
     if ((jsonResult = strstr(request, "\r\n\r\n")) != NULL)
         jsonResult += 4;
-
-    return jsonResult; 
-}
-
-char* jsonResult(struct UserNode *root)
-{
-    char *response = malloc(2 * sizeof(char)); 
-
-    strcpy(response, "[");
-
-    struct UserNode *current = root;
-    
-    while (current) 
-    {     
-        if(current->user) {
-            // build property username
-            response = strconcat(response, "{ \"username\":\""); 
-            response = strconcat(response, current->user->name); 
-            response = strconcat(response, "\", ");
-
-            // build the property pubkey
-            response = strconcat(response, "\"pubkey\":\"");
-            response = strconcat(response, current->user->pubkey); 
-            response = strconcat(response, "\", ");
-        
-            // build the property profile
-            response = strconcat(response, "\"profile\":\"");
-            response = strconcat(response, current->user->profile);
-            response = strconcat(response, "\"}");
-        
-            if(current->next != NULL) {
-                response = strconcat(response, ",");
-            }
-        }
-
-        current = current->next;
+    else {
+        strcpy(error, "Expected JSON content format");
+        return NULL;
     }
 
-    response = strconcat(response, "]");
-
-    return response; 
+    return jsonResult; 
 }
 
 char * getStatusCode(int status) 
@@ -81,7 +45,7 @@ char * getStatusCode(int status)
         case HTTP_STATUS_OK:
             return "200 OK";
         case HTTP_STATUS_UNAUTHORIZED:
-            return "401 Unauthorized";
+           return "401 Unauthorized";
         case HTTP_STATUS_FORBIDDEN: 
             return "403 Forbidden"; 
         case HTTP_STATUS_NOT_FOUND:

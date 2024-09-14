@@ -8,7 +8,6 @@
 #include "./types.c"
 #include "./user_trie_list.c"
 #include "../utils/utils.c"
-#include "user_list.c"
 
 struct TrieNode* createTrieNode(uint8_t key) {
     struct TrieNode *node = malloc(sizeof(struct TrieNode));
@@ -146,22 +145,6 @@ struct TrieNode* getTrieNodeFromPubkey(struct TrieNode *root, char *pubkey)
     compressPubkey(pubkey, address);
     
     return getTrieNode(root, address);
-}
-
-struct UserNode* searchOnTrie(struct TrieNode *root, char *pubkey, char *searchTerm, int limit)
-{
-    int searchLimit = limit > 50 ? 50 : limit;
-
-    struct UserNode *userList = createUserNode(NULL);
-
-    struct TrieNode *userNode = getTrieNodeFromPubkey(root, pubkey);
-
-    if(userNode) 
-    {
-
-    }
-
-    return userList;
 }
 
 

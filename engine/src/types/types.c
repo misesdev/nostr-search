@@ -1,9 +1,7 @@
 #ifndef TYPES_C
 #define TYPES_C
 
-#define MAX_RESPONSE_LENGTH 2048
-#define TRIE_CHILDREN_LENGTH 255
-#define ADDRESS_LENGTH 16
+#include "../constants/index.c"
 
 #include <stdbool.h>
 #include <stdint.h>
