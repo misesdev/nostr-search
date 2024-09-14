@@ -1,16 +1,4 @@
 import { FileSystem  } from "../filesytem/disk";
-import axios from "axios"
-
-const client = axios.create({ 
-    baseURL: "http://localhost:8080",
-    responseType: "json",
-    headers: {
-        "Content-Type": "application/json"
-    },
-})
-
-//const defaultProfie = "https://blob.nostroogle.org/files/storage/ec362271f59dbc624ae0c9654/7R0UeSxaHgeNrLJ61WBBy9Mx3blWOnHaJEov5A37.webp"
-const defaultProfie = "https://blob.nostroogle.org/files/storage/ec362271f59dbc624ae0c9654/njuHESHnTKmNvFPQdeZOX0FeB4LZ0tfGFQqFoe7k.jpg"
 
 export const loadData = async () => {
     
@@ -20,16 +8,24 @@ export const loadData = async () => {
         
         let user = JSON.parse(line)
 
-        if(!!!user["displayName"]) user["displayName"] = user["name"];
+        if(!!!user["name"]) user["name"] = user["display_name"]
 
-        if(!!!user["profile"]) user["profile"] = defaultProfie;
-                        
-        const response = await client.post("/", JSON.stringify(user))
+        if(!!!user["profile"]) user["profile"] = user["picture"]
 
-        if(response.status == 200)
-            console.log(`${response.data.data}`);
-        else 
-            console.log(response.data.data);
+        if(!!!user["displayName"]) user["displayName"] = user["display_name"]
 
+        const response = await fetch("http://localhost:8080", {
+            method: "post",
+            body: JSON.stringify(user),
+        })
+
+        let data = await response.json()
+
+        if(!response.ok) 
+            console.log("user:", user)
+
+        console.log("response:", data.message)
+    
+        return true;//(!response.ok) 
     })
 }

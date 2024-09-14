@@ -8,7 +8,10 @@ export const listUsers = async (pool: RelayPool) => {
     const fileUsers = new FileSystem("users.db");
     const filePubkeys = new FileSystem("pubkeys.db");
 
-    await filePubkeys.readLines(async (line) => { pubkeys.push(line) })
+    await filePubkeys.readLines(async (line) => { 
+        pubkeys.push(line) 
+        return true;
+    })
 
     let skipe = 200
     for (let i = 0; i <= pubkeys.length; i += skipe) 
