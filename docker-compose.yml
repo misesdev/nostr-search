@@ -2,11 +2,33 @@
 services:
   
   app:
-    context: .
+    build:
+      context: ./app/
+    container_name: search-engine-app
+    volumes:
+      - ./app/:/usr/src/app
+    ports:
+      - "3000:80"
+    networks: 
+      - app-network 
+
 
   engine:
-    context: .
+    build:
+      context: ./engine/
+    container_name: search-engine-core
+    volumes: 
+      - ./engine/:/var/html/engine
+    ports:
+      - "8080:8080"
+    networks: 
+      - app-network
 
-  indexer: 
-    context: .
+networks:
+  app-network:
+    driver: bridge
+
+    
+
+
  

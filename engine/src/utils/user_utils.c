@@ -18,6 +18,7 @@ User* createUser(char *name, char *profile, char *pubkey)
     strcpy(user->profile, profile);
     strcpy(user->pubkey, pubkey);
     strcpy(user->name, name);
+    strcpy(user->displayName, name);
     user->friends = NULL;
 
     return user;
@@ -76,19 +77,23 @@ User* jsonToUser(char *jsonString, char *error)
     cJSON *name = cJSON_GetObjectItemCaseSensitive(json, "name");
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(json, "pubkey");
     cJSON *profile = cJSON_GetObjectItemCaseSensitive(json, "profile");
+    cJSON *displayName = cJSON_GetObjectItemCaseSensitive(json, "displayName");
 
     if(cJSON_IsString(name) && (name->valuestring != NULL) && 
         cJSON_IsString(pubkey) && (pubkey->valuestring != NULL) && 
-        cJSON_IsString(profile) && (profile->valuestring != NULL))
+        cJSON_IsString(profile) && (profile->valuestring != NULL) &&
+        cJSON_IsString(displayName) && (displayName->valuestring != NULL))
     {
         snprintf(user->name, 45, "%s", name->valuestring);
         snprintf(user->pubkey, 65, "%s", pubkey->valuestring);
         snprintf(user->profile, 150, "%s", profile->valuestring);
+        snprintf(user->displayName, 45, "%s", displayName->valuestring);
         
         // ensures that the string ends with null
         user->name[strlen(user->name) - 1] = '\0';
         user->pubkey[strlen(user->pubkey) - 1] = '\0';
         user->profile[strlen(user->profile) - 1] = '\0';
+        user->displayName[strlen(user->displayName) - 1] = '\0';
     } 
     else 
     {
@@ -108,6 +113,7 @@ cJSON* userToCJSON(User *user)
     cJSON_AddStringToObject(userJson, "name", user->name);
     cJSON_AddStringToObject(userJson, "pubkey", user->pubkey);
     cJSON_AddStringToObject(userJson, "profile", user->profile);
+    cJSON_AddStringToObject(userJson, "displayName", user->displayName);
 
     return userJson;
 }

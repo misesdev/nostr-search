@@ -10,6 +10,7 @@ typedef struct {
     char name[45];
     char pubkey[65]; // 64 bytes + byte null end
     char profile[150];
+    char displayName[45];
     struct UserNode *friends;
 } User;
 

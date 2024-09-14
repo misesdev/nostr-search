@@ -46,9 +46,16 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
         
         current = nextNode;
     }
-
-    current->isEndOfKey = true;
-    current->user = user;
+    
+    if(current->user) {
+        strcpy(current->user->name, user->name);
+        strcpy(current->user->displayName, user->displayName);
+        strcpy(current->user->pubkey, user->pubkey);
+        strcpy(current->user->profile, user->profile);
+    } else {
+        current->isEndOfKey = true;
+        current->user = user;
+    }
 
     return current;
 }

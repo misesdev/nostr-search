@@ -80,7 +80,7 @@ void logRequest(char *buffer)
     
     if((start = strstr(buffer, "Host:")) != NULL) {
         sscanf(start, "Host:%s", log);
-        printf("received request from: %s\n", log);
+        printf("received request from: %s\n", buffer);
     }
 }
 

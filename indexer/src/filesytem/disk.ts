@@ -18,7 +18,7 @@ export class FileSystem {
         this.fileWrite.write(`${line}\n`)
     }
     
-    public async readLines(method: (line: string) => void) {
+    public async readLines(method: (line: string) => Promise<void>) {
         
         this.fileRead = fs.createReadStream(this.fileWrite.path);
 
@@ -28,7 +28,7 @@ export class FileSystem {
         })
 
         for await (let line of readLine) {
-            if(line) method(line.toString())
+            if(line) await method(line.toString())
         }
     }
 }
