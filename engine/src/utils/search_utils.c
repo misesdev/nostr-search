@@ -17,7 +17,7 @@ Search* jsonToSearchParams(char *json, char *error)
     cJSON *jsonParams = cJSON_Parse(json);
 
     if(!jsonParams) {
-        strcpy(error, "Error when parsing json, expected properties 'pubkey', 'limit' and 'searchTerm'");
+        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'pubkey', 'limit' and 'searchTerm'\" }");
         return NULL;
     }
 
@@ -37,7 +37,7 @@ Search* jsonToSearchParams(char *json, char *error)
         searchParams->search[strlen(searchParams->search) - 1] = '\0';
         searchParams->limit = limit->valueint;
     } else {
-        strcpy(error, "Error when parsing json, expected properties 'pubkey', 'limit' and 'searchTerm'");
+        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'pubkey', 'limit' and 'searchTerm'\" }");
         free(searchParams);
         cJSON_Delete(jsonParams);
         return NULL;
@@ -49,6 +49,8 @@ Search* jsonToSearchParams(char *json, char *error)
 Search* getSearchParams(char *request, char *error)
 {
     char *jsonParams = requestParams(request, error);
+
+    printf("reccept json: \n%s", jsonParams);
 
     if(!jsonParams) return NULL;
 

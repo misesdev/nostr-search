@@ -13,7 +13,7 @@
 #include "../utils/http_utils.c"
 
 #define SIZE_BUFFER 1024
-#define MAX_THREADS 250  // Limite máximo de threads para controlar o uso de memória
+#define MAX_THREADS 500  // Limite máximo de threads para controlar o uso de memória
 
 typedef struct {
     int socket;

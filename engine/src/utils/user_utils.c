@@ -64,11 +64,11 @@ void showUsersOfTrie(struct TrieNode *root)
 }
 
 User* jsonToUser(char *jsonString, char *error) 
-{    
+{   
     cJSON *json = cJSON_Parse(jsonString);
 
     if(!json) {
-        strcpy(error, "Error when parsing json, expected properties 'name', 'pubkey' and 'profile'");
+        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'name', 'displayName', pubkey' and 'profile'\" }");
         return NULL;
     }
 
@@ -97,9 +97,9 @@ User* jsonToUser(char *jsonString, char *error)
     } 
     else 
     {
-        strcpy(error, "Error invalid json, expected properties 'name', 'pubkey' and 'profile'");
-        free(user);
+        strcpy(error, "{ \"message\": \"Error invalid json, expected properties 'name', 'displayName', 'pubkey' and 'profile'\" }");
         cJSON_Delete(json);
+        free(user);
         return NULL;
     }
 
@@ -157,8 +157,6 @@ User* getUserFromRequest(char *request, char *error)
     User *user = jsonToUser(json_params, error);
 
     if(!user) return NULL;
-
-    free(json_params);
 
     return user;
 }

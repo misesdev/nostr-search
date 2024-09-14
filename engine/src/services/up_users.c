@@ -5,6 +5,7 @@
 #include "../types/types.c"
 #include "../utils/user_utils.c"
 #include "../filesystem/rdisk.c"
+#include <stdio.h>
 #include <string.h>
 
 HttpResponse* requestProcessSearch(char *request, struct TrieNode *root)
@@ -20,7 +21,9 @@ HttpResponse* requestProcessSearch(char *request, struct TrieNode *root)
 
     insertTrieNode(root, user);
 
-    strcpy(response->Content, "User added successfully");
+    printf("user inserted: %s\n", user->displayName);
+
+    strcpy(response->Content, "{ \"message\": \"User added successfully\" }");
     response->StatusCode = 200;
 
     return response;

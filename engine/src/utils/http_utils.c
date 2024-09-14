@@ -18,14 +18,14 @@ char* requestParams(char *request, char *error)
 
     if(!isPostRequest(request))
     {
-        strcpy(error, "Expected POST request with Content-Type: application/json");
+        strcpy(error, "{ \"message\": \"Expected POST request with Content-Type: application/json\" }");
         return NULL;
     }
 
     if ((jsonResult = strstr(request, "\r\n\r\n")) != NULL)
         jsonResult += 4;
     else {
-        strcpy(error, "Expected JSON content format");
+        strcpy(error, "{ \"message\": \"Expected JSON content format\" }");
         return NULL;
     }
 
@@ -80,7 +80,7 @@ void logRequest(char *buffer)
     
     if((start = strstr(buffer, "Host:")) != NULL) {
         sscanf(start, "Host:%s", log);
-        printf("received request from: %s\n", buffer);
+        printf("received request from: %s\n", log);
     }
 }
 
