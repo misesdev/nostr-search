@@ -31,13 +31,10 @@ Search* jsonToSearchParams(char *json, char *error)
         cJSON_IsNumber(limit) && (limit->valueint != 0)) 
     {
         snprintf(searchParams->pubkey, 65, "%s", pubkey->valuestring);
-        snprintf(searchParams->search, 100, "%s", search->valuestring);
-        // guarantees that the last byte of the string is null 
-        searchParams->pubkey[strlen(searchParams->pubkey) - 1] = '\0';
-        searchParams->search[strlen(searchParams->search) - 1] = '\0';
+        snprintf(searchParams->search, 100, "%s", search->valuestring);        
         searchParams->limit = limit->valueint;
     } else {
-        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'pubkey', 'limit' and 'searchTerm'\" }");
+        strcpy(error, "{ \"message\": \"Error when parsing search, expected properties 'pubkey', 'limit' and 'searchTerm'\" }");
         free(searchParams);
         cJSON_Delete(jsonParams);
         return NULL;

@@ -6,19 +6,19 @@ export const loadData = async () => {
 
     fileUsers.readLines(async (line) => {
         
-        let user = JSON.parse(line)
+        //let user = JSON.parse(line)
  
         const response = await fetch("http://localhost:8080", {
             method: "post",
             body: line,
         })
 
-        let data = await response.json()
+        //let data = await response.json()
 
         if(!response.ok) 
-            console.log("user:", user)
+            console.log("user:", line)
 
-        console.log("response:", data.message)
+        //console.log("response:", data.message)
     
         return true;
     })

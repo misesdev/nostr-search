@@ -52,28 +52,29 @@ int parseInt(char *decimal)
 float textSimilarity(char *origin, char *compare)
 {
     // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
-    int intersection = 0, number;
-    float sizePairs = (strlen(origin) + strlen(compare));
+    int intersection = 0, number = 0, sizePairs = 0; 
     int hashMap[255] = {0};
     
-    while(*origin) { 
-        number = toupper(*origin) * toupper(*origin+1);
+    while(*origin) 
+    { 
+        number = toupper(*origin) * toupper(*(origin+1));
         hashMap[number % 255] += 1;
+        sizePairs++;
         origin++;
     }
     
-    while(*compare) { 
-        number = toupper(*compare) * toupper(*compare+1);
-        hashMap[number % 255] += 1;
+    while(*compare) 
+    { 
+        number = (toupper(*compare) * toupper(*(compare+1))) % 255;        
+        if(hashMap[number] > 0) {
+            hashMap[number]--;
+            intersection++;
+        }
+        sizePairs++;
         compare++;
     }
     
-    for(int i = 0; i < 255; i++)
-    {
-        if(hashMap[i] > 1) intersection += hashMap[i] / 2;
-    }    
-
-    return (2 * intersection) / sizePairs;
+    return sizePairs > 0 ? (2.0 * intersection) / sizePairs : 0.0;
 }
 
 void compressPubkey(char *pubkey, uint8_t *address)

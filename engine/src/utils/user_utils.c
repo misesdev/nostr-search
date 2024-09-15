@@ -68,7 +68,7 @@ User* jsonToUser(char *jsonString, char *error)
     cJSON *json = cJSON_Parse(jsonString);
 
     if(!json) {
-        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'name', 'displayName', pubkey' and 'profile'\" }");
+        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'name', 'displayName', 'pubkey' and 'profile'\" }");
         return NULL;
     }
 
@@ -89,15 +89,10 @@ User* jsonToUser(char *jsonString, char *error)
         snprintf(user->profile, 150, "%s", profile->valuestring);
         snprintf(user->displayName, 45, "%s", displayName->valuestring);
         
-        // ensures that the string ends with null
-        user->name[strlen(user->name) - 1] = '\0';
-        user->pubkey[strlen(user->pubkey) - 1] = '\0';
-        user->profile[strlen(user->profile) - 1] = '\0';
-        user->displayName[strlen(user->displayName) - 1] = '\0';
     } 
     else 
     {
-        strcpy(error, "{ \"message\": \"Error invalid json, expected properties 'name', 'displayName', 'pubkey' and 'profile'\" }");
+        strcpy(error, "{ \"message\": \"Error when parsing user, expected properties 'name', 'displayName', 'pubkey' and 'profile'\" }");
         cJSON_Delete(json);
         free(user);
         return NULL;

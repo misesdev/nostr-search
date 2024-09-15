@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+// #include <time.h>
 
 #include "./src/services/up_users.c"
 #include "./src/services/up_search.c"
@@ -26,11 +27,26 @@ int getPortParam(char *portDigited)
         port[i] = portDigited[i];
     }
 
-    return parseInt(port);
+    return 8080;//parseInt(port);
 }
 
 int main(int argc, char *args[]) 
 {
+    // float similarity = 0;
+
+    // clock_t start = clock();
+
+    // for(int i = 0; i < 10000; i++)
+    // {
+    //     similarity = textSimilarity("Misos Devo", "Mises Developer");
+    // }
+
+    // clock_t end = clock();
+    // double time = (double)(end - start) / CLOCKS_PER_SEC;
+
+    // printf("similarity: %f\n", similarity);
+    // printf("execution: %f\n\n\n", time);
+
     if(argc < 2) 
     {
         showOptions();

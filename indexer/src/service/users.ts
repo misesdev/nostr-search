@@ -43,8 +43,11 @@ const sanitiseUser = (event: Event): any => {
     if(user["profile"].length > 149)
         user["profile"] = defaultProfile
 
-    if(user["about"] && user["about"].length > 100)
-        user["about"] = `${user["about"].substring(0, 96)}...`
+    if(user["about"] && user["about"].length > 180)
+        user["about"] = `${user["about"].substring(0, 176)}...`
+
+    if(user["about"].length >= 178)
+        user["about"] = user["about"].replace(/\\u[0-9A-Fa-f]*\.{3}$/, '...')
 
     user["pubkey"] = event.pubkey
 
