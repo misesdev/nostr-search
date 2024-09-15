@@ -17,11 +17,13 @@ const sanitiseUser = (event: Event): any => {
         user["name"] = user["display_name"]
 
     if(!user["display_name"] && user["name"])
-        user["name"] = user["display_name"]
-
+        user["display_name"] = user["name"]
 
     if(!user['displayName']) 
         user["displayName"] = user["display_name"]
+
+    if(user["name"].length <= 3 && user["displayName"].length <= 3)
+        throw new Error("invalid username")
 
     if(!user["profile"] && user["picture"]) 
         user["profile"] = user["picture"]
@@ -31,6 +33,15 @@ const sanitiseUser = (event: Event): any => {
 
     if(!user["about"])
         user["about"] = ""
+
+    if(user["name"].length > 45)
+        user["name"] = `${user["name"].substring(0, 41)}...`
+
+    if(user["displayName"].length > 45)
+        user["displayName"] = `${user["displayName"].substring(0, 41)}...`
+
+    if(user["profile"].length > 149)
+        user["profile"] = defaultProfile
 
     if(user["about"] && user["about"].length > 100)
         user["about"] = `${user["about"].substring(0, 96)}...`
@@ -57,7 +68,9 @@ export const listUsers = async (pool: RelayPool) => {
         return true;
     })
 
-    let skipe = 200, totalUsers = 0
+    await fileUsers.clear()
+
+    let skipe = 500, totalUsers = 0
     for (let i = 0; i <= pubkeys.length; i += skipe) 
     {
         let authors = pubkeys.slice(i, i + skipe)
@@ -83,3 +96,5 @@ export const listUsers = async (pool: RelayPool) => {
 
     console.log("found users:", totalUsers)
 }
+
+

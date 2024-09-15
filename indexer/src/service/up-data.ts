@@ -10,7 +10,7 @@ export const loadData = async () => {
  
         const response = await fetch("http://localhost:8080", {
             method: "post",
-            body: JSON.stringify(user),
+            body: line,
         })
 
         let data = await response.json()

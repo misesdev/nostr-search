@@ -8,13 +8,13 @@ export const relays = [
     "wss://relay.nostr.com.au/",
     "wss://puravida.nostr.land/",
     "wss://nostr.wine/",
-    "wss://nostr.inosta.cc/",
+    // "wss://nostr.inosta.cc/", very slow
     "wss://atlas.nostr.land/",
     "wss://relay.nostr.band/",
-    "wss://filter.nostr.wine/",
+    // "wss://filter.nostr.wine/", very slow
     "wss://relay.noswhere.com/",
     "wss://atlas.nostr.land",
     "wss://relay.nostr.net",
     "wss://relay.primal.net",
-    "wss://creatr.nostr.wine"
+    // "wss://creatr.nostr.wine" very slow
 ] 

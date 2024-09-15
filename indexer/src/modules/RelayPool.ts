@@ -6,7 +6,7 @@ export class RelayPool {
 
     private relays: string[];
     public websockets: WebSocket[];
-    public timeout: number = 1200;
+    public timeout: number = 3000;
     private subscription: string = "3da9794398579582309458d6f1498";
 
     constructor(relays: string[]) {
@@ -51,6 +51,7 @@ export class RelayPool {
     private async fetchEventRelay(websocket: WebSocket, filter: Filter): Promise<Event[]> 
     {
         return new Promise((resolve, reject) => {
+            let timeout: any;
             let events: Event[] = []
             // send the message
             websocket.send(`[
@@ -69,17 +70,19 @@ export class RelayPool {
                 }
                 
                 if(data[0] == "EOSE") {
-                    resolve(events)
                     websocket.removeListener("message", handleMessage)
+                    clearTimeout(timeout)
+                    resolve(events)
                 }
             }
 
             websocket.on("message", handleMessage)
 
             // remove the listener in timeout
-            setTimeout(() => { 
-                reject(`timeout: ${websocket.url}`)
+            timeout = setTimeout(() => { 
                 websocket.removeAllListeners("message")
+                console.log(`timeout: ${websocket.url}`)
+                resolve(events);
             }, this.timeout);
         });
     }
