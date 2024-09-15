@@ -3,6 +3,7 @@ import * as readline from 'readline';
 
 export class FileSystem {
     
+    private filePath: string;
     private fileWrite: fs.WriteStream;
     private fileRead: fs.ReadStream;
     private read = readline;
@@ -12,6 +13,7 @@ export class FileSystem {
             throw Error("invalid file name")
 
         this.fileWrite = fs.createWriteStream(fileName, { flags: "a" });
+        this.filePath = fileName;
     }
  
     public writeLine(line: string) {
@@ -33,6 +35,15 @@ export class FileSystem {
                 if(!success) break;
             }
         }
+    }
+
+    public async clear() {
+        fs.writeFile(this.filePath, '', (error) => {
+            if(error)
+                console.log(error)
+            else
+                console.log("file cleared")
+        })
     }
 }
 

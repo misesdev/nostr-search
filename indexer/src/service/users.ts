@@ -2,13 +2,15 @@ import { RelayPool } from "../modules/RelayPool";
 import { FileSystem } from "../filesytem/disk";
 import { Event } from "../modules/types";
 
-const defaultProfile = "";
+const defaultProfile = "https://blob.nostroogle.org/files/storage/ec362271f59dbc624ae0c9654/hczhqsKU5okwFDpeASqhNKwYykBGP1ne1QvtGGCR.png";
 
 const sanitiseUser = (event: Event): any => {
 
     let user = JSON.parse(event.content)
 
-    if(!user["name"] && !user["display_name"]) 
+    let properties = ["name", "displayName", "profile", "about", "pubkey"]
+
+    if((!user["name"] && !user["display_name"]) || user["deleted"]) 
         throw new Error("invalid user")
 
     if(!user["name"] && user["display_name"])
@@ -27,7 +29,18 @@ const sanitiseUser = (event: Event): any => {
     if(!user["picture"]) 
         user["profile"] = defaultProfile
 
+    if(!user["about"])
+        user["about"] = ""
+
+    if(user["about"] && user["about"].length > 100)
+        user["about"] = `${user["about"].substring(0, 96)}...`
+
     user["pubkey"] = event.pubkey
+
+    for(let property in user) {
+        if(!properties.includes(property))
+            delete user[property]
+    }
 
     return user;
 }
@@ -44,7 +57,7 @@ export const listUsers = async (pool: RelayPool) => {
         return true;
     })
 
-    let skipe = 200
+    let skipe = 200, totalUsers = 0
     for (let i = 0; i <= pubkeys.length; i += skipe) 
     {
         let authors = pubkeys.slice(i, i + skipe)
@@ -62,9 +75,11 @@ export const listUsers = async (pool: RelayPool) => {
                 let user = sanitiseUser(event)
 
                 fileUsers.writeLine(JSON.stringify(user))
+
+                totalUsers++;
             } catch {}
         });
     }
 
-    console.log("found users:", pubkeys.length)
+    console.log("found users:", totalUsers)
 }
