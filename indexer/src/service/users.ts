@@ -1,5 +1,36 @@
 import { RelayPool } from "../modules/RelayPool";
 import { FileSystem } from "../filesytem/disk";
+import { Event } from "../modules/types";
+
+const defaultProfile = "";
+
+const sanitiseUser = (event: Event): any => {
+
+    let user = JSON.parse(event.content)
+
+    if(!user["name"] && !user["display_name"]) 
+        throw new Error("invalid user")
+
+    if(!user["name"] && user["display_name"])
+        user["name"] = user["display_name"]
+
+    if(!user["display_name"] && user["name"])
+        user["name"] = user["display_name"]
+
+
+    if(!user['displayName']) 
+        user["displayName"] = user["display_name"]
+
+    if(!user["profile"] && user["picture"]) 
+        user["profile"] = user["picture"]
+
+    if(!user["picture"]) 
+        user["profile"] = defaultProfile
+
+    user["pubkey"] = event.pubkey
+
+    return user;
+}
 
 export const listUsers = async (pool: RelayPool) => {
     
@@ -28,8 +59,8 @@ export const listUsers = async (pool: RelayPool) => {
 
         events.forEach(event => {
             try {
-                let user = JSON.parse(event.content)
-                user["pubkey"] = event.pubkey
+                let user = sanitiseUser(event)
+
                 fileUsers.writeLine(JSON.stringify(user))
             } catch {}
         });
