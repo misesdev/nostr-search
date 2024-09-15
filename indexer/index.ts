@@ -14,7 +14,7 @@ const main = async () => {
 
     await listPubkeys(relayPool, author) 
 
-    // await listUsers(relayPool)
+    await listUsers(relayPool)
 
     // await loadData()
 }

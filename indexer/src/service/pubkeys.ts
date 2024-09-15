@@ -24,7 +24,7 @@ export const listPubkeys = async (pool: RelayPool, author: string) => {
             getPubkeys(events[0]).forEach(pubkey => pubkeys.push(pubkey))
     }
 
-    let skipe = 80
+    let skipe = 150, maxPubkeys = 1079000
     for(let i = 0; i < pubkeys.length; i += skipe) 
     {
         let authors = pubkeys.slice(i, i + skipe)
@@ -43,9 +43,11 @@ export const listPubkeys = async (pool: RelayPool, author: string) => {
                     pubkeys.push(pubkey)
             })
         })
+
+        if(pubkeys.length > maxPubkeys) break
     }
 
-    file.clear()
+    await file.clear()
 
     pubkeys.forEach(pubkey => file.writeLine(pubkey))
 
