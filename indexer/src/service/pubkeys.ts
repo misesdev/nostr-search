@@ -4,11 +4,10 @@ import { getPubkeys } from "../utils";
 
 export const listPubkeys = async (pool: RelayPool, author: string, listRelays: boolean = false) => {
     
+    const relays: string[] = []
+    const pubkeys: string[] = []
     const filePubkeys = new FileSystem("./data/pubkeys.db")
     const fileRelays = new FileSystem("./data/relays.db")
-
-    const pubkeys: string[] = []
-    const relays: string[] = []
 
     filePubkeys.readLines(async (pubkey) => {
         pubkeys.push(pubkey)
