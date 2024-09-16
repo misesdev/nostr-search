@@ -15,3 +15,7 @@ export type Filter = {
     limit: number
 }
 
+export type UserFriends = {
+    pubkey: string,
+    friends: number[]
+}

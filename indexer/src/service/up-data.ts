@@ -2,7 +2,7 @@ import { FileSystem  } from "../filesytem/disk";
 
 export const loadData = async () => {
     
-    const fileUsers = new FileSystem("users.db");
+    const fileUsers = new FileSystem("./data/users.db");
 
     fileUsers.readLines(async (line) => {
         

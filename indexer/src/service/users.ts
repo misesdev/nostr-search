@@ -4,9 +4,17 @@ import { Event } from "../modules/types";
 
 const defaultProfile = "https://blob.nostroogle.org/files/storage/ec362271f59dbc624ae0c9654/hczhqsKU5okwFDpeASqhNKwYykBGP1ne1QvtGGCR.png";
 
-const sanitiseUser = (event: Event): any => {
+type User = {
+    name: string,
+    displayName: string,
+    profile: string,
+    about: string,
+    pubkey: string
+}
 
-    let user = JSON.parse(event.content)
+const sanitiseUser = (event: Event): User => {
+
+    let user : User = JSON.parse(event.content)
 
     let properties = ["name", "displayName", "profile", "about", "pubkey"]
 
@@ -43,11 +51,11 @@ const sanitiseUser = (event: Event): any => {
     if(user["profile"].length > 149)
         user["profile"] = defaultProfile
 
-    if(user["about"] && user["about"].length > 180)
-        user["about"] = `${user["about"].substring(0, 176)}...`
+    // if(user["about"] && user["about"].length > 180)
+    //     user["about"] = `${user["about"].substring(0, 176)}...`
 
-    if(user["about"].length >= 178)
-        user["about"] = user["about"].replace(/\\u[0-9A-Fa-f]*\.{3}$/, '...')
+    // if(user["about"].length >= 178)
+    //     user["about"] = user["about"].replace(/\\u[0-9A-Fa-f]*\.{3}$/, '...')
 
     user["pubkey"] = event.pubkey
 
@@ -63,8 +71,8 @@ export const listUsers = async (pool: RelayPool) => {
     
     const pubkeys: string[] = []
 
-    const fileUsers = new FileSystem("users.db");
-    const filePubkeys = new FileSystem("pubkeys.db");
+    const fileUsers = new FileSystem("./data/users.db");
+    const filePubkeys = new FileSystem("./data/pubkeys.db");
 
     await filePubkeys.readLines(async (line) => { 
         pubkeys.push(line) 
