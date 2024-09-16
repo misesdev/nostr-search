@@ -1,14 +1,15 @@
 #ifndef UP_USERS_C
 #define UP_USERS_C
 
-#include "./server.c"
-#include "../types/types.c"
-#include "../utils/user_utils.c"
-#include "../filesystem/rdisk.c"
+#include "../../types/types.c"
+#include "../../utils/user_utils.c"
+#include "../../types/user_trie.c"
+
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
-HttpResponse* requestProcessSearch(char *request, struct TrieNode *root)
+HttpResponse* insertUser(char *request, struct TrieNode *root)
 {
     HttpResponse *response = malloc(sizeof(HttpResponse));
 
@@ -29,12 +30,6 @@ HttpResponse* requestProcessSearch(char *request, struct TrieNode *root)
     return response;
 }
 
-void upUsers(int port) 
-{
-    struct TrieNode *root = loadTrieFromDisk();
-
-    upServer(requestProcessSearch, root, port);
-}
 
 #endif
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-gcc ./main.c -o ./build/search.bin -lcjson &&
+gcc ./main.c -o ./build/nostr-find.bin -lcjson &&
 
-./build/search.bin add-users 8080
+./build/nostr-find.bin 
 
 

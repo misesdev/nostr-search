@@ -6,7 +6,6 @@
 #include <string.h>
 #include "../types/types.c"
 
-
 bool isPostRequest(char *request)
 {
     return (strstr(request, "POST") != NULL);

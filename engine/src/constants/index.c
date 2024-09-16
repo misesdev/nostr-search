@@ -1,7 +1,6 @@
 #ifndef CONSTANT_INDEX_C
 #define CONSTANT_INDEX_C
 
-
 // Tree Trie Definitions 
 #define MAX_RESPONSE_LENGTH 2048
 #define TRIE_CHILDREN_LENGTH 255

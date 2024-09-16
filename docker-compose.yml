@@ -1,16 +1,16 @@
 
 services:
   
-  # app:
-  #   build:
-  #     context: ./app/
-  #   container_name: search-engine-app
-  #   volumes:
-  #     - ./app/:/usr/src/app
-  #   ports:
-  #     - "3000:80"
-  #   networks: 
-  #     - app-network 
+  app:
+    build:
+      context: ./app/
+    container_name: search-engine-app
+    volumes:
+      - ./app/:/app/data
+    ports:
+      - "80:3000"
+    networks: 
+      - app-network 
 
   engine:
     build:

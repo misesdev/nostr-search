@@ -10,7 +10,7 @@
 #include <pthread.h> 
 #include <sys/types.h>
 #include <sys/sysinfo.h> 
-#include "../utils/http_utils.c"
+#include "../../utils/http_utils.c"
 
 #define SIZE_BUFFER 1024
 #define MAX_THREADS 500  // Limite máximo de threads para controlar o uso de memória
