@@ -22,7 +22,7 @@ HttpResponse* searchUsers(char *request, struct TrieNode *root)
     struct TrieNode *userNode = getTrieNodeFromPubkey(root, searchParams->pubkey);
 
     if(!userNode) {
-        strcpy(response->Content, "Focal user not found, please provide a valid public key");
+        responseMessage(response->Content, "Focal user not found, please provide a valid public key");
         response->StatusCode = 403;
         return response;
     }

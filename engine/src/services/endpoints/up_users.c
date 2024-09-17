@@ -6,7 +6,6 @@
 #include "../../types/user_trie.c"
 
 #include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 
 HttpResponse* insertUser(char *request, struct TrieNode *root)
@@ -24,7 +23,7 @@ HttpResponse* insertUser(char *request, struct TrieNode *root)
 
     printf("user inserted: %s\n", user->displayName);
 
-    strcpy(response->Content, "{ \"message\": \"User added successfully\" }");
+    responseMessage(response->Content, "User added successfully");
     response->StatusCode = 200;
 
     return response;

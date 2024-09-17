@@ -4,7 +4,6 @@
 #include "./server.c"
 #include "./router.c"
 #include "../../types/types.c"
-#include "../../utils/user_utils.c"
 #include "../../filesystem/rdisk.c"
 #include "../../filesystem/wdisk.c"
 
@@ -38,8 +37,6 @@ void upApplication(int port)
 
     printf("\napplication pid: %d\n\n", getpid());
 
-    //showUsersOfTrie(root);
- 
     upServer(router, root, port);
 }
 

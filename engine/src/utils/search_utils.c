@@ -17,7 +17,7 @@ Search* jsonToSearchParams(char *json, char *error)
     cJSON *jsonParams = cJSON_Parse(json);
 
     if(!jsonParams) {
-        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'pubkey', 'limit' and 'searchTerm'\" }");
+        responseMessage(error, "Error when parsing json, expected properties 'pubkey', 'limit' and 'searchTerm'");
         return NULL;
     }
 
@@ -34,7 +34,7 @@ Search* jsonToSearchParams(char *json, char *error)
         snprintf(searchParams->search, 100, "%s", search->valuestring);        
         searchParams->limit = limit->valueint;
     } else {
-        strcpy(error, "{ \"message\": \"Error when parsing search, expected properties 'pubkey', 'limit' and 'searchTerm'\" }");
+        responseMessage(error, "Error when parsing search, expected properties 'pubkey', 'limit' and 'searchTerm'");
         free(searchParams);
         cJSON_Delete(jsonParams);
         return NULL;
@@ -94,7 +94,7 @@ struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
 
         visitedCount++;
 
-        if (textSimilarity(currentNode->user->name, searchTerm) > MIN_SIMILARITY_TERM) {
+        if (textSimilarity(currentNode->user->name, searchTerm) >= MIN_SIMILARITY_TERM) {
             insertUniqueUserNode(resultList, currentNode->user);
             foundCount++;  
         }

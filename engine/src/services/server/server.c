@@ -23,9 +23,17 @@ typedef struct {
 } client_info;
 
 // Função para processar cada conexão de cliente em uma thread separada
-void* handle_client(void* arg) {
+void* handle_client(void* arg) 
+{
     client_info* client = (client_info*)arg;
     char *buffer = malloc(SIZE_BUFFER);
+    
+    if(!buffer) {
+        perror("failed to allocate memory for request buffer");
+        close(client->socket);
+        free(client);  
+        return NULL;
+    }
 
     int bytes_read = read(client->socket, buffer, SIZE_BUFFER);
     
@@ -46,7 +54,7 @@ void* handle_client(void* arg) {
 
     close(client->socket);
     free(buffer);
-    free(client);  // Free the allocated memory for client_info
+    free(client);  
     return NULL;
 }
 
@@ -81,7 +89,17 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
 
     printf("tcp server listening in port: %d\n", port);
 
-    while (1) {
+    while (true) 
+    {
+        // Verifica o uso da memória do sistema
+        struct sysinfo sys_info;
+        sysinfo(&sys_info);
+        if (sys_info.freeram < 1024 * 1024 * 400) { // if free memory for menor que 300 MB, aguarde
+            //printf("Memória baixa, aguardando...\n");
+            continue;
+            //pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
+        }
+
         client_info* client = malloc(sizeof(client_info)); // Aloca memória para cada cliente
         if (!client) {
             perror("fail in the allocation of memory for the client\n");
@@ -104,14 +122,6 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
             perror("failed to create the thread\n");
             close(client->socket);
             free(client);
-        }
-
-        // Verifica o uso da memória do sistema
-        struct sysinfo sys_info;
-        sysinfo(&sys_info);
-        if (sys_info.freeram < 1024 * 1024 * 500) { // Se a memória livre for menor que 500 MB, aguarde
-            printf("Memória baixa, aguardando...\n");
-            pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
         }
     }
 

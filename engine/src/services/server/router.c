@@ -7,6 +7,7 @@
 #include "../endpoints/up_friends.c"
 #include "../endpoints/tree_save.c"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,10 +24,13 @@ HttpResponse* router(char *request, struct TrieNode *root)
 
     HttpResponse *notFound = malloc(sizeof(HttpResponse));
 
-    strcpy(notFound->Content, 
-    "{"
-        "\"message\": \"Please use one of the following endpointes: /add_user, /add_friends, /search and /save\""
-    "}");
+    if(!notFound) {
+        perror("failed to alocate memory for response");
+        return NULL;
+    }
+
+    responseMessage(notFound->Content, "Please use one of the following endpointes: "
+                    "/add_user, /add_friends, /search and /save");
 
     notFound->StatusCode = 403;
 

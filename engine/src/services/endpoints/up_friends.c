@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 HttpResponse* insertFriends(char *request, struct TrieNode *root)
 {
@@ -24,7 +23,7 @@ HttpResponse* insertFriends(char *request, struct TrieNode *root)
 
     if(!userNode)
     {
-        strcpy(response->Content, "{ \"message\": \"User not found\" }");
+        responseMessage(response->Content, "User not found");
         response->StatusCode = 204;
         free(friends);
         return response;
@@ -39,12 +38,12 @@ HttpResponse* insertFriends(char *request, struct TrieNode *root)
 
         if(friendNode) {
             insertFriendIfNotExist(userNode->user, friendNode->user);
-            printf("    insert friend: %s\n", friendNode->user->displayName);
+            printf("    friend: %s\n", friendNode->user->displayName);
         }
         current = current->next;
     }
 
-    strcpy(response->Content, "{ \"message\": \"add friends succefully\" }");
+    responseMessage(response->Content, "add friends succefully");
     response->StatusCode = 200; 
     free(friends);
     

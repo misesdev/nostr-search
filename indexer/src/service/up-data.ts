@@ -46,6 +46,9 @@ export const loadData = async () => {
 
             let friends: string[] = []
             let userFriends: UserFriends = JSON.parse(line);
+
+            if(userFriends.friends.length <= 0)
+                resolve(true)
             
             let user: User = { 
                 pubkey: userFriends.pubkey,
@@ -54,7 +57,7 @@ export const loadData = async () => {
             
             userFriends.friends.forEach(index => {
                 let pubkey = pubkeys[index]
-                if(pubkey) 
+                if(pubkey && pubkey.length == 64) 
                     friends.push(pubkey)
             })
 
@@ -69,13 +72,12 @@ export const loadData = async () => {
                 })
 
                 let data = await response.json()
-                
-                if(!response.ok) console.log(user)
-
-                console.log(data.message)
+            
+                console.log("pubkey:", user.pubkey)
+                console.log("-> response:", data.message)
             }
 
-            setTimeout(() => resolve(true), 100)
+            setTimeout(() => resolve(true), 50)
         })
     })
 

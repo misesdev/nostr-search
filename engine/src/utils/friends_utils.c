@@ -6,6 +6,7 @@
 #include "./http_utils.c"
 #include "../types/types.c"
 #include "../types/user_list.c"
+#include "./http_utils.c"
 
 #include <cjson/cJSON.h>
 #include <stdio.h>
@@ -26,7 +27,7 @@ struct FriendNode* createFriendNode(char *pubkey)
 
 struct FriendNode* invalidPubkey(cJSON *json, struct FriendNode *friends, char *error) 
 {
-    strcpy(error, "{ \"message\": \"One invalid pubkey\" }");
+    responseMessage(error, "One invalid pubkey");
     cJSON_Delete(json);
     free(friends);
     
@@ -42,7 +43,7 @@ struct FriendNode* jsonToFriends(char *request, char *error)
     cJSON *jsonFriends = cJSON_Parse(jsonParams);
 
     if(!jsonFriends) {
-        strcpy(error, "{ \"message\": \"Error when parsing json, invalid json properties\" }");
+        responseMessage(error, "Error when parsing json, invalid json properties");
         return NULL;
     }
     
@@ -51,13 +52,13 @@ struct FriendNode* jsonToFriends(char *request, char *error)
 
     if(!cJSON_IsString(pubkey)) 
     {
-        strcpy(error, "{ \"message\": \"Expectd propertie 'pubkey' \" }");
+        responseMessage(error, "Expectd propertie 'pubkey'");
         cJSON_Delete(jsonFriends);
         return NULL;
     }
 
     if(!cJSON_IsArray(friends)) {
-        strcpy(error, "{ \"message\": \"Expectd propertie 'friends', an array with pubkeys\" }");
+        responseMessage(error, "Expectd propertie 'friends', an array with pubkeys");
         cJSON_Delete(jsonFriends);
         return NULL;
     }

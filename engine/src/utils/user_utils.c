@@ -70,7 +70,8 @@ User* jsonToUser(char *jsonString, char *error)
     cJSON *json = cJSON_Parse(jsonString);
 
     if(!json) {
-        strcpy(error, "{ \"message\": \"Error when parsing json, expected properties 'name', 'displayName', 'pubkey' and 'profile'\" }");
+        responseMessage(error, "Error when parsing json, expected properties"
+                        "'name', 'displayName', 'pubkey' and 'profile'");
         return NULL;
     }
 
@@ -94,7 +95,8 @@ User* jsonToUser(char *jsonString, char *error)
     } 
     else 
     {
-        strcpy(error, "{ \"message\": \"Error when parsing user, expected properties 'name', 'displayName', 'pubkey' and 'profile'\" }");
+        responseMessage(error, "Error when parsing user, expected properties 'name', "
+                        "'displayName', 'pubkey' and 'profile'");
         cJSON_Delete(json);
         free(user);
         return NULL;

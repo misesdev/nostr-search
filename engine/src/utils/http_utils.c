@@ -6,6 +6,11 @@
 #include <string.h>
 #include "../types/types.c"
 
+void responseMessage(char *response, char *message)
+{
+    snprintf(response, MAX_RESPONSE_LENGTH, "{ \"message\": \"%s\" }", message);
+}
+
 bool isPostRequest(char *request)
 {
     return (strstr(request, "POST") != NULL);
@@ -17,7 +22,7 @@ char* requestParams(char *request, char *error)
 
     if(!isPostRequest(request))
     {
-        strcpy(error, "{ \"message\": \"Expected POST request with Content-Type: application/json\" }");
+        responseMessage(error, "Expected POST request with Content-Type: application/json");
         return NULL;
     }
 
@@ -27,7 +32,7 @@ char* requestParams(char *request, char *error)
         jsonResult += 4;
 
     if(!jsonResult) {
-        strcpy(error, "{ \"message\": \"Expected JSON content format\" }");
+        responseMessage(error, "Expected JSON content format");
         return NULL;
     }
 
