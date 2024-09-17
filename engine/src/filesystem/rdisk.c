@@ -92,19 +92,48 @@ struct TrieNode* loadTrieFromDisk()
 {
     mkdir("./data", 0777);
 
+    long defaultUsers = 0, offset = 0;
+
     FILE *fileUsers = fopen("./data/users.db", "rb");
     FILE *fileFriends = fopen("./data/friends.db", "rb");
 
-    if(!fileUsers) return NULL;
-    if(!fileFriends) return NULL;
+    if(!fileUsers) 
+    {
+        FILE *file = fopen("./data/users.db", "wb");
+        
+        if(!file) return NULL;
+
+        fseek(file, offset, SEEK_SET);
+        fwrite(&defaultUsers, sizeof(long), 1, file);
+        fclose(file);
+
+        fileUsers = fopen("./data/users.db", "rb");
+
+        if(!fileUsers) return NULL;
+    }
+
+    if(!fileFriends) 
+    {
+        FILE *file = fopen("./data/friends.db", "wb");
+        
+        if(!file) return NULL;
+
+        fseek(file, offset, SEEK_SET);
+        fwrite(&defaultUsers, sizeof(long), 1, file);
+        fclose(file);
+
+        fileFriends = fopen("./data/friends.db", "rb");
+
+        if(!fileFriends) return NULL;
+    }
 
     long usersCount = 0;
     struct TrieNode* root = loadUsersTree(fileUsers, &usersCount);
     
     loadFriendsFromDisk(fileFriends, root);
 
-    fclose(fileUsers);
     fclose(fileFriends);
+    fclose(fileUsers);
     
     return root;
 }

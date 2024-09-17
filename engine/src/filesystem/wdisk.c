@@ -114,7 +114,7 @@ bool loadTrieInDisk(struct TrieNode *root)
     struct UserNode *rootUsers = createUserNode(NULL);
 
     serialiseUsersFromTrie(root, rootUsers, &userCount);
-    
+
     loadUsersOnDisk(fileUsers, rootUsers, userCount);
 
     loadFriendsOnDisk(fileFriends, rootUsers, userCount);

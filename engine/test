@@ -1,7 +1,0 @@
-#!/bin/bash
-
-gcc ./src/filesystem/disk_test.c -o ./build/disk_test.bin -lcjson &&
-
-./build/disk_test.bin
-
-

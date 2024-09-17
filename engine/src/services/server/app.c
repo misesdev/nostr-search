@@ -35,6 +35,12 @@ void upApplication(int port)
 
     root = loadTrieFromDisk();
 
+    if(!root) 
+    {
+        printf("\nfailed when reading files\n");
+        exit(0);
+    }
+
     printf("\napplication pid: %d\n\n", getpid());
 
     upServer(router, root, port);
