@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 typedef struct {
-    char name[45];
+    char name[45]; // 45 bytes + byte null end
     char pubkey[65]; // 64 bytes + byte null end
     char profile[150];
     char displayName[45];
@@ -37,10 +37,15 @@ typedef struct {
     int limit;
 } Search;
 
-typedef  struct {
+typedef struct {
     int StatusCode;
     char Content[MAX_RESPONSE_LENGTH];
 } HttpResponse;
+
+struct FriendNode {
+    uint8_t address[ADDRESS_LENGTH];
+    struct FriendNode *next;
+};
 
 #endif
 

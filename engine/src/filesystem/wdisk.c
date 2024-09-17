@@ -67,7 +67,8 @@ void loadFriendsFromUser(FILE *file, User *user, long *offset)
     *offset += sizeof(long);
 
     struct UserNode *current = user->friends;
-    while (current) {
+    while (current) 
+    {
         if(current->user) 
         {
             fseek(file, *offset, SEEK_SET);
@@ -109,6 +110,7 @@ bool loadTrieInDisk(struct TrieNode *root)
     if(!fileFriends) return false;
 
     long userCount = 0;
+
     struct UserNode *rootUsers = createUserNode(NULL);
 
     serialiseUsersFromTrie(root, rootUsers, &userCount);

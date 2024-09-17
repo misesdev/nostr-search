@@ -47,8 +47,6 @@ Search* getSearchParams(char *request, char *error)
 {
     char *jsonParams = requestParams(request, error);
 
-    printf("reccept json: \n%s", jsonParams);
-
     if(!jsonParams) return NULL;
 
     Search *searchParams = jsonToSearchParams(jsonParams, error);

@@ -2,16 +2,51 @@
 #define UP_FRIENDS_C
 
 #include "../../types/types.c"
+#include "../../types/user_trie.c"
+#include "../../utils/friends_utils.c"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 HttpResponse* insertFriends(char *request, struct TrieNode *root)
 {
     HttpResponse *response = malloc(sizeof(HttpResponse));
+    
+    struct FriendNode *friends = jsonToFriends(request, response->Content);
 
-    strcpy(response->Content, "{ \"message\": \"Not implementd\" }");
-    response->StatusCode = 400; 
+    if(!friends) {
+        response->StatusCode = 403;
+        return response;
+    }
+
+    struct TrieNode *userNode = getTrieNode(root, friends->address);
+
+    if(!userNode)
+    {
+        strcpy(response->Content, "{ \"message\": \"User not found\" }");
+        response->StatusCode = 204;
+        free(friends);
+        return response;
+    }
+
+    printf("username: %s\n", userNode->user->displayName);
+
+    struct FriendNode *current = friends->next;
+    while(current)
+    {
+        struct TrieNode *friendNode = getTrieNode(root, current->address);
+
+        if(friendNode) {
+            insertFriendIfNotExist(userNode->user, friendNode->user);
+            printf("    insert friend: %s\n", friendNode->user->displayName);
+        }
+        current = current->next;
+    }
+
+    strcpy(response->Content, "{ \"message\": \"add friends succefully\" }");
+    response->StatusCode = 200; 
+    free(friends);
     
     return response;
 }

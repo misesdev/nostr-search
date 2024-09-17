@@ -21,9 +21,12 @@ char* requestParams(char *request, char *error)
         return NULL;
     }
 
-    if ((jsonResult = strstr(request, "\r\n\r\n")) != NULL)
+    jsonResult = strstr(request, "\r\n\r\n");
+
+    if (jsonResult)
         jsonResult += 4;
-    else {
+
+    if(!jsonResult) {
         strcpy(error, "{ \"message\": \"Expected JSON content format\" }");
         return NULL;
     }

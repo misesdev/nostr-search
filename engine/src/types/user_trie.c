@@ -52,6 +52,7 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
         strcpy(current->user->displayName, user->displayName);
         strcpy(current->user->pubkey, user->pubkey);
         strcpy(current->user->profile, user->profile);
+        free(user);
     } else {
         current->isEndOfKey = true;
         current->user = user;

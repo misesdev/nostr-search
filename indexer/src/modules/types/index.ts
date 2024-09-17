@@ -19,3 +19,8 @@ export type UserFriends = {
     pubkey: string,
     friends: number[]
 }
+
+export type User = {
+    pubkey: string,
+    friends: string[]
+}

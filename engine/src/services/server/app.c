@@ -25,13 +25,13 @@ void handle_signal(int signal_command)
     }
 }
 
-struct TrieNode *root;
-
 void upApplication(int port)
 {
     signal(SIGKILL, handle_signal);
     signal(SIGTERM, handle_signal);
     signal(SIGINT, handle_signal);
+
+    printf("loading tree from disk...\n");
 
     root = loadTrieFromDisk();
 

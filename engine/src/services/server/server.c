@@ -12,7 +12,7 @@
 #include <sys/sysinfo.h> 
 #include "../../utils/http_utils.c"
 
-#define SIZE_BUFFER 1024
+#define SIZE_BUFFER 1024 * 50 // 10 kbytes
 #define MAX_THREADS 500  // Limite máximo de threads para controlar o uso de memória
 
 typedef struct {
@@ -25,11 +25,13 @@ typedef struct {
 // Função para processar cada conexão de cliente em uma thread separada
 void* handle_client(void* arg) {
     client_info* client = (client_info*)arg;
-    char buffer[SIZE_BUFFER];
-    memset(buffer, 0, SIZE_BUFFER);
+    char *buffer = malloc(SIZE_BUFFER);
 
-    int bytes_read = read(client->socket, buffer, SIZE_BUFFER - 1);
-    if (bytes_read > 0) {
+    int bytes_read = read(client->socket, buffer, SIZE_BUFFER);
+    
+    // Adiciona o terminador NUL no final
+    if (bytes_read > 0) 
+    {
         logRequest(buffer);
                 
         HttpResponse *response = client->executeRequest(buffer, client->root);
@@ -43,6 +45,7 @@ void* handle_client(void* arg) {
     }
 
     close(client->socket);
+    free(buffer);
     free(client);  // Free the allocated memory for client_info
     return NULL;
 }

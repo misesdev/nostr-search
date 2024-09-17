@@ -20,12 +20,15 @@ void insertUserNode(struct UserNode *node, User *user)
         return;
     }
 
-    while (1) {
-        if(!node->next) {
-            node->next = createUserNode(user);
+    struct UserNode *current = node;
+    while (current) 
+    {
+        if(!current->next)
+        {
+            current->next = createUserNode(user);
             break;
         }
-        node = node->next;
+        current = current->next;
     }
 }
 

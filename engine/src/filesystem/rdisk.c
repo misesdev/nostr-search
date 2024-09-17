@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include "../types/types.c"
 #include "../types/user_trie.c"
 #include "../utils/user_utils.c"
@@ -89,6 +90,8 @@ void loadFriendsFromDisk(FILE *file, struct TrieNode *root)
 
 struct TrieNode* loadTrieFromDisk() 
 {
+    mkdir("./data", 0777);
+
     FILE *fileUsers = fopen("./data/users.db", "rb");
     FILE *fileFriends = fopen("./data/friends.db", "rb");
 
