@@ -27,7 +27,7 @@ export const loadData = async () => {
 
             if(!response.ok) console.log(data)
 
-            setTimeout(() => resolve(true), 100)
+            setTimeout(() => resolve(true), 50)
         })
     })
 
@@ -75,7 +75,7 @@ export const loadData = async () => {
                 console.log(data.message)
             }
 
-            setTimeout(() => resolve(true), 200)
+            setTimeout(() => resolve(true), 100)
         })
     })
 
