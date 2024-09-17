@@ -89,6 +89,11 @@ struct FriendNode* jsonToFriends(char *request, char *error)
 
 void insertFriendIfNotExist(User *user, User *friend)
 {
+    if(!user->friends) {
+        user->friends = createUserNode(friend);
+        return;
+    }
+
     struct UserNode *current = user->friends;
     while(current)
     {

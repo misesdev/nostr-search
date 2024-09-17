@@ -32,7 +32,8 @@ void insertFriend(User *user, User *friend)
     }
 
     struct UserNode *current = user->friends;
-    while(current) {
+    while(current) 
+    {
         if(!current->next) {
             current->next = createUserNode(friend);
             break;
@@ -50,16 +51,17 @@ void showUsersOfTrie(struct TrieNode *root)
         list = list->next;
     }
 
+    long users = 0;
     if(root->isEndOfKey) {
         uint8_t address[ADDRESS_LENGTH];
         compressPubkey(root->user->pubkey, address);
         printf("username: %s\n", root->user->name);
-        printf("    pubkey: %s\n", root->user->pubkey);
         struct UserNode *friends = root->user->friends;
         while(friends) {
             printf("    friend: %s\n", friends->user->name);
             friends = friends->next;
         }
+        users++;
     }
 }
 

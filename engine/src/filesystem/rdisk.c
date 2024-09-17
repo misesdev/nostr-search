@@ -56,10 +56,14 @@ void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
 
     if(userNode) 
     {
+        printf("username: %s\n", userNode->user->name);
+
         long friendsCount;
         fseek(file, *offset, SEEK_SET);
         fread(&friendsCount, sizeof(long), 1, file);
         *offset += sizeof(long);
+
+        printf("    total friends: %ld\n", friendsCount);
 
         for(long i = 0; i < friendsCount; i++) 
         {
@@ -72,6 +76,7 @@ void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
             if(friendNode->user) {
                 insertFriend(userNode->user, friendNode->user);
             }
+            printf("    friend: %s\n", friendNode->user->name);
         }
     }
 }
@@ -83,9 +88,13 @@ void loadFriendsFromDisk(FILE *file, struct TrieNode *root)
     fread(&usersCount, sizeof(long), 1, file);
     offset += sizeof(long);
 
+    long users = 0;
     for(long i = 0; i < usersCount; i++) {
         loadFriendOnTree(file, root, &offset);
+        users++;
     }
+
+    //printf("total users: %ld", users);
 }
 
 struct TrieNode* loadTrieFromDisk() 
