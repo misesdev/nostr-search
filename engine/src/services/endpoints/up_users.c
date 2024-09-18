@@ -11,6 +11,9 @@
 HttpResponse* insertUser(char *request, struct TrieNode *root)
 {
     HttpResponse *response = malloc(sizeof(HttpResponse));
+    
+    if(!response) 
+        printf("failed to alocate memory for response");
 
     User *user = getUserFromRequest(request, response->Content);
     
@@ -19,9 +22,9 @@ HttpResponse* insertUser(char *request, struct TrieNode *root)
         return response;
     }
 
-    insertTrieNode(root, user);
+    struct TrieNode *userNode = insertTrieNode(root, user);
 
-    printf("user inserted: %s\n", user->displayName);
+    printf("user inserted: %s\n", userNode->user->displayName);
 
     responseMessage(response->Content, "User added successfully");
     response->StatusCode = 200;

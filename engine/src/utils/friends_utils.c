@@ -6,7 +6,7 @@
 #include "./http_utils.c"
 #include "../types/types.c"
 #include "../types/user_list.c"
-#include "./http_utils.c"
+#include "../utils/http_utils.c"
 
 #include <cjson/cJSON.h>
 #include <stdio.h>

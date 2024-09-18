@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 HttpResponse* saveTrieOnDisk(char *request, struct TrieNode *root)
 {
     HttpResponse *response = malloc(sizeof(HttpResponse));
@@ -19,7 +18,14 @@ HttpResponse* saveTrieOnDisk(char *request, struct TrieNode *root)
         return NULL;
     }
 
-    printf("loading tree on disk..");
+    if(!isPostRequest(request))
+    {
+        responseMessage(response->Content, "Accept only POST request with Content-Type: application/json");
+        response->StatusCode = 403;
+        return response;
+    }
+
+    printf("loading tree on disk..\n");
 
     loadTrieInDisk(root);
 

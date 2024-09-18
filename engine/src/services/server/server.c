@@ -12,6 +12,7 @@
 #include <sys/sysinfo.h> 
 #include "../../utils/http_utils.c"
 
+#define MIN_FREE_MEMORY 1024 * 1024 * 200
 #define SIZE_BUFFER 1024 * 50 // 10 kbytes
 #define MAX_THREADS 500  // Limite máximo de threads para controlar o uso de memória
 
@@ -94,7 +95,7 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
         // Verifica o uso da memória do sistema
         struct sysinfo sys_info;
         sysinfo(&sys_info);
-        if (sys_info.freeram < 1024 * 1024 * 400) { // if free memory for menor que 300 MB, aguarde
+        if (sys_info.freeram < MIN_FREE_MEMORY) { // if free memory for menor que 300 MB, aguarde
             //printf("Memória baixa, aguardando...\n");
             continue;
             //pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
