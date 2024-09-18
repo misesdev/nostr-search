@@ -14,7 +14,7 @@ User* loadUserFromDisk(FILE *file, long offset)
 {
     fseek(file, offset, SEEK_SET);
 
-    User *user = malloc(sizeof(User));
+    User *user = calloc(1, sizeof(User));
 
     fread(user, sizeof(User), 1, file);
 
@@ -25,17 +25,16 @@ User* loadUserFromDisk(FILE *file, long offset)
 
 struct TrieNode* loadUsersTree(FILE *file, long *usersCount) 
 {
-    User *currentUser;
-    long count, offset = 0;
-
+    long count = 0, offset = 0;
     fseek(file, offset, SEEK_SET);
     fread(&count, sizeof(long), 1, file);
     offset += sizeof(long);
 
     struct TrieNode *root = createTrieNode(0);
 
-    for(int i = 0; i < count; i++) {
-        currentUser = loadUserFromDisk(file, offset);
+    for(int i = 0; i < count; i++) 
+    {
+        User *currentUser = loadUserFromDisk(file, offset);
         insertTrieNode(root, currentUser);
         offset += sizeof(User);
         usersCount++;
@@ -46,7 +45,7 @@ struct TrieNode* loadUsersTree(FILE *file, long *usersCount)
 
 void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
 {
-    uint8_t address[ADDRESS_LENGTH];
+    uint8_t address[ADDRESS_LENGTH] = {0};
 
     fseek(file, *offset, SEEK_SET);
     fread(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
@@ -56,7 +55,7 @@ void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
 
     if(userNode) 
     {
-        long friendsCount;
+        long friendsCount = 0;
         fseek(file, *offset, SEEK_SET);
         fread(&friendsCount, sizeof(long), 1, file);
         *offset += sizeof(long);
@@ -69,16 +68,15 @@ void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
 
             struct TrieNode *friendNode = getTrieNode(root, address);
             
-            if(friendNode->user) {
-                insertFriend(userNode->user, friendNode->user);
-            }
+            if(friendNode->user) 
+                insertFriend(userNode->user, friendNode->user);            
         }
     }
 }
 
 void loadFriendsFromDisk(FILE *file, struct TrieNode *root)
 {
-    long usersCount, offset = 0;
+    long usersCount = 0, offset = 0;
     fseek(file, offset, SEEK_SET);
     fread(&usersCount, sizeof(long), 1, file);
     offset += sizeof(long);

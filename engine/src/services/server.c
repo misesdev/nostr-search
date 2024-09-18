@@ -10,10 +10,10 @@
 #include <pthread.h> 
 #include <sys/types.h>
 #include <sys/sysinfo.h> 
-#include "../../utils/http_utils.c"
+#include "../utils/http_utils.c"
 
-#define MIN_FREE_MEMORY 1024 * 1024 * 200
-#define SIZE_BUFFER 1024 * 50 // 10 kbytes
+#define MIN_FREE_MEMORY 1024 * 1024 * 100
+#define SIZE_BUFFER 1024 * 10 // 10 kbytes
 #define MAX_THREADS 500  // Limite máximo de threads para controlar o uso de memória
 
 typedef struct {
@@ -27,7 +27,7 @@ typedef struct {
 void* handle_client(void* arg) 
 {
     client_info* client = (client_info*)arg;
-    char *buffer = malloc(SIZE_BUFFER);
+    char *buffer = calloc(SIZE_BUFFER, sizeof(char));
     
     if(!buffer) {
         perror("failed to allocate memory for request buffer");
@@ -92,16 +92,16 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
 
     while (true) 
     {
-        // Verifica o uso da memória do sistema
-        struct sysinfo sys_info;
-        sysinfo(&sys_info);
-        if (sys_info.freeram < MIN_FREE_MEMORY) { // if free memory for menor que 300 MB, aguarde
-            //printf("Memória baixa, aguardando...\n");
-            continue;
-            //pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
-        }
+        // // Verifica o uso da memória do sistema
+        // struct sysinfo sys_info;
+        // sysinfo(&sys_info);
+        // if (sys_info.freeram < MIN_FREE_MEMORY) { // if free memory for menor que 300 MB, aguarde
+        //     //printf("Memória baixa, aguardando...\n");
+        //     continue;
+        //     //pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
+        // }
 
-        client_info* client = malloc(sizeof(client_info)); // Aloca memória para cada cliente
+        client_info* client = calloc(1, sizeof(client_info)); // Aloca memória para cada cliente
         if (!client) {
             perror("fail in the allocation of memory for the client\n");
             continue; // Tenta aceitar uma nova conexão
@@ -123,6 +123,14 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
             perror("failed to create the thread\n");
             close(client->socket);
             free(client);
+        }
+
+        // Verifica o uso da memória do sistema
+        struct sysinfo sys_info;
+        sysinfo(&sys_info);
+        if (sys_info.freeram < MIN_FREE_MEMORY) { // if free memory for menor que 300 MB, aguarde
+            printf("Memória baixa, aguardando...\n");
+            pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
         }
     }
 

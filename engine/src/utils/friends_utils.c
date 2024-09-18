@@ -5,7 +5,6 @@
 #include "./utils.c"
 #include "./http_utils.c"
 #include "../types/types.c"
-#include "../types/user_list.c"
 #include "../utils/http_utils.c"
 
 #include <cjson/cJSON.h>
@@ -16,7 +15,7 @@
 
 struct FriendNode* createFriendNode(char *pubkey)
 {
-    struct FriendNode* node = malloc(sizeof(struct FriendNode));
+    struct FriendNode* node = calloc(1, sizeof(struct FriendNode));
     
     compressPubkey(pubkey, node->address);
 
@@ -88,24 +87,5 @@ struct FriendNode* jsonToFriends(char *request, char *error)
     return userFriends;
 }
 
-void insertFriendIfNotExist(User *user, User *friend)
-{
-    if(!user->friends) {
-        user->friends = createUserNode(friend);
-        return;
-    }
-
-    struct UserNode *current = user->friends;
-    while(current)
-    {
-        if(strcmp(current->user->pubkey, friend->pubkey) == 0)
-            break;
-
-        if(!current->next)
-            current->next = createUserNode(friend);
-            
-        current = current->next;
-    }
-}
 
 #endif

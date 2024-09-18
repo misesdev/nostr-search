@@ -1,12 +1,15 @@
 #ifndef UTILS_C
 #define UTILS_C
 
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <ctype.h>
 #include <string.h>
 #include <sys/types.h>
-#include "../types/types.c"
+
+#include "../constants/index.c"
 
 int getRowInteger(char character)
 {
@@ -17,22 +20,18 @@ int getRowInteger(char character)
     return character - '0';
 }
 
-uint8_t* hexToBytes(char *hex) 
+void hexToBytes(char *hex, uint8_t *bytes) 
 {
-    int length = strlen(hex);
-    uint8_t *bytes = malloc((length / 2) * sizeof(uint8_t));
-
     int index = 0;
     uint8_t decimal;
-    for(uint8_t i = 0; i < length; i += 2)
+
+    for(size_t i = 0; i < strlen(hex); i += 2)
     {
         decimal = getRowInteger(hex[i]) * 16;
         decimal += getRowInteger(hex[i + 1]);
         bytes[index] = decimal;
         index++;
     }
-
-    return bytes; 
 }
 
 int parseInt(char *decimal)
@@ -79,14 +78,15 @@ float textSimilarity(char *origin, char *compare)
 
 void compressPubkey(char *pubkey, uint8_t *address)
 {
-    int index = 0;
-    uint8_t *numbers = hexToBytes(pubkey);
+    uint8_t index = 0;
+    uint8_t numbers[PUBKEY_LENGTH] = {0};
 
-    for(int i = 0; i < 30; i += 2) {
+    hexToBytes(pubkey, numbers);
+
+    for(uint8_t i = 0; i < PUBKEY_LENGTH; i += 2) {
         address[index] = (numbers[i] * numbers[i+1]) % TRIE_CHILDREN_LENGTH;
         index++;
     }
-    free(numbers);
 }
 
 char* strconcat(char *str1, char *str2)
@@ -111,6 +111,7 @@ bool isEmptyAddress(uint8_t array[ADDRESS_LENGTH])
     }
     return true;
 }
+
 
 
 

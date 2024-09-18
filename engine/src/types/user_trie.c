@@ -10,7 +10,7 @@
 #include "../utils/utils.c"
 
 struct TrieNode* createTrieNode(uint8_t key) {
-    struct TrieNode *node = malloc(sizeof(struct TrieNode));
+    struct TrieNode *node = calloc(1, sizeof(struct TrieNode));
     node->isEndOfKey = false;
     node->childrens = NULL;
     node->user = NULL;
@@ -20,8 +20,10 @@ struct TrieNode* createTrieNode(uint8_t key) {
 
 struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
 {
-    uint8_t key[ADDRESS_LENGTH];
+    uint8_t key[ADDRESS_LENGTH] = {0};
+
     compressPubkey(user->pubkey, key);
+
     struct TrieNode *current = root;
 
     for(uint8_t i = 0; i < ADDRESS_LENGTH; i++)
@@ -37,7 +39,8 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
             list = list->next;
         }
 
-        if(nextNode == NULL) {
+        if(!nextNode) 
+        {
             nextNode = createTrieNode(key[i]);
             struct TrieList *newChildren = createNode(nextNode);
             newChildren->next = current->childrens;
@@ -48,12 +51,13 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
     }
     
     if(current->user) {
-        strcpy(current->user->name, user->name);
-        strcpy(current->user->displayName, user->displayName);
-        strcpy(current->user->pubkey, user->pubkey);
-        strcpy(current->user->profile, user->profile);
+        snprintf(current->user->name, 45, "%s", user->name);
+        snprintf(current->user->displayName, 45, "%s", user->displayName);
+        snprintf(current->user->pubkey, 65, "%s", user->pubkey);
+        snprintf(current->user->profile, 150, "%s", user->profile);
         free(user);
-    } else {
+    } 
+    else {
         current->isEndOfKey = true;
         current->user = user;
     }
@@ -100,19 +104,19 @@ bool deleteTrieNode(struct TrieNode *current, uint8_t *key)
     return false;
 }
 
-void destroyTrieNode(struct TrieNode *root) 
+void destroyTrieNode(struct TrieNode *root, bool freeUsers) 
 {
     struct TrieList *list = root->childrens;
 
     while(list) {
         struct TrieList *temp = list;
-        destroyTrieNode(list->node);
+        destroyTrieNode(list->node, freeUsers);
         list = list->next;
         free(temp);
     }
 
-    if(!hasChildren(root) && root->isEndOfKey)
-        free(root->user);
+    if(!hasChildren(root) && root->isEndOfKey && freeUsers)
+         free(root->user);
 
     free(root);
 }
@@ -148,8 +152,8 @@ struct TrieNode* getTrieNode(struct TrieNode *root, uint8_t *key)
 
 struct TrieNode* getTrieNodeFromPubkey(struct TrieNode *root, char *pubkey)
 {
-    uint8_t address[ADDRESS_LENGTH];
-    
+    uint8_t address[ADDRESS_LENGTH] = {0};   
+
     compressPubkey(pubkey, address);
     
     return getTrieNode(root, address);

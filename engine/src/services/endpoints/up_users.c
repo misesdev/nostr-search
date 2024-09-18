@@ -10,7 +10,7 @@
 
 HttpResponse* insertUser(char *request, struct TrieNode *root)
 {
-    HttpResponse *response = malloc(sizeof(HttpResponse));
+    HttpResponse *response = calloc(1, sizeof(HttpResponse));
     
     if(!response) 
         printf("failed to alocate memory for response");

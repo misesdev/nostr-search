@@ -2,9 +2,10 @@
 #define CONSTANT_INDEX_C
 
 // Tree Trie Definitions 
-#define MAX_RESPONSE_LENGTH 2048
+#define MAX_RESPONSE_LENGTH 2048 * 2
 #define TRIE_CHILDREN_LENGTH 255
 #define ADDRESS_LENGTH 16
+#define PUBKEY_LENGTH 32
 
 // Search Definitions
 #define MAX_LIMIT_RESULTS 50

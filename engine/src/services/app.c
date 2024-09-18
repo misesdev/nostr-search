@@ -3,9 +3,9 @@
 
 #include "./server.c"
 #include "./router.c"
-#include "../../types/types.c"
-#include "../../filesystem/rdisk.c"
-#include "../../filesystem/wdisk.c"
+#include "../types/types.c"
+#include "../filesystem/rdisk.c"
+#include "../filesystem/wdisk.c"
 
 #include <signal.h>
 #include <stdio.h>

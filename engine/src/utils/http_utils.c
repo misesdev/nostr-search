@@ -61,11 +61,11 @@ char * getStatusCode(int status)
 
 char* httpResponse(HttpResponse *json_result)
 {
-    char *response = malloc(MAX_RESPONSE_LENGTH * sizeof(char));
+    char *response = calloc(MAX_RESPONSE_LENGTH + 100, sizeof(char));
 
     char *statusResponse = getStatusCode(json_result->StatusCode);
     
-    snprintf(response, MAX_RESPONSE_LENGTH * 2,
+    snprintf(response, MAX_RESPONSE_LENGTH + 100,
         "HTTP/1.1 %s\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: %zu\r\n"

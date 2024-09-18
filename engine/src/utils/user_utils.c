@@ -14,7 +14,7 @@
 
 User* createUser(char *name, char *profile, char *pubkey)
 {
-    User *user = malloc(sizeof(User));
+    User *user = calloc(1, sizeof(User));
     strcpy(user->profile, profile);
     strcpy(user->pubkey, pubkey);
     strcpy(user->name, name);
@@ -34,10 +34,12 @@ void insertFriend(User *user, User *friend)
     struct UserNode *current = user->friends;
     while(current) 
     {
-        if(!current->next) {
-            current->next = createUserNode(friend);
+        if(strcmp(current->user->pubkey, friend->pubkey))
             break;
-        }
+
+        if(!current->next) 
+            current->next = createUserNode(friend);
+        
         current = current->next;
     }
 }
@@ -70,12 +72,12 @@ User* jsonToUser(char *jsonString, char *error)
     cJSON *json = cJSON_Parse(jsonString);
 
     if(!json) {
-        responseMessage(error, "Error when parsing json, expected properties"
-                        "'name', 'displayName', 'pubkey' and 'profile'");
+        responseMessage(error, "Error when parsing json, expected properties "
+            "'name', 'displayName', 'pubkey' and 'profile'");
         return NULL;
     }
 
-    User *user = malloc(sizeof(User));
+    User *user = calloc(1, sizeof(User));
 
     cJSON *name = cJSON_GetObjectItemCaseSensitive(json, "name");
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(json, "pubkey");
@@ -96,11 +98,13 @@ User* jsonToUser(char *jsonString, char *error)
     else 
     {
         responseMessage(error, "Error when parsing user, expected properties 'name', "
-                        "'displayName', 'pubkey' and 'profile'");
+            "'displayName', 'pubkey' and 'profile'");
         cJSON_Delete(json);
         free(user);
         return NULL;
     }
+
+    cJSON_Delete(json);
 
     return user;
 }
@@ -128,23 +132,24 @@ char* userToJson(User *user)
     return jsonResult;
 }
 
-char* userListToJson(struct UserNode *root)
+void userListToJson(struct UserNode *rootUsers, char *response)
 {
     cJSON *jsonList = cJSON_CreateArray();
 
-    struct UserNode *current = root;
-    while(current) {
-        if(current->user) {
+    struct UserNode *current = rootUsers;
+    while(current) 
+    {
+        if(current->user)
             cJSON_AddItemToArray(jsonList, userToCJSON(current->user));
-        }
+
         current = current->next;
     }
 
-    char *jsonResult = cJSON_Print(jsonList);
+    snprintf(response, MAX_RESPONSE_LENGTH, "%s", cJSON_Print(jsonList));
 
     cJSON_Delete(jsonList);
-    
-    return jsonResult;
+
+    free(rootUsers);
 }
                  
 User* getUserFromRequest(char *request, char *error) 

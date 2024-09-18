@@ -8,6 +8,7 @@
 #include "../utils/utils.c"
 #include "../types/types.c"
 #include "../types/user_list.c"
+#include "../types/user_trie.c"
 #include "./disk_utils.c"
 
 void loadUserOnDisk(User *user, FILE *file, long offset) 
@@ -17,11 +18,11 @@ void loadUserOnDisk(User *user, FILE *file, long offset)
     fwrite(user, sizeof(User), 1, file);
 }
 
-void loadUsersOnDisk(FILE *fileUsers, struct UserNode *rootUsers, long userCount) 
+void loadUsersOnDisk(FILE *fileUsers, struct UserNode *rootUsers, long *userCount) 
 {    
     long offset = 0;
     fseek(fileUsers, offset, SEEK_SET);
-    fwrite(&userCount, sizeof(long), 1, fileUsers);
+    fwrite(userCount, sizeof(long), 1, fileUsers);
     offset += sizeof(long);
 
     while (rootUsers) {
@@ -52,9 +53,11 @@ void serialiseUsersFromTrie(struct TrieNode *root, struct UserNode *rootUsers, l
 
 void loadFriendsFromUser(FILE *file, User *user, long *offset)
 {
-    uint8_t address[ADDRESS_LENGTH];
+    uint8_t address[ADDRESS_LENGTH] = {0};
     compressPubkey(user->pubkey, address);
-    long friendsCount = getFriendsCount(user->friends);
+    
+    long friendsCount = 0;
+    getFriendsCount(user->friends, &friendsCount);
     
     // write user address in tree
     fseek(file, *offset, SEEK_SET);    
@@ -72,8 +75,8 @@ void loadFriendsFromUser(FILE *file, User *user, long *offset)
         if(current->user) 
         {
             fseek(file, *offset, SEEK_SET);
-            uint8_t user[ADDRESS_LENGTH];
-            compressPubkey(current->user->pubkey, user);
+            uint8_t friend[ADDRESS_LENGTH] = {0};
+            compressPubkey(current->user->pubkey, friend);
             fwrite(&user, sizeof(uint8_t), ADDRESS_LENGTH, file);
             *offset += ADDRESS_LENGTH;
         }
@@ -81,17 +84,18 @@ void loadFriendsFromUser(FILE *file, User *user, long *offset)
     }
 }
 
-void loadFriendsOnDisk(FILE *file, struct UserNode *rootUsers, long userCount)
+void loadFriendsOnDisk(FILE *file, struct UserNode *rootUsers, long *userCount)
 {
     long offset = 0;
     // save the friend list count
     fseek(file, offset, SEEK_SET);
-    fwrite(&userCount, sizeof(long), 1, file);
+    fwrite(userCount, sizeof(long), 1, file);
     offset += sizeof(long);
 
     // save users list friends -> (address in the tree)
     struct UserNode *current = rootUsers;
-    while (current) {
+    while (current) 
+    {
         if(current->user) 
             loadFriendsFromUser(file, current->user, &offset);
 
@@ -115,11 +119,13 @@ bool loadTrieInDisk(struct TrieNode *root)
 
     serialiseUsersFromTrie(root, rootUsers, &userCount);
 
-    loadUsersOnDisk(fileUsers, rootUsers, userCount);
+    loadUsersOnDisk(fileUsers, rootUsers, &userCount);
 
-    loadFriendsOnDisk(fileFriends, rootUsers, userCount);
+    loadFriendsOnDisk(fileFriends, rootUsers, &userCount);
 
-    //destroyUserNode(rootUsers);
+    destroyUserNode(rootUsers);
+
+    destroyTrieNode(root, false);
 
     fclose(fileFriends);
     fclose(fileUsers);

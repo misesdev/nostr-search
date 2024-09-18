@@ -11,7 +11,8 @@ services:
       - "80:3000"
     networks: 
       - app-network 
-
+    mem_limit: 750m
+    
   engine:
     build:
       context: ./engine/
@@ -22,6 +23,7 @@ services:
       - "8080:8080"
     networks: 
       - app-network
+    mem_limit: 750m
 
 networks:
   app-network:

@@ -14,7 +14,7 @@ bool hasChildren(struct TrieNode *node)
 
 struct TrieList* createNode(struct TrieNode *node) 
 {
-    struct TrieList *l_node = malloc(sizeof(struct TrieList));
+    struct TrieList *l_node = calloc(1, sizeof(struct TrieList));
     l_node->node = node;
     l_node->next = NULL;
     return l_node;
@@ -24,7 +24,8 @@ struct TrieNode* insertNode(struct TrieList *root, struct TrieNode *node)
 {
     struct TrieList *current = root;
 
-    while(current) {
+    while(current) 
+    {
         if(current->node->key == node->key) return current->node;
 
         if(!current->next) {
@@ -40,7 +41,8 @@ struct TrieNode* insertNode(struct TrieList *root, struct TrieNode *node)
 struct TrieNode* getNode(struct TrieList *root, uint8_t key) 
 {
     struct TrieList *current = root;
-    while(current) {
+    while(current) 
+    {
         if(current->node->key == key) return current->node;
         current = current->next;
     }
@@ -51,8 +53,10 @@ void deleteNode(struct TrieList *root, uint8_t key)
 {
     struct TrieList *current = root;
     struct TrieList *delete = root;
-    while(current->next) {
-        if(current->next->node->key == key && !hasChildren(current->next->node)) {
+    while(current->next) 
+    {
+        if(current->next->node->key == key && !hasChildren(current->next->node)) 
+        {
             delete = current->next;
             current->next = delete->next;
             free(delete->node);

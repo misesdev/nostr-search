@@ -3,6 +3,7 @@
 
 #include "../../types/types.c"
 #include "../../types/user_trie.c"
+#include "../../utils/user_utils.c"
 #include "../../utils/friends_utils.c"
 
 #include <stdio.h>
@@ -10,7 +11,7 @@
 
 HttpResponse* insertFriends(char *request, struct TrieNode *root)
 {
-    HttpResponse *response = malloc(sizeof(HttpResponse));
+    HttpResponse *response = calloc(1, sizeof(HttpResponse));
     
     struct FriendNode *friends = jsonToFriends(request, response->Content);
 
@@ -37,7 +38,7 @@ HttpResponse* insertFriends(char *request, struct TrieNode *root)
         struct TrieNode *friendNode = getTrieNode(root, current->address);
 
         if(friendNode) {
-            insertFriendIfNotExist(userNode->user, friendNode->user);
+            insertFriend(userNode->user, friendNode->user);
             printf("    friend: %s\n", friendNode->user->displayName);
         }
         current = current->next;
@@ -45,6 +46,7 @@ HttpResponse* insertFriends(char *request, struct TrieNode *root)
 
     responseMessage(response->Content, "add friends succefully");
     response->StatusCode = 200; 
+
     free(friends);
     
     return response;

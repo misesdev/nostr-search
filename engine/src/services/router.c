@@ -1,11 +1,11 @@
 #ifndef ROUTER_C
 #define ROUTER_C
 
-#include "../../types/types.c"
-#include "../endpoints/up_users.c"
-#include "../endpoints/up_search.c"
-#include "../endpoints/up_friends.c"
-#include "../endpoints/tree_save.c"
+#include "../types/types.c"
+#include "./endpoints/up_users.c"
+#include "./endpoints/up_search.c"
+#include "./endpoints/up_friends.c"
+#include "./endpoints/tree_save.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +22,7 @@ HttpResponse* router(char *request, struct TrieNode *root)
     if(strstr(request, "/save") != NULL)
         return saveTrieOnDisk(request, root);
 
-    HttpResponse *notFound = malloc(sizeof(HttpResponse));
+    HttpResponse *notFound = calloc(1, sizeof(HttpResponse));
 
     if(!notFound) {
         perror("failed to alocate memory for response");
@@ -30,7 +30,7 @@ HttpResponse* router(char *request, struct TrieNode *root)
     }
 
     responseMessage(notFound->Content, "Please use one of the following endpointes: "
-                    "/add_user, /add_friends, /search and /save");
+        "/add_user, /add_friends, /search and /save");
 
     notFound->StatusCode = 403;
 
