@@ -6,15 +6,17 @@ export default function Home() {
     return (
         <>
             <HomeHeader />
-            <div className='flex flex-col items-center mt-24'>
+            <div className='flex flex-col items-center mt-22'>
                 <Image
-                    src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png'
-                    alt='Noogle Logo'
-                    width={300}
+                    src='/logo.png'
+                    alt='Nostr Book Users'
+                    width={260}
                     height={100}
-                    priority
-                    style={{ width: 'auto' }}
                 />
+                <h2
+                    style={{ color: '#fff', fontSize: 26 }}
+                    className='my-2 font-bold'
+                >Nostr Book - Search Users</h2>
                 <HomeSearch />
             </div>
         </>

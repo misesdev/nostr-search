@@ -14,32 +14,32 @@ export const loadData = async () => {
     })
 
     // // send users
-    // await fileUsers.readLines(async (line) => {        
-    //     return await new Promise(async (resolve) => {
-    //         try {
-    //             let response = await fetch("http://localhost:8080/add_user", {
-    //                 method: "post",
-    //                 body: line,
-    //             })
-    //             
-    //             let data = await response.json()
-    //             
-    //             console.log(data.message)
+    await fileUsers.readLines(async (line) => {        
+        return await new Promise(async (resolve) => {
+            try {
+                let response = await fetch("http://localhost:8080/add_user", {
+                    method: "post",
+                    body: line,
+                })
+                
+                let data = await response.json()
+                
+                console.log(data.message)
 
-    //             if(!response.ok) console.log(data)
-    //         } catch { resolve(false) }
+                if(!response.ok) console.log(data)
+            } catch { resolve(false) }
 
-    //         setTimeout(() => resolve(true), 10)
-    //     })
-    // })
+            setTimeout(() => resolve(true), 200)
+        })
+    })
 
-    // let response = await fetch("http://localhost:8080/save", {
-    //     method: "post"
-    // })
+    let response = await fetch("http://localhost:8080/save", {
+        method: "post"
+    })
 
-    // let data = await response.json()
+    let data = await response.json()
 
-    // console.log(data.message)
+    console.log(data.message)
 
     // send friends
     await fileFriends.readLines(async (line) => {        
@@ -79,15 +79,15 @@ export const loadData = async () => {
                 }
             } catch { resolve(false) }
 
-            setTimeout(() => resolve(true), 10)
+            setTimeout(() => resolve(true), 200)
         })
     })
 
-    let response = await fetch("http://localhost:8080/save", {
+    response = await fetch("http://localhost:8080/save", {
         method: "post"
     })
 
-    let data = await response.json()
+    data = await response.json()
 
     console.log(data.message)
 }

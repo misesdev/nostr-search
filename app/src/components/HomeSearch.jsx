@@ -6,16 +6,22 @@ import { BsFillMicFill } from 'react-icons/bs';
 import { useRouter } from 'next/navigation';
 
 export default function HomeSearch() {
+    
     const [input, setInput] = useState('');
+    
     const [randomSearchLoading, setRandomSearchLoading] = useState(false);
+    
     const router = useRouter();
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!input.trim()) return;
         router.push(`/search/web?searchTerm=${input}`);
     };
 
-    const randomSearch = async (e) => {
+    const handleDonate = () => router.push('/donate')
+
+    const randomSearch = async () => {
         setRandomSearchLoading(true);
         const response = await fetch('https://random-word-api.herokuapp.com/word')
             .then((res) => res.json())
@@ -24,26 +30,29 @@ export default function HomeSearch() {
         router.push(`/search/web?searchTerm=${response}`);
         setRandomSearchLoading(false);
     };
+
     return (
         <>
             <form
                 onSubmit={handleSubmit}
-                className='bg-white flex w-full mt-5 mx-auto max-w-[90%] border border-gray-200 px-5 py-3 rounded-full hover:shadow-md focus-within:shadow-md transition-shadow sm:max-w-xl lg:max-w-2xl'
+                className='bg-gray-800 flex w-full mt-5 mx-auto max-w-[90%] border border-gray-700 px-5 py-3 rounded-full hover:shadow-md focus-within:shadow-md transition-shadow sm:max-w-xl lg:max-w-2xl'
             >
-                <AiOutlineSearch className='text-xl text-gray-500 mr-3' />
+                <AiOutlineSearch style={{ fontSize: 26 }} className='my-1 text-xl text-gray-50 mr-4' />
                 <input
                     type='text'
-                    className='flex-grow focus:outline-none'
+                    placeholder="Search"
+                    style={{ fontSize: 20, color: "#fff" }}
+                    className='flex-grow focus:outline-none font-mono py-1 px-2 bg-transparent'
                     onChange={(e) => setInput(e.target.value)}
                 />
-                <BsFillMicFill className='text-lg' />
+                {/* <BsFillMicFill className='text-lg' /> */}
             </form>
             <div className='flex flex-col space-y-2 sm:space-y-0 justify-center sm:flex-row mt-8 sm:space-x-4'>
                 <button
                     className='bg-[#f8f9fa] rounded-md text-sm text-gray-800 hover:ring-gray-200 focus:outline-none active:ring-gray-300 hover:shadow-md w-36 h-10 transition-shadow'
-                    onClick={handleSubmit}
+                    onClick={handleDonate}
                 >
-                    Nostr Search
+                    Donate
                 </button>
                 <button
                     disabled={randomSearchLoading}

@@ -3,9 +3,11 @@ import './../globals.css';
 
 export default function layout({ children }) {
     return (
-        <div>
+        <div className="bg-gray-900">
             <SearchHeader />
             {children}
         </div>
     );
 }
+
+
