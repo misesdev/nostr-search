@@ -6,6 +6,7 @@
 #include "../../types/user_trie.c"
 #include "../../utils/user_utils.c"
 #include "../../utils/search_utils.c"
+#include "../../utils/search_graph.c"
 
 HttpResponse* searchUsers(char *request, struct TrieNode *root)
 {
@@ -37,6 +38,7 @@ HttpResponse* searchUsers(char *request, struct TrieNode *root)
 
     return response;
 }
+
 
 
 #endif 

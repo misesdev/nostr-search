@@ -38,7 +38,6 @@ void* handle_client(void* arg)
 
     int bytes_read = read(client->socket, buffer, SIZE_BUFFER);
     
-    // Adiciona o terminador NUL no final
     if (bytes_read > 0) 
     {
         logRequest(buffer);
