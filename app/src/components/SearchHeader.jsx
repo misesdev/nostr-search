@@ -11,9 +11,9 @@ export default function SearchHeader() {
             <div className='flex w-full p-6 items-center justify-between'>
                 <Link href='/'>
                     <Image
-                        src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png'
+                        src='/logo.png'
                         alt='Google Logo'
-                        width={120}
+                        width={40}
                         height={40}
                         priority
                         style={{ width: 'auto' }}

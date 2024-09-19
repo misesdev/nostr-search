@@ -3,7 +3,7 @@
 FROM gcc:latest
 
 # Install dependeces
-RUN apt-get update && apt-get install -y libcjson-dev
+RUN apt-get update && apt-get install -y libcjson-dev && apt-get install -y libjemalloc-dev
 
 # Create work directory
 WORKDIR /usr/src/app
@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Compily the program
-RUN gcc ./main.c -o ./build/nostr-find -lcjson && chmod +x ./build/nostr-find
+RUN gcc ./main.c -o ./build/nostr-find -lcjson -ljemalloc && chmod +x ./build/nostr-find
 
 EXPOSE 8080
 
