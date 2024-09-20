@@ -14,7 +14,7 @@
 
 #define MIN_FREE_MEMORY 1024 * 1024 * 300
 #define SIZE_BUFFER 1024 * 10 // 10 kbytes
-#define MAX_THREADS 500  // Limite máximo de threads para controlar o uso de memória
+#define MAX_THREADS 50  // Limite máximo de threads para controlar o uso de memória
 
 typedef struct {
     int socket;
@@ -23,39 +23,79 @@ typedef struct {
     struct TrieNode *root;
 } client_info;
 
-// Função para processar cada conexão de cliente em uma thread separada
-void* handle_client(void* arg) 
+pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t queue_cond = PTHREAD_COND_INITIALIZER;
+
+// Fila de conexões de clientes
+client_info* client_queue[MAX_THREADS];
+int queue_size = 0;  // Tamanho da fila de clientes
+
+// Função para processar cada cliente em uma thread do pool
+void* thread_worker(void* arg) 
 {
-    client_info* client = (client_info*)arg;
-    char *buffer = calloc(SIZE_BUFFER, sizeof(char));
-    
-    if(!buffer) {
-        perror("failed to allocate memory for request buffer");
-        close(client->socket);
-        free(client);  
-        return NULL;
-    }
+    while (1) {
+        client_info* client;
 
-    int bytes_read = read(client->socket, buffer, SIZE_BUFFER);
-    
-    if (bytes_read > 0) 
-    {
-        logRequest(buffer);
+        pthread_mutex_lock(&queue_mutex);
+
+        // Espera até que haja um cliente na fila
+        while (queue_size == 0) {
+            pthread_cond_wait(&queue_cond, &queue_mutex);
+        }
+
+        // Pega um cliente da fila
+        client = client_queue[--queue_size];
+
+        pthread_mutex_unlock(&queue_mutex);
+
+        // Processa a requisição
+        if (client) {
+            char *buffer = calloc(SIZE_BUFFER, sizeof(char));
+
+            if(!buffer) {
+                perror("failed to allocate memory for request buffer");
+                close(client->socket);
+                free(client);  
+                continue;
+            }
+
+            int bytes_read = read(client->socket, buffer, SIZE_BUFFER);
+            if (bytes_read > 0) {
+                logRequest(buffer);
                 
-        HttpResponse *response = client->executeRequest(buffer, client->root);
+                HttpResponse *response = client->executeRequest(buffer, client->root);
 
-        char *http_response = httpResponse(response);
+                char *http_response = httpResponse(response);
 
-        send(client->socket, http_response, strlen(http_response), 0);
+                send(client->socket, http_response, strlen(http_response), 0);
 
-        free(http_response);
-        free(response);
+                free(http_response);
+                free(response);
+            }
+
+            close(client->socket);
+            free(buffer);
+            free(client);
+        }
+    }
+    return NULL;
+}
+
+// Função para adicionar um cliente à fila de processamento
+void enqueue_client(client_info* client) {
+    pthread_mutex_lock(&queue_mutex);
+
+    if (queue_size < MAX_THREADS) {
+        client_queue[queue_size++] = client;
+        pthread_cond_signal(&queue_cond);  // Sinaliza que há um cliente na fila
+    } else {
+        // Se o pool está cheio, descarta o cliente
+        perror("client queue is full, dropping connection");
+        close(client->socket);
+        free(client);
     }
 
-    close(client->socket);
-    free(buffer);
-    free(client);  
-    return NULL;
+    pthread_mutex_unlock(&queue_mutex);
 }
 
 // master function of server
@@ -89,17 +129,15 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
 
     printf("tcp server listening in port: %d\n", port);
 
+    // Cria o pool de threads
+    pthread_t thread_pool[MAX_THREADS];
+    for (int i = 0; i < MAX_THREADS; i++) {
+        pthread_create(&thread_pool[i], NULL, thread_worker, NULL);
+    }
+
     while (true) 
     {
-        // // Verifica o uso da memória do sistema
-        // struct sysinfo sys_info;
-        // sysinfo(&sys_info);
-        // if (sys_info.freeram < MIN_FREE_MEMORY) { // if free memory for menor que 300 MB, aguarde
-        //     //printf("Memória baixa, aguardando...\n");
-        //     continue;
-        //     //pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
-        // }
-
+ 
         client_info* client = calloc(1, sizeof(client_info)); // Aloca memória para cada cliente
         if (!client) {
             perror("fail in the allocation of memory for the client\n");
@@ -116,21 +154,8 @@ void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct 
         client->executeRequest = executeRequest;
         client->root = root;
 
-        // Cria uma nova thread para cada cliente
-        pthread_t thread_id;
-        if (pthread_create(&thread_id, NULL, handle_client, (void*)client) != 0) {
-            perror("failed to create the thread\n");
-            close(client->socket);
-            free(client);
-        }
-
-        // Verifica o uso da memória do sistema
-        struct sysinfo sys_info;
-        sysinfo(&sys_info);
-        if (sys_info.freeram < MIN_FREE_MEMORY) { // if free memory for menor que 300 MB, aguarde
-            printf("Memória baixa, aguardando...\n");
-            pthread_join(thread_id, NULL); // Aguarda a thread concluir antes de aceitar novas conexões
-        }
+        // Adiciona o cliente à fila para ser processado por uma thread
+        enqueue_client(client);
     }
 
     close(socket_server);

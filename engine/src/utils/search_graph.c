@@ -82,7 +82,7 @@ struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
 
         // Verifica se o usuário é semelhante ao termo de busca
         if (textSimilarity(currentNode->user->name, searchTerm) >= MIN_SIMILARITY_TERM) {
-            insertUniqueUserNode(resultList, currentNode->user);
+            insertUserNode(resultList, currentNode->user);
             foundCount++;
         }
 

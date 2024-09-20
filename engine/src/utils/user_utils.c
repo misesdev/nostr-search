@@ -34,11 +34,13 @@ void insertFriend(User *user, User *friend)
     struct UserNode *current = user->friends;
     while(current) 
     {
-        if(strcmp(current->user->pubkey, friend->pubkey))
-            break;
+        if(strcmp(current->user->pubkey, friend->pubkey)) return;
 
         if(!current->next) 
+        {
             current->next = createUserNode(friend);
+            return;
+        }
         
         current = current->next;
     }
@@ -72,8 +74,7 @@ User* jsonToUser(char *jsonString, char *error)
     cJSON *json = cJSON_Parse(jsonString);
 
     if(!json) {
-        responseMessage(error, "Error when parsing json, expected properties "
-            "'name', 'displayName', 'pubkey' and 'profile'");
+        responseMessage(error, "Error when parsing json, invalid json");
         return NULL;
     }
 
@@ -120,15 +121,17 @@ cJSON* userToCJSON(User *user)
     return userJson;
 }
 
-char* userToJson(User *user)
+void userToJson(User *user, char *jsonUser)
 {
     cJSON *userJson = userToCJSON(user);
 
     char *jsonResult = cJSON_Print(userJson);
 
+    strcpy(jsonUser, jsonResult);
+
     cJSON_Delete(userJson);
 
-    return jsonResult;
+    free(jsonResult);
 }
 
 void userListToJson(struct UserNode *rootUsers, char *response)
@@ -151,12 +154,8 @@ void userListToJson(struct UserNode *rootUsers, char *response)
     free(rootUsers);
 }
                  
-User* getUserFromRequest(char *request, char *error) 
-{
-    char *json_params = requestParams(request, error);
-    
-    if(!json_params) return NULL;
-        
+User* getUserFromRequest(char *json_params, char *error) 
+{        
     User *user = jsonToUser(json_params, error);
 
     if(!user) return NULL;
@@ -164,6 +163,35 @@ User* getUserFromRequest(char *request, char *error)
     return user;
 }
 
+UserIdentity* jsonToIdentity(char *json_params, char *error)
+{
+    cJSON *jsonIdentity = cJSON_Parse(json_params);
+
+    if(!jsonIdentity) {
+        responseMessage(error, "Error when parsing json, invalid json");
+        return NULL;
+    }
+
+    cJSON *pubkey = cJSON_GetObjectItem(jsonIdentity, "pubkey");
+
+    if(!cJSON_IsString(pubkey)) {
+        responseMessage(error, "Error when parsing user, expected property 'pubkey'");
+        cJSON_Delete(jsonIdentity);
+        return NULL;
+    }
+
+    if(strlen(pubkey->valuestring) < 64 || strlen(pubkey->valuestring) > 64) {
+        responseMessage(error, "Error invalid 'pubkey', expected 32 bytes hexadecimal");
+        cJSON_Delete(jsonIdentity);
+        return NULL;
+    }
+
+    UserIdentity *identity = malloc(sizeof(UserIdentity));
+
+    strcpy(identity->pubkey, pubkey->valuestring);
+
+    return identity;    
+}
 
 #endif  
 

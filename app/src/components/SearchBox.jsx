@@ -16,7 +16,7 @@ export default function SearchBox() {
         const pubkey = searchParams.get('pubkey')
 
         if(pubkey) setPubkey(pubkey) 
-    })
+    }, [searchParams])
 
     const handleSubmit = (form) => {
         form.preventDefault();

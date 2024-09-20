@@ -15,7 +15,8 @@ struct UserNode* createUserNode(User *user)
 
 void insertUserNode(struct UserNode *node, User *user)
 {
-    if(!node->user) {
+    if(!node->user) 
+    {
         node->user = user;
         return;
     }
@@ -23,37 +24,16 @@ void insertUserNode(struct UserNode *node, User *user)
     struct UserNode *current = node;
     while (current) 
     {
+        if(strcmp(current->user->pubkey, user->pubkey) == 0)
+            return;
+
         if(!current->next)
         {
             current->next = createUserNode(user);
-            break;
-        }
-        current = current->next;
-    }
-}
-
-void insertUniqueUserNode(struct UserNode *node, User *user)
-{
-    if(!node->user) {
-        node->user = user;
-        return;
-    }
-
-    struct UserNode *current = node;
-    while (current)
-    {
-        if(strcmp(current->user->pubkey, user->pubkey) == 0) 
             return;
-        current = current->next;
-    }
-
-    while (1) 
-    {
-        if(!node->next) {
-            node->next = createUserNode(user);
-            break;
         }
-        node = node->next;
+
+        current = current->next;
     }
 }
 

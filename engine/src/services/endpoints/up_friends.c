@@ -9,11 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-HttpResponse* insertFriends(char *request, struct TrieNode *root)
+HttpResponse* insertFriends(char *json_request, HttpResponse *response, struct TrieNode *root)
 {
-    HttpResponse *response = calloc(1, sizeof(HttpResponse));
-    
-    struct FriendNode *friends = jsonToFriends(request, response->Content);
+    struct FriendNode *friends = jsonToFriends(json_request, response->Content);
 
     if(!friends) {
         response->StatusCode = 403;
@@ -24,7 +22,7 @@ HttpResponse* insertFriends(char *request, struct TrieNode *root)
 
     if(!userNode)
     {
-        responseMessage(response->Content, "User not found");
+        responseMessage(response->Content, "Focal user not found");
         response->StatusCode = 204;
         free(friends);
         return response;
@@ -37,10 +35,12 @@ HttpResponse* insertFriends(char *request, struct TrieNode *root)
     {
         struct TrieNode *friendNode = getTrieNode(root, current->address);
 
-        if(friendNode) {
+        if(friendNode) 
+        {
             insertFriend(userNode->user, friendNode->user);
             printf("    friend: %s\n", friendNode->user->displayName);
         }
+
         current = current->next;
     }
 

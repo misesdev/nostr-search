@@ -15,22 +15,22 @@ export const loadData = async () => {
 
     // // send users
     await fileUsers.readLines(async (line) => {        
-        return await new Promise(async (resolve) => {
-            try {
-                let response = await fetch("http://localhost:8080/add_user", {
-                    method: "post",
-                    body: line,
-                })
-                
-                let data = await response.json()
-                
-                console.log(data.message)
+        try 
+        {
+            let response = await fetch("http://localhost:8080/add_user", {
+                method: "post",
+                body: line,
+            })
+            
+            let data = await response.json()
+            
+            console.log(data.message)
 
-                if(!response.ok) console.log(data)
-            } catch { resolve(false) }
+            if(!response.ok) console.log(data)
+        } 
+        catch {  }
 
-            setTimeout(() => resolve(true), 200)
-        })
+        return true
     })
 
     let response = await fetch("http://localhost:8080/save", {
@@ -43,44 +43,43 @@ export const loadData = async () => {
 
     // send friends
     await fileFriends.readLines(async (line) => {        
-        return await new Promise(async (resolve) => {
-            try {
-                let friends: string[] = []
-                let userFriends: UserFriends = JSON.parse(line);
+        try {
+            let friends: string[] = []
+            let userFriends: UserFriends = JSON.parse(line);
 
-                if(userFriends.friends.length <= 0)
-                    resolve(true)
-                
-                let user: User = { 
-                    pubkey: userFriends.pubkey,
-                    friends: []
-                }
-                
-                userFriends.friends.forEach(index => {
-                    let pubkey = pubkeys[index]
-                    if(pubkey && pubkey.length == 64) 
-                        friends.push(pubkey)
+            if(userFriends.friends.length <= 0)
+                return true
+            
+            let user: User = { 
+                pubkey: userFriends.pubkey,
+                friends: []
+            }
+            
+            userFriends.friends.forEach(index => {
+                let pubkey = pubkeys[index]
+                if(pubkey && pubkey.length == 64) 
+                    friends.push(pubkey)
+            })
+
+            let interval = 100
+            for(let i = 0; i < friends.length; i += interval) 
+            {
+                user.friends = friends.slice(i, i + interval)
+
+                let response = await fetch("http://localhost:8080/add_friends", {
+                    method: "post",
+                    body: JSON.stringify(user)
                 })
 
-                let interval = 150
-                for(let i = 0; i < friends.length; i += interval) 
-                {
-                    user.friends = friends.slice(i, i + interval)
+                let data = await response.json()
+            
+                console.log("pubkey:", user.pubkey)
+                console.log("-> response:", data.message)
+            }
+        } 
+        catch {  }
 
-                    let response = await fetch("http://localhost:8080/add_friends", {
-                        method: "post",
-                        body: JSON.stringify(user)
-                    })
-
-                    let data = await response.json()
-                
-                    console.log("pubkey:", user.pubkey)
-                    console.log("-> response:", data.message)
-                }
-            } catch { resolve(false) }
-
-            setTimeout(() => resolve(true), 200)
-        })
+        return true
     })
 
     response = await fetch("http://localhost:8080/save", {

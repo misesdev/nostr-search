@@ -6,28 +6,14 @@
 #include "../../filesystem/wdisk.c"
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-HttpResponse* saveTrieOnDisk(char *request, struct TrieNode *root)
+HttpResponse* saveTrieOnDisk(char *json_request, HttpResponse *response, struct TrieNode *root)
 {
-    HttpResponse *response = malloc(sizeof(HttpResponse));
-
-    if(!response) {
-        perror("failed to alocate memory for response");
-        return NULL;
-    }
-
-    if(!isPostRequest(request))
-    {
-        responseMessage(response->Content, "Accept only POST request with Content-Type: application/json");
-        response->StatusCode = 403;
-        return response;
-    }
-
     printf("loading tree on disk..\n");
 
     loadTrieInDisk(root);
+
+    printf("loaded tree succefully\n");
 
     responseMessage(response->Content, "tree saved succefully");
     response->StatusCode = 200;

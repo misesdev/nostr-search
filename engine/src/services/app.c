@@ -27,9 +27,9 @@ void handle_signal(int signal_command)
 
 void upApplication(int port)
 {
-    signal(SIGKILL, handle_signal);
-    signal(SIGTERM, handle_signal);
-    signal(SIGINT, handle_signal);
+    // signal(SIGKILL, handle_signal);
+    // signal(SIGTERM, handle_signal);
+    // signal(SIGINT, handle_signal);
 
     printf("loading tree from disk...\n");
 
@@ -37,7 +37,7 @@ void upApplication(int port)
 
     if(!root) 
     {
-        printf("\nfailed when reading files\n");
+        printf("\nfailed when reading from disk\n");
         exit(0);
     }
 

@@ -22,7 +22,7 @@ char* requestParams(char *request, char *error)
 
     if(!isPostRequest(request))
     {
-        responseMessage(error, "Expected POST request with Content-Type: application/json");
+        responseMessage(error, "Expected only POST requests with Content-Type: application/json");
         return NULL;
     }
 

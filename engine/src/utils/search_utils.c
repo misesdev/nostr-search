@@ -45,13 +45,9 @@ Search* jsonToSearchParams(char *json, char *error)
     return searchParams;
 }
 
-Search* getSearchParams(char *request, char *error)
+Search* getSearchParams(char *json_params, char *error)
 {
-    char *jsonParams = requestParams(request, error);
-
-    if(!jsonParams) return NULL;
-
-    Search *searchParams = jsonToSearchParams(jsonParams, error);
+    Search *searchParams = jsonToSearchParams(json_params, error);
 
     if(!searchParams) return NULL;
 

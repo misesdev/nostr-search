@@ -33,13 +33,9 @@ struct FriendNode* invalidPubkey(cJSON *json, struct FriendNode *friends, char *
     return NULL;
 }
 
-struct FriendNode* jsonToFriends(char *request, char *error)
+struct FriendNode* jsonToFriends(char *json_params, char *error)
 {
-    char *jsonParams = requestParams(request, error);
-    
-    if(!jsonParams) return NULL;
-
-    cJSON *jsonFriends = cJSON_Parse(jsonParams);
+    cJSON *jsonFriends = cJSON_Parse(json_params);
 
     if(!jsonFriends) {
         responseMessage(error, "Error when parsing json, invalid json properties");

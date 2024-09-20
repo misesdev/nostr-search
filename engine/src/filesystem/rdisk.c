@@ -30,6 +30,8 @@ struct TrieNode* loadUsersTree(FILE *file, long *usersCount)
     fread(&count, sizeof(long), 1, file);
     offset += sizeof(long);
 
+    printf("users count: %ld", count);
+
     struct TrieNode *root = createTrieNode(0);
 
     for(int i = 0; i < count; i++) 

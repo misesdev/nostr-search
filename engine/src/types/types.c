@@ -47,6 +47,10 @@ struct FriendNode {
     struct FriendNode *next;
 };
 
+typedef struct {
+    char pubkey[65];
+} UserIdentity;
+
 #endif
 
 

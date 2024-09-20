@@ -8,11 +8,9 @@
 #include "../../utils/search_utils.c"
 #include "../../utils/search_graph.c"
 
-HttpResponse* searchUsers(char *request, struct TrieNode *root)
+HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, struct TrieNode *root)
 {
-    HttpResponse *response = calloc(1, sizeof(HttpResponse));
-    
-    Search *searchParams = getSearchParams(request, response->Content);
+    Search *searchParams = getSearchParams(jsonRequest, response->Content);
 
     if(!searchParams) 
     {

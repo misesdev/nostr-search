@@ -8,13 +8,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-HttpResponse* insertUser(char *request, struct TrieNode *root)
+HttpResponse* insertUser(char *jsonRequest, HttpResponse *response, struct TrieNode *root)
 {
-    HttpResponse *response = calloc(1, sizeof(HttpResponse));
-    
-    if(!response) printf("failed to alocate memory for response");
-
-    User *user = getUserFromRequest(request, response->Content);
+    User *user = getUserFromRequest(jsonRequest, response->Content);
     
     if(!user) {
         response->StatusCode = 403;
