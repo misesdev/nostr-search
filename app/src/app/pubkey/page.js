@@ -26,23 +26,22 @@ export default function Page() {
                     alt='Nostr Book Users'
                     width={130}
                     height={100}
-                    priority
-                    style={{ width: 'auto' }}
+                    className="w-[120px] lg:w-[140px]"
                 />
                 <h2
-                    className="text-[24px] text-center mt-10 text-gray-400 font-bold"
+                    className="text-[20px] lg:text-[24px] text-center mt-10 text-gray-400 font-bold"
                 >
                     Nostr Book - Add your pubkey
                 </h2>
 
                 <div>
                     <h4
-                        className="text-center text-gray-200 mt-10 text-[18px]"
+                        className="text-center text-gray-200 mt-10 text-[12px] lg:text-[18px]"
                     >Adding your public key will enhance the search for your profile!</h4>
                 </div>
 
                 <div
-                    className='flex w-full mt-5 mx-auto max-w-[90%] border border-gray-500 px-5 py-3 rounded-full hover:shadow-md focus-within:shadow-md transition-shadow sm:max-w-xl lg:max-w-2xl'
+                    className='flex w-full mt-10 mx-auto max-w-[90%] border border-gray-500 px-5 py-3 rounded-full hover:shadow-md focus-within:shadow-md transition-shadow sm:max-w-xl lg:max-w-2xl'
                 >
                     <AiOutlineUser className='text-xl text-gray-500 mr-3' /> 
                     <input

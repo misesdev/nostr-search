@@ -16,7 +16,7 @@ export default function Home() {
                 />
                 <h2 
                     style={{ fontSize: 24 }}
-                    className="text-gray-400 font-bold"
+                    className="text-[20px] lg:text-[24px] text-gray-400 mt-5 font-bold"
                 >
                     Nostr Book - Search Users
                 </h2>

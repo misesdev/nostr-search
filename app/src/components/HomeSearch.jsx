@@ -2,23 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useRouter } from 'next/navigation';
 
 const defaultPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
 
 export default function HomeSearch() {
     
-    const router = useRouter();   
     const [input, setInput] = useState('')
     const [userPubkey, setUserPubkey] = useState(false)
+    const [pubkey, setPubkey] = useState(defaultPubkey);
 
     useEffect(() => {
-        const pubkey = localStorage.getItem('pubkey')
+        const npub = localStorage.getItem('pubkey')
 
-        if(pubkey) setUserPubkey(true)
-        
-        if(!pubkey) localStorage.setItem('pubkey', defaultPubkey)
-
+        if(npub) {
+            setUserPubkey(true)
+            setPubkey(npub)
+        }
     }, [])
 
     const deletePubkey = () => {
@@ -26,25 +25,28 @@ export default function HomeSearch() {
         setUserPubkey(false)
     }
     
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = (form) => {
+        form.preventDefault();
         if (!input.trim()) return;
-        router.push(`/search/web?searchTerm=${input}`);
+        form.target.submit()
     };
             
     return (
         <>
-            <form
+            <form method='get'
+                action="/search/web"
                 onSubmit={handleSubmit}
-                className='flex w-full mt-5 mx-auto max-w-[90%] border border-gray-500 px-5 py-3 rounded-full hover:shadow-md focus-within:shadow-md transition-shadow sm:max-w-xl lg:max-w-2xl'
+                className='flex w-full mt-10 mx-auto max-w-[90%] border border-gray-500 px-5 py-3 rounded-full hover:shadow-md focus-within:shadow-md transition-shadow sm:max-w-xl lg:max-w-2xl'
             >
                 <AiOutlineSearch className='text-[26px] text-gray-500 mr-3' />
                 <input
                     type='text'
+                    name="searchTerm"
                     placeholder="Search"
                     className='text-[16px] text-gray-200 bg-transparent flex-grow focus:outline-none'
                     onChange={(e) => setInput(e.target.value)}
                 />
+                <input type="hidden" name="pubkey" value={userPubkey ? pubkey : defaultPubkey} />
                {/*  <BsFillMicFill className='text-lg' /> */}
             </form>
             <div className='flex flex-col space-y-2 sm:space-y-0 justify-center sm:flex-row mt-8 sm:space-x-4'>

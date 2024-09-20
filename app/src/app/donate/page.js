@@ -19,7 +19,7 @@ export default function Page()
                     height={100}
                 />
                 <h2
-                    className="text-[24px] text-center mt-10 text-gray-400 font-bold"
+                    className="text-[20px] lb:text-[24px] text-center mt-10 text-gray-400 font-bold"
                 >
                     Nostr Book - Donate to this Project
                 </h2>

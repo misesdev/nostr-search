@@ -1,23 +1,31 @@
 'use client';
 
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+
+const defaultPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
 
 export default function SearchBox() {
     const searchParams = useSearchParams();
-    const router = useRouter();
     const searchTerm = searchParams.get('searchTerm');
+    const [pubkey, setPubkey] = useState(defaultPubkey);
     const [term, setTerm] = useState(searchTerm || '');
     
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    useEffect(() => {
+        const pubkey = searchParams.get('pubkey')
+
+        if(pubkey) setPubkey(pubkey) 
+    })
+
+    const handleSubmit = (form) => {
+        form.preventDefault();
         if (!term.trim()) return;
-        router.push(`/search/web?searchTerm=${term}`);
+        form.target.submit()
     };
 
     return (
-        <form
+        <form method='get' action='/search/web'
             onSubmit={handleSubmit}
             className='flex border border-gray-500 rounded-full shadow-lg px-6 py-3 lg:ml-10 lg:mr-5 flex-grow lg:max-w-3xl items-center'
         >
@@ -30,8 +38,10 @@ export default function SearchBox() {
                 placeholder="Search"
                 className='bg-transparent mx-4 text-gray-100 w-full focus:outline-none'
                 value={term}
+                name="searchTerm"
                 onChange={(e) => setTerm(e.target.value)}
             />
+            <input type='hidden' name='pubkey' value={pubkey} />
             {/* <RxCross2 */}
             {/*     className='text-2xl text-gray-500 cursor-pointer sm:mr-2' */}
             {/*     onClick={() => setTerm('')} */}
@@ -40,3 +50,5 @@ export default function SearchBox() {
         </form>
     );
 }
+
+
