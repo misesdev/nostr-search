@@ -57,11 +57,13 @@ export const listPubkeys = async (pool: RelayPool, author: string, listRelays: b
                 try {
                     let eventRelays = JSON.parse(event.content);
                     
-                    for(let relay in eventRelays) {
+                    for(let relay in eventRelays) 
+                    {
                         if(!relays.includes(relay))
                             relays.push(relay)
                     }
-                } catch { console.log("error to list relays") }
+                } 
+                catch { console.log("error to list relays") }
             }
         })
 

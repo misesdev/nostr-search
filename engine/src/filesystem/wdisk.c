@@ -72,14 +72,12 @@ void loadFriendsFromUser(FILE *file, User *user, long *offset)
     struct UserNode *current = user->friends;
     while (current) 
     {
-        if(current->user) 
-        {
-            fseek(file, *offset, SEEK_SET);
-            uint8_t friend[ADDRESS_LENGTH] = {0};
-            compressPubkey(current->user->pubkey, friend);
-            fwrite(&user, sizeof(uint8_t), ADDRESS_LENGTH, file);
-            *offset += ADDRESS_LENGTH;
-        }
+        fseek(file, *offset, SEEK_SET);
+        uint8_t friend[ADDRESS_LENGTH] = {0};
+        compressPubkey(current->user->pubkey, friend);
+        fwrite(&friend, sizeof(uint8_t), ADDRESS_LENGTH, file);
+        *offset += ADDRESS_LENGTH;
+        
         current = current->next;
     }
 }

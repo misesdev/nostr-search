@@ -64,11 +64,13 @@ void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
 
         for(long i = 0; i < friendsCount; i++) 
         {
+            uint8_t friend[ADDRESS_LENGTH] = {0};
+
             fseek(file, *offset, SEEK_SET);
-            fread(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
+            fread(&friend, sizeof(uint8_t), ADDRESS_LENGTH, file);
             *offset += ADDRESS_LENGTH;
 
-            struct TrieNode *friendNode = getTrieNode(root, address);
+            struct TrieNode *friendNode = getTrieNode(root, friend);
             
             if(friendNode->user) 
                 insertFriend(userNode->user, friendNode->user);            

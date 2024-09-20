@@ -41,7 +41,7 @@ HttpResponse* router(char *request, struct TrieNode *root)
         return saveTrieOnDisk(jsonRequest, response, root);
 
     responseMessage(response->Content, "Please use one of the following endpointes: "
-        "/add_user, /add_friends, /search and /save");
+        "/add_user, /add_friends, /get_user, /search and /save");
 
     response->StatusCode = 403;
 

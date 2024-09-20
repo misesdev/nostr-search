@@ -18,7 +18,8 @@ export const relays = [
     "wss://relay.primal.net",
     // "wss://creatr.nostr.wine" very slow
     "wss://nostr.milou.lol/ ",
-    "wss://relay.nostr.net",
+    "wss://relay.nostr.net", 
+    "wss://relay.nostr.pt",
     "wss://nostr.zebedee.cloud/",
     "wss://nostr.land",
     "wss://snort.social",
@@ -32,5 +33,6 @@ export const relays = [
     "wss://nostrua.com",
     "wss://nostr.cercatrova.me/",
     "wss://relay.hodl.ar/",
-    "wss://nostrgram.co"
+    "wss://nostrgram.co",
+    "wss://e.nos.lol/"
 ] 

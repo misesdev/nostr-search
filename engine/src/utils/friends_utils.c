@@ -12,7 +12,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 struct FriendNode* createFriendNode(char *pubkey)
 {
     struct FriendNode* node = calloc(1, sizeof(struct FriendNode));
