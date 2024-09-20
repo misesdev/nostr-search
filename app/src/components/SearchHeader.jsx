@@ -7,14 +7,14 @@ import SearchHeaderOptions from './SearchHeaderOptions';
 
 export default function SearchHeader() {
     return (
-        <header className='bg-gray-800 sticky top-0'>
+        <header className='sticky top-0 bg-gray-800'>
             <div className='flex w-full p-6 items-center justify-between'>
                 <Link href='/'>
                     <Image
                         src='/logo.png'
-                        alt='Nostr Book Users'
-                        width={50}
-                        height={50}
+                        alt='Google Logo'
+                        width={60}
+                        height={40}
                         priority
                         style={{ width: 'auto' }}
                     />
@@ -26,8 +26,8 @@ export default function SearchHeader() {
                 {/*     <RiSettings3Line className='bg-transparent hover:bg-gray-200 p-2 text-4xl rounded-full cursor-pointer' /> */}
                 {/*     <TbGridDots className='bg-transparent hover:bg-gray-200 p-2 text-4xl rounded-full cursor-pointer' /> */}
                 {/* </div> */}
-                <button className='bg-[#3e2eb3] text-white px-6 py-2 font-medium rounded-md hover:brightness-105 hover:shadow-md transition-shadow'>
-                    API Docs
+                <button className='bg-[#3e2eb3] text-white px-6 py-2 font-medium rounded-md hover:brightness-105 hover:shadow-md transition-shadow ml-2'>
+                    Sign in
                 </button>
             </div>
             <SearchHeaderOptions />

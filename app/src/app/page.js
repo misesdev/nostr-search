@@ -6,17 +6,21 @@ export default function Home() {
     return (
         <>
             <HomeHeader />
-            <div className='flex flex-col items-center mt-22'>
+            <div className='flex flex-col items-center mt-18'>
                 <Image
                     src='/logo.png'
                     alt='Nostr Book Users'
-                    width={260}
+                    width={150}
                     height={100}
+                    priority
+                    style={{ width: 'auto' }}
                 />
-                <h2
-                    style={{ color: '#fff', fontSize: 26 }}
-                    className='my-2 font-bold'
-                >Nostr Book - Search Users</h2>
+                <h2 
+                    style={{ fontSize: 24 }}
+                    className="text-gray-400 font-bold"
+                >
+                    Nostr Book - Search Users
+                </h2>
                 <HomeSearch />
             </div>
         </>

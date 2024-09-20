@@ -92,8 +92,7 @@ User* jsonToUser(char *jsonString, char *error)
         snprintf(user->name, 45, "%s", name->valuestring);
         snprintf(user->pubkey, 65, "%s", pubkey->valuestring);
         snprintf(user->profile, 150, "%s", profile->valuestring);
-        snprintf(user->displayName, 45, "%s", displayName->valuestring);
-        
+        snprintf(user->displayName, 45, "%s", displayName->valuestring);      
     } 
     else 
     {

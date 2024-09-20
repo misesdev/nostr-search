@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import PaginationButtons from './PaginationButtons';
+import Image from 'next/image';
 
 export default function ImageSearchResults({ results }) {
     return (

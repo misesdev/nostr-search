@@ -18,5 +18,5 @@ export default function CountryLookup() {
     //     getCountry();
     // }, []);
 
-    return <div>{country}</div>;
+    return <div className="text-gray-300">{country}</div>;
 }
