@@ -10,10 +10,9 @@ export default function Home() {
                 <Image
                     src='/logo.png'
                     alt='Nostr Book Users'
-                    width={150}
+                    width={130}
                     height={100}
-                    priority
-                    style={{ width: 'auto' }}
+                    className='w-130 lg:w-200'
                 />
                 <h2 
                     style={{ fontSize: 24 }}

@@ -42,7 +42,7 @@ export default function HomeSearch() {
                 <input
                     type='text'
                     placeholder="Search"
-                    className='text-[20px] text-gray-200 bg-transparent flex-grow focus:outline-none'
+                    className='text-[16px] text-gray-200 bg-transparent flex-grow focus:outline-none'
                     onChange={(e) => setInput(e.target.value)}
                 />
                {/*  <BsFillMicFill className='text-lg' /> */}
