@@ -23,14 +23,14 @@ User* loadUserFromDisk(FILE *file, long offset)
     return user;
 }
 
-struct TrieNode* loadUsersTree(FILE *file, long *usersCount) 
+struct TrieNode* loadUsersTree(FILE *file) 
 {
     long count = 0, offset = 0;
     fseek(file, offset, SEEK_SET);
     fread(&count, sizeof(long), 1, file);
     offset += sizeof(long);
 
-    printf("users count: %ld", count);
+    printf("users count: %ld\n", count);
 
     struct TrieNode *root = createTrieNode(0);
 
@@ -39,7 +39,6 @@ struct TrieNode* loadUsersTree(FILE *file, long *usersCount)
         User *currentUser = loadUserFromDisk(file, offset);
         insertTrieNode(root, currentUser);
         offset += sizeof(User);
-        usersCount++;
     }
 
     return root;
@@ -134,8 +133,7 @@ struct TrieNode* loadTrieFromDisk()
         if(!fileFriends) return NULL;
     }
 
-    long usersCount = 0;
-    struct TrieNode* root = loadUsersTree(fileUsers, &usersCount);
+    struct TrieNode* root = loadUsersTree(fileUsers);
     
     loadFriendsFromDisk(fileFriends, root);
 
