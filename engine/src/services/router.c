@@ -8,6 +8,7 @@
 #include "./endpoints/tree_save.c"
 #include "./endpoints/get_user.c"
 #include "./endpoints/get_friends.c"
+#include "./endpoints/search_friends.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +32,9 @@ HttpResponse* router(char *request, struct TrieNode *root)
     // get user from tree with pubkey
     if(strstr(request, "/get_user") != NULL)
         return getUserWithPubkey(jsonRequest, response, root);
-    // search on graph users
+    // get friends from user
+    if(strstr(request, "/search_friends") != NULL)
+        return searchFriends(jsonRequest, response, root);      // search on graph users
     if(strstr(request, "/search") != NULL)
         return searchUsers(jsonRequest, response, root);
     // add friends of users on graph user
@@ -39,13 +42,13 @@ HttpResponse* router(char *request, struct TrieNode *root)
         return insertFriends(jsonRequest, response, root);
     // get friends from user
     if(strstr(request, "/get_friends") != NULL)
-        return getFriendsFromUser(jsonRequest, response, root);    
+        return getFriendsFromUser(jsonRequest, response, root);     
     // save the tree on disk
     if(strstr(request, "/save") != NULL)
         return saveTrieOnDisk(jsonRequest, response, root);
 
-    responseMessage(response->Content, "Please use one of the following endpointes: "
-        "/add_user, /add_friends, /get_user, /search and /save");
+    responseMessage(response->Content, "Please use one of the following endpoints: "
+        "/add_user, /add_friends, /get_user, /get_friends, /search and /search_friends");
 
     response->StatusCode = 403;
 

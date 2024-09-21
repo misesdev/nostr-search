@@ -53,7 +53,7 @@ float textSimilarity(char *origin, char *compare)
     // the documentation hire: http://www.catalysoft.com/articles/StrikeAMatch.html
     int intersection = 0, number = 0, sizePairs = 0; 
     int hashMap[255] = {0};
-    
+
     while(*origin) 
     { 
         number = toupper(*origin) * toupper(*(origin+1));
@@ -61,7 +61,7 @@ float textSimilarity(char *origin, char *compare)
         sizePairs++;
         origin++;
     }
-    
+
     while(*compare) 
     { 
         number = (toupper(*compare) * toupper(*(compare+1))) % 255;        
@@ -72,7 +72,7 @@ float textSimilarity(char *origin, char *compare)
         sizePairs++;
         compare++;
     }
-    
+
     return sizePairs > 0 ? (2.0 * intersection) / sizePairs : 0.0;
 }
 

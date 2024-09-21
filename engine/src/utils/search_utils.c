@@ -7,6 +7,7 @@
 #include <string.h>
 #include <cjson/cJSON.h>
 
+#include "./utils.c"
 #include "./http_utils.c"
 #include "../types/types.c"
 
@@ -116,6 +117,29 @@ void resultToJson(struct ResultNode *rootUsers, char *response)
     cJSON_Delete(jsonList);
 
     free(rootUsers);
+}
+
+struct ResultNode* searchOnFriends(User *user, char *searchTerm, int limit)
+{
+    struct ResultNode *rootUsers = createResultNode(NULL, 0);
+
+    int foundCount = 0;
+    struct UserNode *current = user->friends;
+    while(current)
+    {
+        float similarity = textSimilarity(current->user->displayName, searchTerm);
+        
+        if(similarity >= MIN_SIMILARITY_TERM) {
+            insertResultNode(rootUsers, current->user, similarity);
+            foundCount++;
+        }
+
+        if(foundCount >= limit) break;
+        
+        current = current->next;
+    }
+
+    return rootUsers;
 }
 
 #endif
