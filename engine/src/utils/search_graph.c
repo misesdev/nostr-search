@@ -39,7 +39,7 @@ void freeVisitedSet(VisitedUser *visitedSet) {
 
 void enqueue(struct UserNode ***queue, int *queueSize, int *capacity, User *user) {
     if (*queueSize == *capacity) {
-        *capacity += 100; // Aumenta a capacidade em blocos de 100
+        *capacity *= 2; // Aumenta a capacidade em blocos dobrando de tamanho
         *queue = realloc(*queue, sizeof(struct UserNode*) * (*capacity));
     }
     (*queue)[*queueSize] = (struct UserNode*) malloc(sizeof(struct UserNode));
@@ -70,14 +70,16 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
         current = current->next;
     }
 
+    int front = 0;
     // Inicia a busca em largura (BFS)
     while (queueSize > 0 && foundCount < limit && visitedCount < MAX_USERS_TO_VISIT) {
         // Remove o primeiro elemento da fila
-        struct UserNode *currentNode = queue[0];
-        for (int i = 0; i < queueSize - 1; i++) {
-            queue[i] = queue[i + 1];
-        }
-        queueSize--;
+        struct UserNode *currentNode = queue[front];
+        front++;
+        // for (int i = 0; i < queueSize - 1; i++) {
+        //     queue[i] = queue[i + 1];
+        // }
+        // queueSize--;
 
         visitedCount++;
 
