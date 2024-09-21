@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include "../../types/types.c" 
 #include "../../types/user_trie.c"
-#include "../../utils/user_utils.c"
 #include "../../utils/search_utils.c"
 #include "../../utils/search_graph.c"
 
@@ -28,9 +27,10 @@ HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, struct Trie
         return response;
     }
 
-    struct UserNode *resultListUsers = searchOnGraph(userNode->user, searchParams->search, searchParams->limit);
+    struct ResultNode *resultListUsers = searchOnGraph(userNode->user, searchParams->search, searchParams->limit);
 
-    userListToJson(resultListUsers, response->Content);
+    resultToJson(resultListUsers, response->Content);
+
     response->StatusCode = 200;
     free(searchParams);
 

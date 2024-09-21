@@ -51,6 +51,13 @@ typedef struct {
     char pubkey[65];
 } UserIdentity;
 
+
+struct ResultNode {
+    User *user;
+    float similarity;
+    struct ResultNode *next;
+};
+
 #endif
 
 

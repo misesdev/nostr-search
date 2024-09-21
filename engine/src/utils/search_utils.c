@@ -7,10 +7,9 @@
 #include <string.h>
 #include <cjson/cJSON.h>
 
-//#include "./utils.c"
+#include "./utils.c"
 #include "./http_utils.c"
 #include "../types/types.c"
-//#include "../types/user_list.c"
 
 Search* jsonToSearchParams(char *json, char *error)
 {
@@ -54,72 +53,72 @@ Search* getSearchParams(char *json_params, char *error)
     return searchParams;
 }
 
-// void enqueue(struct UserNode ***queue, int *queueSize, User *user)
-// {
-//     *queue = realloc(*queue, sizeof(struct UserNode*) * (*queueSize + 1));
-//     (*queue)[*queueSize] = (struct UserNode*) malloc(sizeof( struct UserNode));
-//     (*queue)[*queueSize]->user = user;
-//     (*queue)[*queueSize]->next = NULL;
-//     (*queueSize)++;
-// }
+struct ResultNode* createResultNode(User *user, float similarity)
+{
+    struct ResultNode *node = malloc(sizeof(struct ResultNode));
+    node->similarity = similarity;
+    node->user = user;
+    node->next = NULL;
 
-// struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
-// {
-//     int foundCount = 0, visitedCount = 0;
-//     struct UserNode *resultList = createUserNode(NULL);
-//     limit = limit > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit;
+    return node;
+}
 
-//     // Fila de busca (implementada como um array dinâmico de UserNode*)
-//     struct UserNode **queue = NULL;
-//     int queueSize = 0;
+void insertResultNode(struct ResultNode *rootUsers, User *user, float similarity)
+{
+    if(!rootUsers->user)
+    {
+        rootUsers->similarity = similarity;
+        rootUsers->user = user;
+        return;
+    }
 
-//     // Add all users of initial list to the search queue
-//     struct UserNode *current = rootUser->friends;
-//     while (current != NULL) {
-//         enqueue(&queue, &queueSize, current->user);
-//         current = current->next;
-//     }
+    struct ResultNode *current = rootUsers;
+    while (current)
+    {
+        if(strcmp(current->user->pubkey, user->pubkey) == 0) return;
 
-//     // start breadth-first search 
-//     while (queueSize > 0 && foundCount < limit && visitedCount < MAX_USERS_TO_VISIT) 
-//     {
-//         // Remove the first element of queue
-//         struct UserNode *currentNode = queue[0];
-//         for (int i = 0; i < queueSize - 1; i++) {
-//             queue[i] = queue[i + 1];
-//         }
-//         queueSize--;
+        if(!current->next) {
+            current->next = createResultNode(user, similarity);
+            return;
+        }
 
-//         visitedCount++;
+        current = current->next;
+    }
+}
 
-//         if (textSimilarity(currentNode->user->name, searchTerm) >= MIN_SIMILARITY_TERM) {
-//             insertUniqueUserNode(resultList, currentNode->user);
-//             foundCount++;  
-//         }
+cJSON* resultUserToCJSON(User *user, float similarity)
+{
+    cJSON *userJson = cJSON_CreateObject();
 
-//         struct UserNode *friendList = currentNode->user->friends;
-//         while (friendList != NULL && visitedCount < MAX_USERS_TO_VISIT) {
-//             enqueue(&queue, &queueSize, friendList->user);
-//             friendList = friendList->next;
-//         }
+    cJSON_AddStringToObject(userJson, "name", user->name);
+    cJSON_AddStringToObject(userJson, "displayName", user->displayName);
+    cJSON_AddStringToObject(userJson, "pubkey", user->pubkey);
+    cJSON_AddStringToObject(userJson, "profile", user->profile);
+    cJSON_AddNumberToObject(userJson, "similarity", truncate(similarity));
 
-//         // Free the memory of current node of queue
-//         free(currentNode);
+    return userJson;
+}
 
-//         // If you reach the limit of results or users visited, the search ends
-//         if (foundCount >= limit || visitedCount >= MAX_USERS_TO_VISIT) {
-//             break;
-//         }
-//     }
+void resultToJson(struct ResultNode *rootUsers, char *response)
+{
+    cJSON *jsonList = cJSON_CreateArray();
 
-//     // Free the memory of queue
-//     for (int i = 0; i < queueSize; i++) {
-//         free(queue[i]);
-//     }
-//     free(queue);
+    struct ResultNode *current = rootUsers;
+    while(current) 
+    {
+        if(current->user)
+            cJSON_AddItemToArray(jsonList, resultUserToCJSON(current->user, current->similarity));
 
-//     return resultList;
-// }
+        current = current->next;
+    }
+
+    snprintf(response, MAX_RESPONSE_LENGTH, "%s", cJSON_Print(jsonList));
+
+    cJSON_Delete(jsonList);
+
+    free(rootUsers);
+}
+
+#endif
 
 
-#endif 

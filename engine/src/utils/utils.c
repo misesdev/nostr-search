@@ -112,8 +112,12 @@ bool isEmptyAddress(uint8_t array[ADDRESS_LENGTH])
     return true;
 }
 
+float truncate(float number) 
+{
+    int temp = (int)(number * 100); 
 
-
+    return (float)temp / 100;    
+}
 
 #endif
 

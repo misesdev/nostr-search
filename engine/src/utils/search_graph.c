@@ -10,7 +10,7 @@
 #include "./uthash.h"
 #include "./utils.c"
 #include "../types/types.c"
-#include "../types/user_list.c"
+#include "../utils/search_utils.c"
 
 typedef struct {
     User *user;
@@ -48,9 +48,9 @@ void enqueue(struct UserNode ***queue, int *queueSize, int *capacity, User *user
     (*queueSize)++;
 }
 
-struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
+struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
     int foundCount = 0, visitedCount = 0;
-    struct UserNode *resultList = createUserNode(NULL);
+    struct ResultNode *resultList = createResultNode(NULL, 0);
     limit = limit > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit;
 
     // Fila de busca (implementada como um array dinâmico de UserNode*)
@@ -82,8 +82,10 @@ struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
         visitedCount++;
 
         // Verifica se o usuário é semelhante ao termo de busca
-        if (textSimilarity(currentNode->user->displayName, searchTerm) >= MIN_SIMILARITY_TERM) {
-            insertUserNode(resultList, currentNode->user);
+        float similarity = textSimilarity(currentNode->user->displayName, searchTerm);
+        if (similarity >= MIN_SIMILARITY_TERM) 
+        {
+            insertResultNode(resultList, currentNode->user, similarity);
             foundCount++;
         }
 
