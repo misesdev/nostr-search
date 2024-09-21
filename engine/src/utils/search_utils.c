@@ -7,7 +7,6 @@
 #include <string.h>
 #include <cjson/cJSON.h>
 
-#include "./utils.c"
 #include "./http_utils.c"
 #include "../types/types.c"
 
@@ -94,7 +93,7 @@ cJSON* resultUserToCJSON(User *user, float similarity)
     cJSON_AddStringToObject(userJson, "displayName", user->displayName);
     cJSON_AddStringToObject(userJson, "pubkey", user->pubkey);
     cJSON_AddStringToObject(userJson, "profile", user->profile);
-    cJSON_AddNumberToObject(userJson, "similarity", truncate(similarity));
+    cJSON_AddNumberToObject(userJson, "similarity", (int)(similarity * 100));
 
     return userJson;
 }
