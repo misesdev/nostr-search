@@ -9,7 +9,7 @@ export default function Home() {
             <div className='flex flex-col items-center mt-18'>
                 <Image
                     src='/logo.png'
-                    alt='Nostr Book Users'
+                    alt='Nostr Book - Search Users'
                     width={130}
                     height={100}
                     className='w-130 lg:w-200'

@@ -2,8 +2,8 @@ import './globals.css';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-    title: 'Noogle',
-    description: 'An open source search engine for Nostr.',
+    title: 'Nosbook - Search on Nostr',
+    description: 'A search engine for Nostr.',
 };
 
 export default function RootLayout({ children }) {

@@ -4,7 +4,7 @@ import HomeHeader from "@/components/HomeHeader";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {  useState } from "react";
-import { AiOutlineUser, AiOutlineProfile } from "react-icons/ai"; 
+import { AiOutlineUser } from "react-icons/ai"; 
 
 export default function Page() {
 
@@ -12,7 +12,6 @@ export default function Page() {
     const [pubkey, setPukey] = useState('')
 
     const handleSave = () => {
-        console.log(pubkey)
         localStorage.setItem('pubkey', pubkey)
         router.push("/")
     }
@@ -47,7 +46,7 @@ export default function Page() {
                     <input
                         type='text'
                         placeholder='Your pubkey: npub...'
-                        className='px-1 text-gray-400  bg-transparent flex-grow focus:outline-none'
+                        className='select-none px-1 text-gray-400  bg-transparent flex-grow focus:outline-none'
                         onChange={(e) => setPukey(e.target.value)}
                     />
                 </div>

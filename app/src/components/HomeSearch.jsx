@@ -2,14 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { useRouter } from 'next/navigation';
 
 const defaultPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
 
 export default function HomeSearch() {
     
+    const router = useRouter()
     const [input, setInput] = useState('')
     const [userPubkey, setUserPubkey] = useState(false)
-    const [pubkey, setPubkey] = useState(defaultPubkey);
+    const [pubkey, setPubkey] = useState(defaultPubkey)
 
     useEffect(() => {
         const npub = localStorage.getItem('pubkey')
@@ -43,6 +45,7 @@ export default function HomeSearch() {
                     type='text'
                     name="searchTerm"
                     placeholder="Search"
+                    autoComplete='off'
                     className='text-[16px] text-gray-200 bg-transparent flex-grow focus:outline-none'
                     onChange={(e) => setInput(e.target.value)}
                 />
@@ -50,12 +53,6 @@ export default function HomeSearch() {
                {/*  <BsFillMicFill className='text-lg' /> */}
             </form>
             <div className='flex flex-col space-y-2 sm:space-y-0 justify-center sm:flex-row mt-8 sm:space-x-4'>
-                <button
-                    className='bg-[#3e2eb3] rounded-md text-sm text-gray-200 font-bold hover:ring-gray-200 focus:outline-none active:ring-gray-300 hover:shadow-md w-36 h-10 transition-shadow'
-                    onClick={() => router.push('/donate')}
-                >
-                    Donate
-                </button>
                 { !userPubkey && 
                     <button
                         className='bg-[#f8f9fa] rounded-md text-sm text-gray-800 font-bold hover:ring-gray-200 focus:outline-none active:ring-gray-300 hover:shadow-md w-36 h-10 transition-shadow disabled:opacity-80 disabled:shadow-sm'
@@ -71,7 +68,13 @@ export default function HomeSearch() {
                     >
                         Delete Pubkey                                    
                     </button>
-                }            
+                }    
+                <button
+                    className='bg-[#3e2eb3] rounded-md text-sm text-gray-200 font-bold hover:ring-gray-200 focus:outline-none active:ring-gray-300 hover:shadow-md w-36 h-10 transition-shadow'
+                    onClick={() => router.push('/donate')}
+                >
+                    Donate
+                </button>
             </div>
         </>
     );
