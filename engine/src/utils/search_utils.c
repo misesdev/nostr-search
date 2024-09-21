@@ -26,12 +26,15 @@ Search* jsonToSearchParams(char *json, char *error)
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(jsonParams, "pubkey");
     cJSON *limit = cJSON_GetObjectItem(jsonParams, "limit");
     if(cJSON_IsString(search) && (search->valuestring != NULL) && 
-        cJSON_IsString(pubkey) && (pubkey->valuestring != NULL) && 
-        cJSON_IsNumber(limit) && (limit->valueint != 0)) 
+        cJSON_IsString(pubkey) && (pubkey->valuestring != NULL) 
+    ) 
     {
         snprintf(searchParams->pubkey, 65, "%s", pubkey->valuestring);
-        snprintf(searchParams->search, 100, "%s", search->valuestring);        
-        searchParams->limit = limit->valueint;
+        snprintf(searchParams->search, 100, "%s", search->valuestring);  
+        if(cJSON_IsNumber(limit) && limit->valueint > 0)
+            searchParams->limit = limit->valueint;
+        else
+            searchParams->limit = 50;
     } else {
         responseMessage(error, "Error when parsing search, expected properties 'pubkey', 'limit' and 'searchTerm'");
         cJSON_Delete(jsonParams);
