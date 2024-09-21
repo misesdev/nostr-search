@@ -14,36 +14,37 @@ export const loadData = async () => {
     })
 
     // // send users
-    await fileUsers.readLines(async (line) => {        
-        try 
-        {
-            let response = await fetch("http://localhost:8080/add_user", {
-                method: "post",
-                body: line,
-            })
-            
-            let data = await response.json()
-            
-            console.log(data.message)
+    // await fileUsers.readLines(async (line) => {        
+    //     try 
+    //     {
+    //         let response = await fetch("http://localhost:8080/add_user", {
+    //             method: "post",
+    //             body: line,
+    //         })
+    //         
+    //         let data = await response.json()
+    //         
+    //         console.log(data.message)
 
-            if(!response.ok) console.log(data)
-        } 
-        catch {  }
+    //         if(!response.ok) console.log(data)
+    //     } 
+    //     catch {  }
 
-        return true
-    })
+    //     return true
+    // })
 
-    let response = await fetch("http://localhost:8080/save", {
-        method: "post"
-    })
+    // let response = await fetch("http://localhost:8080/save", {
+    //     method: "post"
+    // })
 
-    let data = await response.json()
+    // let data = await response.json()
 
-    console.log(data.message)
+    // console.log(data.message)
 
     // send friends
     await fileFriends.readLines(async (line) => {        
-        try {
+        try 
+        {
             let friends: string[] = []
             let userFriends: UserFriends = JSON.parse(line);
 
@@ -82,11 +83,11 @@ export const loadData = async () => {
         return true
     })
 
-    response = await fetch("http://localhost:8080/save", {
+    let response = await fetch("http://localhost:8080/save", {
         method: "post"
     })
 
-    data = await response.json()
+    let data = await response.json()
 
     console.log(data.message)
 }

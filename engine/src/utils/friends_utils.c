@@ -23,6 +23,22 @@ struct FriendNode* createFriendNode(char *pubkey)
     return node;
 }
 
+void insertFriendNode(struct FriendNode *root, char *pubkey)
+{
+    struct FriendNode *current = root;
+    
+    while(current) 
+    {
+        if(!current->next) 
+        {
+            current->next = createFriendNode(pubkey);
+            return;
+        }
+
+        current = current->next;
+    }
+}
+
 struct FriendNode* invalidPubkey(cJSON *json, struct FriendNode *friends, char *error) 
 {
     responseMessage(error, "One invalid pubkey");
@@ -73,8 +89,8 @@ struct FriendNode* jsonToFriends(char *json_params, char *error)
         if(strlen(npub->valuestring) < 64)
             return invalidPubkey(jsonFriends, userFriends, error);   
 
-        current->next = createFriendNode(npub->valuestring);
-        current = current->next;
+        //printf("received friend: %s\n", npub->valuestring);
+        insertFriendNode(userFriends, npub->valuestring);  
     }
 
     cJSON_Delete(jsonFriends);

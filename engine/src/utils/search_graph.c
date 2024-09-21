@@ -63,7 +63,8 @@ struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
 
     // Adiciona os amigos do usuário root à fila de busca
     struct UserNode *current = rootUser->friends;
-    while (current != NULL) {
+    while (current) 
+    {
         enqueue(&queue, &queueSize, &queueCapacity, current->user);
         markVisited(&visitedSet, current->user); // Marca como visitado
         current = current->next;
@@ -81,14 +82,14 @@ struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
         visitedCount++;
 
         // Verifica se o usuário é semelhante ao termo de busca
-        if (textSimilarity(currentNode->user->name, searchTerm) >= MIN_SIMILARITY_TERM) {
+        if (textSimilarity(currentNode->user->displayName, searchTerm) >= MIN_SIMILARITY_TERM) {
             insertUserNode(resultList, currentNode->user);
             foundCount++;
         }
 
         // Adiciona os amigos do nó atual à fila
         struct UserNode *friendList = currentNode->user->friends;
-        while (friendList != NULL && visitedCount < MAX_USERS_TO_VISIT) {
+        while (friendList && visitedCount < MAX_USERS_TO_VISIT) {
             if (!isVisited(visitedSet, friendList->user)) {
                 enqueue(&queue, &queueSize, &queueCapacity, friendList->user);
                 markVisited(&visitedSet, friendList->user); // Marca como visitado
@@ -109,6 +110,7 @@ struct UserNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) {
     for (int i = 0; i < queueSize; i++) {
         free(queue[i]);
     }
+
     free(queue);
 
     // Libera o conjunto de usuários visitados

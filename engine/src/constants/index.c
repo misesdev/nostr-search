@@ -2,15 +2,15 @@
 #define CONSTANT_INDEX_C
 
 // Tree Trie Definitions 
-#define MAX_RESPONSE_LENGTH 2048 * 2
+#define MAX_RESPONSE_LENGTH 1024 * 50
 #define TRIE_CHILDREN_LENGTH 255
 #define ADDRESS_LENGTH 16
 #define PUBKEY_LENGTH 32
 
 // Search Definitions
-#define MAX_LIMIT_RESULTS 50
-#define MAX_USERS_TO_VISIT 500000
-#define MIN_SIMILARITY_TERM .50
+#define MAX_LIMIT_RESULTS 100
+#define MAX_USERS_TO_VISIT 100000
+#define MIN_SIMILARITY_TERM .60
 
 // HTTP constantes definitions
 #define HTTP_STATUS_OK 200

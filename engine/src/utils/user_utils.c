@@ -34,7 +34,7 @@ void insertFriend(User *user, User *friend)
     struct UserNode *current = user->friends;
     while(current) 
     {
-        if(strcmp(current->user->pubkey, friend->pubkey)) return;
+        if(strcmp(current->user->pubkey, friend->pubkey) == 0) return;
 
         if(!current->next) 
         {

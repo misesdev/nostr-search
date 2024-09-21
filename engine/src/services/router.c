@@ -7,6 +7,7 @@
 #include "./endpoints/up_friends.c"
 #include "./endpoints/tree_save.c"
 #include "./endpoints/get_user.c"
+#include "./endpoints/get_friends.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,6 +37,9 @@ HttpResponse* router(char *request, struct TrieNode *root)
     // add friends of users on graph user
     if(strstr(request, "/add_friends") != NULL)
         return insertFriends(jsonRequest, response, root);
+    // get friends from user
+    if(strstr(request, "/get_friends") != NULL)
+        return getFriendsFromUser(jsonRequest, response, root);    
     // save the tree on disk
     if(strstr(request, "/save") != NULL)
         return saveTrieOnDisk(jsonRequest, response, root);
