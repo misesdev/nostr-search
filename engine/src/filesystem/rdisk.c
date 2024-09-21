@@ -45,9 +45,9 @@ struct TrieNode* loadUsersTree(FILE *file, long *usersCount)
     return root;
 }
 
-void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
+void loadFriendsOnTree(FILE *file, struct TrieNode *root, long *offset)
 {
-    uint8_t address[ADDRESS_LENGTH] = {0};
+    uint8_t address[ADDRESS_LENGTH];
 
     fseek(file, *offset, SEEK_SET);
     fread(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
@@ -62,14 +62,19 @@ void loadFriendOnTree(FILE *file, struct TrieNode *root, long *offset)
         fread(&friendsCount, sizeof(long), 1, file);
         *offset += sizeof(long);
 
+        uint8_t friends[friendsCount][ADDRESS_LENGTH];
+
+        fseek(file, *offset, SEEK_SET);
+        fread(&friends, ADDRESS_LENGTH, friendsCount, file);
+        *offset += ADDRESS_LENGTH * friendsCount;
+
         for(long i = 0; i < friendsCount; i++) 
         {
-            uint8_t friend[ADDRESS_LENGTH] = {0};
+            uint8_t friend[ADDRESS_LENGTH];
 
-            fseek(file, *offset, SEEK_SET);
-            fread(&friend, sizeof(uint8_t), ADDRESS_LENGTH, file);
-            *offset += ADDRESS_LENGTH;
-
+            for(uint8_t j = 0; j < ADDRESS_LENGTH; j++)
+                friend[j] = friends[i][j];
+            
             struct TrieNode *friendNode = getTrieNode(root, friend);
             
             if(friendNode->user) 
@@ -86,7 +91,7 @@ void loadFriendsFromDisk(FILE *file, struct TrieNode *root)
     offset += sizeof(long);
 
     for(long i = 0; i < usersCount; i++) {
-        loadFriendOnTree(file, root, &offset);
+        loadFriendsOnTree(file, root, &offset);
     }
 }
 
