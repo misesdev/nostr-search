@@ -19,7 +19,7 @@ const main = async () => {
 
     // await listFriends(relayPool)
 
-    await loadData(false, true)
+    await loadData({ users: false, friends: true })
 }
 
 main();

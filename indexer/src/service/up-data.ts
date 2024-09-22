@@ -1,7 +1,12 @@
 import { FileSystem  } from "../filesytem/disk";
 import { User, UserFriends } from "../modules/types";
 
-export const loadData = async (users: boolean = true, friends: boolean = true) => {
+type Props = {
+    users: boolean,
+    friends: boolean
+}
+
+export const loadData = async ({ users = true, friends = true }: Props) => {
     
     const pubkeys: string[] = []
     const fileUsers = new FileSystem("./data/users.db")

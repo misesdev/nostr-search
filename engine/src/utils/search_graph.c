@@ -75,9 +75,9 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
     // Inicia a busca em largura (BFS)
     while (foundCount < limit && visitedCount < MAX_USERS_TO_VISIT) 
     {
-        if(visitedCount >= queueSize) break;
+        if(visitedCount >= queueSize - 1) break;
 
-        // Pega o primeiro elemento da fila
+        // take the element from queue
         struct UserNode *currentNode = queue[visitedCount];
         visitedCount++;
 
