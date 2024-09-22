@@ -4,7 +4,7 @@ import HomeHeader from "@/components/HomeHeader";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function Page()
+export default function Page ()
 {
     const router = useRouter()
 

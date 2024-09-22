@@ -1,24 +1,19 @@
-'use client'
-
-import WebSearchResults from '@/components/WebSearchResults';
+import { SearchParams, User } from "@/types/types";
+import WebSearchResults from "./WebSearchResults";
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 
-export default async function WebSearchPage() {
+const SearchResults = async ({ pubkey, searchTerm }: SearchParams) => {
+    
+    // search
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    const params = useSearchParams()
+    const results: User[] = []
 
-     // search
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const data = {} 
-    const results = data?.items;
-
-    if (!results) {
+    if (!results.length) {
         return (
             <div className='flex flex-col justify-center items-center pt-10'>
                 <h1 className='text-[20px] lg:text-3xl mb-4 text-gray-400 text-center'>
-                    No results found for `{params.get('searchTerm')}`
+                    No results found for `{searchTerm}`
                 </h1>
                 <p className='text-[12px] lg:text-lg text-gray-300 text-center'>
                     Try searching the web or images for something else{' '}
@@ -27,8 +22,10 @@ export default async function WebSearchPage() {
                     </Link>
                 </p>
             </div>
-        );
+        )
     }
 
-    return <div>{results && <WebSearchResults results={data} />}</div>;
+    return (<div>{results.length && <WebSearchResults results={results} />}</div>)
 }
+
+export default SearchResults 

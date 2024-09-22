@@ -1,4 +1,6 @@
-export default function loading() {
+import { ReactNode } from "react";
+
+export default function LoadingImage() : ReactNode {
     return (
         <div className='pt-10 mx-2 pl-24 lg:pl-52 max-w-6xl flex sm:space-x-4 flex-col sm:flex-row pb-42'>
             <div className='animate-pulse'>

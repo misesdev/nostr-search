@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/navigation';
+import { defaultPubkey } from '@/constants/pubkey';
 
-const defaultPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
-
-export default function HomeSearch() {
+export default function HomeSearch() : ReactNode {
     
     const router = useRouter()
     const [input, setInput] = useState('')
@@ -27,7 +26,7 @@ export default function HomeSearch() {
         setUserPubkey(false)
     }
     
-    const handleSubmit = (form) => {
+    const handleSubmit = (form: any) => {
         form.preventDefault();
         if (!input.trim()) return;
         form.target.submit()

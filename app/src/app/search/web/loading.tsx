@@ -1,4 +1,4 @@
-export default function loading() {
+const LoadingWeb = () => {
     return (
         <div className="flex-col sm:p-20 w-full">
             <div className='mx-2 pt-10 max-w-6xl lg:pl-52 animate-pulse'>
@@ -22,3 +22,5 @@ export default function loading() {
         </div>
     );
 }
+
+export default LoadingWeb

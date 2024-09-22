@@ -1,12 +1,12 @@
 'use client';
 
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 const defaultPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
 
-export default function SearchBox() {
+export default function SearchBox() : ReactNode {
     const searchParams = useSearchParams();
     const searchTerm = searchParams.get('searchTerm');
     const [pubkey, setPubkey] = useState(defaultPubkey);
@@ -18,7 +18,7 @@ export default function SearchBox() {
         if(pubkey) setPubkey(pubkey) 
     }, [searchParams])
 
-    const handleSubmit = (form) => {
+    const handleSubmit = (form: any) => {
         form.preventDefault();
         if (!term.trim()) return;
         form.target.submit()
@@ -36,7 +36,7 @@ export default function SearchBox() {
             <input
                 type='text'
                 placeholder="Search"
-                className='bg-transparent mx-4 text-gray-100 w-full focus:outline-none'
+                className='bg-transparent mx-4 text-gray-300 w-full focus:outline-none'
                 value={term}
                 name="searchTerm"
                 onChange={(e) => setTerm(e.target.value)}

@@ -1,11 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchBox from './SearchBox';
-import { RiSettings3Line } from 'react-icons/ri';
-import { TbGridDots } from 'react-icons/tb';
 import SearchHeaderOptions from './SearchHeaderOptions';
+import { ReactNode } from 'react';
 
-export default function SearchHeader() {
+export default function SearchHeader(): ReactNode {
     return (
         <header className='top-0 bg-gray-800'>
             <div className='lg:flex w-full p-4 lg:p-6'>

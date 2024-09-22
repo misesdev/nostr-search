@@ -1,8 +1,10 @@
 import HomeHeader from '@/components/HomeHeader';
 import HomeSearch from '@/components/HomeSearch';
 import Image from 'next/image';
+import { ReactNode } from 'react';
 
-export default function Home() {
+const Home = () : ReactNode => {
+    
     return (
         <>
             <HomeHeader />
@@ -25,3 +27,5 @@ export default function Home() {
         </>
     );
 }
+
+export default Home

@@ -6,7 +6,7 @@ export const metadata = {
     description: 'A search engine for Nostr.',
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: any) {
     return (
         <html lang='en' className="bg-gray-900">
             <head>

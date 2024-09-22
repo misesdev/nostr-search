@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 
-export default function CountryLookup() {
-    const [country, setCountry] = useState('United States');
+export default function CountryLookup(): ReactNode {
+    const country = 'United States';
 
     // useEffect(() => {
     //     const getCountry = async () => {
