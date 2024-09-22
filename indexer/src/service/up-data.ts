@@ -1,7 +1,7 @@
 import { FileSystem  } from "../filesytem/disk";
 import { User, UserFriends } from "../modules/types";
 
-export const loadData = async () => {
+export const loadData = async (users: boolean = true, friends: boolean = true) => {
     
     const pubkeys: string[] = []
     const fileUsers = new FileSystem("./data/users.db")
@@ -13,83 +13,89 @@ export const loadData = async () => {
         return true
     })
 
-    // // send users
-    await fileUsers.readLines(async (line) => {        
-        try 
-        {
-            let response = await fetch("http://localhost:8080/add_user", {
-                method: "post",
-                body: line,
-            })
-            
-            let data = await response.json()
-            
-            console.log(data.message)
+    // send users
+    if(users) 
+    {
+        await fileUsers.readLines(async (line) => {        
+            try 
+            {
+                let response = await fetch("http://localhost:8080/add_user", {
+                    method: "post",
+                    body: line,
+                })
+                
+                let data = await response.json()
+                
+                console.log(data.message)
 
-            if(!response.ok) console.log(data)
-        } 
-        catch {  }
+                if(!response.ok) console.log(data)
+            } 
+            catch {  }
 
-        return true
-    })
+            return true
+        })
 
-    let response = await fetch("http://localhost:8080/save", {
-        method: "post"
-    })
+        let response = await fetch("http://localhost:8080/save", {
+            method: "post"
+        })
 
-    let data = await response.json()
+        let data = await response.json()
 
-    console.log(data.message)
+        console.log(data.message)
+    }
 
     // send friends
-    await fileFriends.readLines(async (line) => {        
-        try 
-        {
-            let friends: string[] = []
-            let userFriends: UserFriends = JSON.parse(line);
-
-            if(userFriends.friends.length <= 0)
-                return true
-            
-            let user: User = { 
-                pubkey: userFriends.pubkey,
-                friends: []
-            }
-            
-            userFriends.friends.forEach(index => {
-                let pubkey = pubkeys[index]
-                if(pubkey && pubkey.length == 64) 
-                    friends.push(pubkey)
-            })
-
-            let interval = 100
-            for(let i = 0; i < friends.length; i += interval) 
+    if(friends)
+    {
+        await fileFriends.readLines(async (line) => {        
+            try 
             {
-                user.friends = friends.slice(i, i + interval)
+                let friends: string[] = []
+                let userFriends: UserFriends = JSON.parse(line);
 
-                let response = await fetch("http://localhost:8080/add_friends", {
-                    method: "post",
-                    body: JSON.stringify(user)
+                if(userFriends.friends.length <= 0)
+                    return true
+                
+                let user: User = { 
+                    pubkey: userFriends.pubkey,
+                    friends: []
+                }
+                
+                userFriends.friends.forEach(index => {
+                    let pubkey = pubkeys[index]
+                    if(pubkey && pubkey.length == 64) 
+                        friends.push(pubkey)
                 })
 
-                let data = await response.json()
-            
-                console.log("pubkey:", user.pubkey)
-                console.log("-> response:", data.message)
-            }
-        } 
-        catch {  }
+                let interval = 100
+                for(let i = 0; i < friends.length; i += interval) 
+                {
+                    user.friends = friends.slice(i, i + interval)
 
-        return true
-    })
+                    let response = await fetch("http://localhost:8080/add_friends", {
+                        method: "post",
+                        body: JSON.stringify(user)
+                    })
 
-    response = await fetch("http://localhost:8080/save", {
-        method: "post"
-    })
+                    let data = await response.json()
+                
+                    console.log("pubkey:", user.pubkey)
+                    console.log("-> response:", data.message)
+                }
+            } 
+            catch {  }
 
-    data = await response.json()
+            return true
+        })
 
-    console.log(data.message)
+        let response = await fetch("http://localhost:8080/save", {
+            method: "post"
+        })
+
+        let data = await response.json()
+
+        console.log(data.message)
+    }
 }
 
 
