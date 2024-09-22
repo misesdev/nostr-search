@@ -27,6 +27,10 @@ export const distinctEvent = (events: Event[]) => {
     })
 }
 
-
+export const distinctPubkeys = (pubkeys: string[]) => {
+    return pubkeys.filter((pubkey, index, self) => {
+        return index == self.indexOf(pubkey)
+    })
+}
 
 

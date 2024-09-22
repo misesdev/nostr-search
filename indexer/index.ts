@@ -8,16 +8,16 @@ import { listFriends } from "./src/service/friends";
 const author: string = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27";
 
 const main = async () => {
-    
-    // const relayPool = new RelayPool(relays)
 
-    // await relayPool.connect();
+    const relayPool = new RelayPool(relays)
 
-    // await listPubkeys(relayPool, author) 
+    await relayPool.connect();
 
-    // await listUsers(relayPool)
+    await listPubkeys(relayPool, author, true) 
 
-    // await listFriends(relayPool)
+    await listUsers(relayPool)
+
+    await listFriends(relayPool)
 
     await loadData()
 }

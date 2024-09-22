@@ -1,11 +1,11 @@
 import { FileSystem } from "../filesytem/disk";
 import { RelayPool } from "../modules/RelayPool";
-import { getPubkeys } from "../utils";
+import { distinctPubkeys, getPubkeys } from "../utils";
 
 export const listPubkeys = async (pool: RelayPool, author: string, listRelays: boolean = false) => {
     
-    const relays: string[] = []
-    const pubkeys: string[] = []
+    var relays: string[] = []
+    var pubkeys: string[] = []
     const filePubkeys = new FileSystem("./data/pubkeys.db")
     const fileRelays = new FileSystem("./data/relays.db")
 
@@ -72,6 +72,8 @@ export const listPubkeys = async (pool: RelayPool, author: string, listRelays: b
 
     await filePubkeys.clear()
 
+    pubkeys = distinctPubkeys(pubkeys)
+
     pubkeys.forEach(pubkey => filePubkeys.writeLine(pubkey))
 
     console.log("users pubkeys:", pubkeys.length)    
@@ -79,6 +81,8 @@ export const listPubkeys = async (pool: RelayPool, author: string, listRelays: b
     if(listRelays) 
     {
         await fileRelays.clear()
+
+        relays = distinctPubkeys(relays)
 
         relays.forEach(relay => fileRelays.writeLine(relay))
 
