@@ -1,6 +1,6 @@
 'use client';
 
-import { defaultPubkey } from '@/constants/pubkey';
+import { defaultPubkey } from '@/constants';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import { AiOutlineCamera, AiOutlineSearch } from 'react-icons/ai';
@@ -18,7 +18,7 @@ export default function SearchHeaderOptions(): ReactNode {
         const pubkey = searchParams.get('pubkey');
         
         if(pubkey) setPubkey(pubkey)
-    }, [])
+    }, [searchParams])
     
     const selectTab = (tab: string) => {
         router.push(`/search/${tab}?searchTerm=${searchTerm}&pubkey=${pubkey}`)

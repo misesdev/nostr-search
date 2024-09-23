@@ -1,10 +1,12 @@
+'use client'
+
 import HomeHeader from '@/components/HomeHeader';
 import HomeSearch from '@/components/HomeSearch';
 import Image from 'next/image';
 import { ReactNode } from 'react';
 
 const Home = () : ReactNode => {
-    
+
     return (
         <>
             <HomeHeader />

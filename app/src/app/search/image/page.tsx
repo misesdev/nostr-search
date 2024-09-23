@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import LoadingImage from './loading';
 import SearchImages from '@/components/SearchImages';
 import { SearchParams } from '@/types/types';
-import { defaultPubkey } from '@/constants/pubkey';
+import { defaultPubkey } from '@/constants';
 
 const ImageSearchPage = async ({ searchParams }: { searchParams: SearchParams }) => {
 

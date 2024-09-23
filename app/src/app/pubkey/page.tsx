@@ -5,33 +5,101 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {  useState } from "react";
 import { AiOutlineUser } from "react-icons/ai"; 
+import { validatePubkey } from "@/utils/utils";
+import { UserProfile } from "@/components/UserProfile";
 
 export default function Page() {
 
     const router = useRouter()
     const [pubkey, setPukey] = useState('')
+    const [isValid, setValid] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [profile, setProfile] = useState('')
+    const [displayName, setDisplayName] = useState('')
 
-    const handleSave = () => {
+    const validateField = async (npub: string) => {
+        
+        let pubkey = validatePubkey(npub);
+
+        if(pubkey)
+        {
+            let response = await fetch('/data/user', {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    pubkey: pubkey
+                })
+            })
+
+            if(response.ok) 
+            {
+                let data = await response.json()
+
+                if(!data?.message) {
+                    setDisplayName(data.displayName)
+                    setProfile(data.profile)
+                }
+
+                if(data?.message) {
+                    setDisplayName('')
+                    setProfile('')
+                }
+            }
+
+            setPukey(pubkey)
+            setValid(true)
+            return;
+        }
+
+        setValid(false)
+        setProfile('')
+        setDisplayName('')
+    }
+
+    const handleSave = async () => {
+
+        if(!isValid) return
+
+        setLoading(true)
+         
         localStorage.setItem('pubkey', pubkey)
-        router.push("/")
+
+        setTimeout(() => router.push('/'), 500)
+       
+        setLoading(false)
     }
 
     return (
         <>
             <HomeHeader />
             <div className='overflow-auto flex flex-col items-center mt-18'>
-                <Image
-                    src='/logo.png'
-                    alt='Nostr Book Users'
-                    width={130}
-                    height={100}
-                    className="w-[120px] lg:w-[140px]"
-                />
-                <h2
-                    className="text-[20px] lg:text-[24px] text-center mt-10 text-gray-400 font-bold"
-                >
-                    Nostr Book - Add your pubkey
-                </h2>
+                <div className="overflow-auto flex flex-col items-center mt-18" >
+
+                    { isValid && profile && <UserProfile profile={profile} displayName={displayName} /> }
+                    { isValid && profile &&
+                        <h2 className="text-[20px] lg:text-[24px] text-center mt-10 text-gray-400 font-bold">
+                            {displayName}    
+                        </h2>
+                    }
+                    { !isValid && !profile &&
+                        <div className="overflow-auto flex flex-col items-center mt-18" >
+                            <Image
+                                src='/logo.png'
+                                alt='Nostr Book Users'
+                                width={130}
+                                height={100}
+                                className="w-[120px] lg:w-[140px]"
+                            />
+                            <h2
+                                className="text-[20px] lg:text-[24px] text-center mt-10 text-gray-400 font-bold"
+                            >
+                                Nostr Book - Add your pubkey
+                            </h2>
+                        </div>
+                    }
+                </div>
 
                 <div>
                     <h4
@@ -47,14 +115,19 @@ export default function Page() {
                         type='text'
                         placeholder='Your pubkey: npub...'
                         className='select-none px-1 text-gray-400  bg-transparent flex-grow focus:outline-none'
-                        onChange={(e) => setPukey(e.target.value)}
+                        onChange={(e) => validateField(e.target.value)}
+                        onKeyDown={(event) => { if(event.key == "Enter") handleSave() }}
                     />
                 </div>
 
                 <div className="mt-20">
                     <button 
-                        onClick={handleSave} 
-                        className='bg-[#3e2eb3] text-white px-6 py-2 font-medium rounded-md hover:brightness-105 hover:shadow-md transition-shadow'>Save Pubkey</button>
+                        onClick={handleSave}
+                        disabled={!isValid}
+                        className={`${ isValid ? 'bg-[#3e2eb3] text-white' : 'bg-[#221866] text-gray-400' } px-6 py-2 font-medium rounded-md hover:brightness-105 hover:shadow-md transition-shadow`}
+                    >
+                        { loading ? 'Loading' : 'Save Pubkey' }
+                    </button>
                 </div>
 
             </div>

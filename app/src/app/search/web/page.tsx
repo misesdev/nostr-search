@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import LoadingWeb from './loading';
 import SearchResults from '@/components/SearchResults';
 import { SearchParams } from '@/types/types';
-import { defaultPubkey } from '@/constants/pubkey';
+import { defaultPubkey } from '@/constants';
 
 const WebSearchPage = async ({ searchParams }: { searchParams: SearchParams }) => {
 

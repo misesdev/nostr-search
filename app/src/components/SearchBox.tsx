@@ -3,8 +3,7 @@
 import { AiOutlineSearch } from 'react-icons/ai';
 import { ReactNode, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-
-const defaultPubkey = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27"
+import { defaultPubkey } from '@/constants';
 
 export default function SearchBox() : ReactNode {
     const searchParams = useSearchParams();
@@ -30,12 +29,13 @@ export default function SearchBox() : ReactNode {
             className='flex border border-gray-500 rounded-full shadow-lg px-6 py-3 lg:ml-10 lg:mr-5 flex-grow lg:max-w-3xl items-center'
         >
             <AiOutlineSearch
-                className='text-2xl sm:inline-flex text-blue-500 cursor-pointer'
+                className='text-2xl sm:inline-flex text-gray-500 cursor-pointer'
                 onClick={handleSubmit}
             />
             <input
                 type='text'
                 placeholder="Search"
+                autoComplete='off'
                 className='bg-transparent mx-4 text-gray-300 w-full focus:outline-none'
                 value={term}
                 name="searchTerm"

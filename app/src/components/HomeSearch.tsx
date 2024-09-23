@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/navigation';
-import { defaultPubkey } from '@/constants/pubkey';
+import { defaultPubkey } from '@/constants';
 
 export default function HomeSearch() : ReactNode {
     

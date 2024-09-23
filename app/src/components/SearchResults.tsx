@@ -1,13 +1,32 @@
 import { SearchParams, User } from "@/types/types";
 import WebSearchResults from "./WebSearchResults";
 import Link from 'next/link';
+import Error from "@/app/search/error";
+import { defaultProfile } from "@/constants";
 
 const SearchResults = async ({ pubkey, searchTerm }: SearchParams) => {
     
     // search
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    let response = await fetch('http://localhost:8080/search', {
+        method: "post",
+        body: JSON.stringify({
+            pubkey: pubkey,
+            searchTerm: searchTerm
+        })
+    })
 
-    const results: User[] = []
+    if(!response.ok) throw Error('Error')
+
+    const results: User[] = await response.json()
+
+    results.sort((a, b) => b.similarity - a.similarity)
+
+    results.forEach(user => {
+        if(!user.profile.includes("http") && !user.profile.includes("https"))
+        {
+            user.profile = defaultProfile
+        }
+    })
 
     if (!results.length) {
         return (
