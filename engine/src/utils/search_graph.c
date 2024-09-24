@@ -37,28 +37,27 @@ void freeVisitedSet(VisitedUser *visitedSet) {
     }
 }
 
-void enqueue(struct UserNode ***queue, int *queueSize, int *capacity, User *user) 
+void enqueue(User ***queue, int *queueSize, int *capacity, User *user) 
 {
     if (*queueSize == *capacity) {
-        *capacity *= 2; // Aumenta a capacidade em blocos dobrando de tamanho
-        *queue = realloc(*queue, sizeof(struct UserNode*) * (*capacity));
+        *capacity *= 2; // Increases capacity by doubling in size
+        *queue = realloc(*queue, sizeof(User*) * (*capacity));
     }
-    (*queue)[*queueSize] = (struct UserNode*) malloc(sizeof(struct UserNode));
-    (*queue)[*queueSize]->user = user;
-    (*queue)[*queueSize]->next = NULL;
+    (*queue)[*queueSize] = user;    
     (*queueSize)++;
 }
 
 struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit) 
 {
     int foundCount = 0, visitedCount = 0;
+    
     struct ResultNode *resultList = createResultNode(NULL, 0);
+
     limit = limit > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit;
 
     // Fila de busca (implementada como um array dinâmico de UserNode*)
-    struct UserNode **queue = NULL;
-    int queueSize = 0, queueCapacity = 300;
-    queue = malloc(queueCapacity * sizeof(struct UserNode*));
+    int queueSize = 0, queueCapacity = 500;
+    User **queue = malloc(queueCapacity * sizeof(User*));
 
     // Hash set para verificar usuários visitados
     VisitedUser *visitedSet = NULL;
@@ -78,22 +77,23 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
         if(visitedCount >= queueSize - 1) break;
 
         // take the element from queue
-        struct UserNode *currentNode = queue[visitedCount];
+        User *currentUser = queue[visitedCount];
         visitedCount++;
 
-        if(!currentNode->user) continue;
+        if(!currentUser) continue;
 
         // Verifica se o usuário é semelhante ao termo de busca
-        float similarity = textSimilarity(currentNode->user->displayName, searchTerm);
+        float similarity = textSimilarity(currentUser->displayName, searchTerm);
         if (similarity >= MIN_SIMILARITY_TERM) 
         {
-            insertResultNode(resultList, currentNode->user, similarity);
+            insertResultNode(resultList, currentUser, similarity);
             foundCount++;
         }
 
         // Adiciona os amigos do nó atual à fila
-        struct UserNode *friendList = currentNode->user->friends;
-        while (friendList && visitedCount < MAX_USERS_TO_VISIT) {
+        struct UserNode *friendList = currentUser->friends;
+        while (friendList && visitedCount < MAX_USERS_TO_VISIT) 
+        {
             if (!isVisited(visitedSet, friendList->user)) 
             {
                 enqueue(&queue, &queueSize, &queueCapacity, friendList->user);
@@ -102,23 +102,16 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
             friendList = friendList->next;
         }
 
-        free(currentNode);
-
         if (foundCount >= limit || visitedCount >= MAX_USERS_TO_VISIT) {
             break;
         }
-    }
-
-    // Libera a memória da fila
-    for (int i = 0; i < queueSize; i++) {
-        free(queue[i]);
     }
 
     free(queue);
 
     // Libera o conjunto de usuários visitados
     freeVisitedSet(visitedSet);
-
+  
     return resultList;
 }
 

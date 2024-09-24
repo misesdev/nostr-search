@@ -16,7 +16,7 @@
 
 HttpResponse* router(char *request, struct TrieNode *root) 
 {
-    HttpResponse *response = calloc(1, sizeof(HttpResponse));
+    HttpResponse *response = malloc(sizeof(HttpResponse));
 
     char *jsonRequest = requestParams(request, response->Content);
 

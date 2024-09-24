@@ -4,32 +4,34 @@ services:
   app:
     build:
       context: ./app/
-    container_name: search-engine-app
-    volumes:
-      - ./app/:/app/data
-    ports:
-      - "80:3000"
-    networks: 
-      - app-network 
-    mem_limit: 750m
+    container_name: search-app
+    # volumes:
+    #   - ./app/:/app/data
+    # ports:
+    #   - "80:3000"
+    # networks: 
+    #   - app-network 
+    # depends_on:
+    #   - engine
+    mem_limit: 500m
+    network_mode: host
     
   engine:
     build:
       context: ./engine/
-    container_name: search-engine-core
-    volumes: 
-      - ./engine/:/engine/data
-    ports:
-      - "8080:8080"
-    networks: 
-      - app-network
+    container_name: search-engine
+    # volumes: 
+    #   - ./engine/:/engine/data
+    # ports:
+    #   - "8080:8080"
+    # networks: 
+    #   - app-network
     mem_limit: 750m
-
-networks:
-  app-network:
-    driver: bridge
-
-    
-
+    network_mode: host
+  
+# networks:
+#   app-network:
+#     driver: bridge
+#   
 
  

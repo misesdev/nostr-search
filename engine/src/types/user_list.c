@@ -7,7 +7,7 @@
 
 struct UserNode* createUserNode(User *user) 
 {
-    struct UserNode *node = calloc(1, sizeof(struct UserNode));
+    struct UserNode *node = malloc(sizeof(struct UserNode));
     node->user = user;
     node->next = NULL;
     return node;

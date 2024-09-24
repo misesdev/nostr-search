@@ -12,7 +12,7 @@
 #include <sys/sysinfo.h> 
 #include "../utils/http_utils.c"
 
-#define MIN_FREE_MEMORY 1024 * 1024 * 300
+#define MIN_FREE_MEMORY 1024 * 1024 * 100
 #define SIZE_BUFFER 1024 * 10 // 10 kbytes
 #define MAX_THREADS 50  // Limite máximo de threads para controlar o uso de memória
 
