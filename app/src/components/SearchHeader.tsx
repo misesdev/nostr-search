@@ -1,10 +1,24 @@
+'use client'
+
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchBox from './SearchBox';
 import SearchHeaderOptions from './SearchHeaderOptions';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { User } from '@/types/types';
 
 export default function SearchHeader(): ReactNode {
+
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const npub = localStorage.getItem("user")
+
+        console.log(npub)
+
+        if(npub) setUser(JSON.parse(npub))
+    }, [])
+
     return (
         <header className='top-0 bg-gray-800'>
             <div className='lg:flex w-full p-4 lg:p-6'>
@@ -37,20 +51,50 @@ export default function SearchHeader(): ReactNode {
                         </div>
                     </Link>
                     <div className='flex-1'>
-                        <Link href='/pubkey' className='bg-[#3e2eb3] float-end text-[12px] text-gray-300 py-2 px-5 rounded-md hover:brightness-105 hover:shadow-md transition-shadow ml-2'>
-                            Sign in
-                        </Link>
+                        { !user &&
+                            <Link href='/pubkey' className='bg-[#3e2eb3] float-end text-[12px] text-gray-300 py-2 px-5 rounded-md hover:brightness-105 hover:shadow-md transition-shadow ml-2'>
+                                Sign in
+                            </Link>
+                        }
+                        { user && 
+                            <Link 
+                                href="#" 
+                                className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
+                                    <Image 
+                                        width={50}
+                                        height={50}
+                                        className=""
+                                        alt={user.displayName}
+                                        src={user.profile}
+                                    />
+                            </Link>
+                        }
                     </div>
                 </div>
                 <div className='flex-1'>
                     <SearchBox />
                 </div>
                 <div className='hidden lg:flex items-center'>
-                    <Link 
-                        href="/pubkey" 
-                        className='bg-[#3e2eb3] text-gray-300 px-6 py-2 font-medium rounded-md hover:brightness-105 hover:shadow-md transition-shadow'>
-                        Sign in
-                    </Link>
+                    { !user && 
+                        <Link 
+                            href="/pubkey" 
+                            className='bg-[#3e2eb3] text-gray-300 px-6 py-2 font-medium rounded-md hover:brightness-105 hover:shadow-md transition-shadow'>
+                            Sign in
+                        </Link>
+                    }
+                    { user && 
+                        <Link 
+                            href="#" 
+                            className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
+                                <Image 
+                                    width={50}
+                                    height={50}
+                                    className=""
+                                    alt={user.displayName}
+                                    src={user.profile}
+                                />
+                        </Link>
+                    }
                 </div>
             </div>
             <SearchHeaderOptions />

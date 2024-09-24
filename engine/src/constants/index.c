@@ -9,7 +9,7 @@
 
 // Search Definitions
 #define MAX_LIMIT_RESULTS 100
-#define MAX_USERS_TO_VISIT 120000
+#define MAX_USERS_TO_VISIT 130000
 #define MIN_SIMILARITY_TERM .55
 
 // HTTP constantes definitions
