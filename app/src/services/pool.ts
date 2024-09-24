@@ -2,19 +2,20 @@
 import { RelayPool } from '@/services/relaysPool';
 import { relays } from '@/constants/Relays';
 
-declare global {
-    interface Window {
-        relayPool: RelayPool | undefined;
-    }
+const relayPool = new RelayPool(relays)
+
+export const initializeRelayPool = async () => {
+    if(relayPool.websockets.length <= 0)
+        await relayPool.connect()
+
+    console.log("relayPool initialized")
 }
 
-// Inicialize a variável global se ela ainda não existir
-if (typeof window !== 'undefined' && !window.relayPool) {
-    window.relayPool = new RelayPool(relays)
-    window.relayPool.connect()
-}
+export const getRelayPool = (): RelayPool => {
 
-export const getRelayPool = () => {
-    return window.relayPool;
-};
+    if(relayPool.websockets.length <= 0)
+        throw new Error("relayPool not initialized or connected")
+
+    return relayPool
+}
 

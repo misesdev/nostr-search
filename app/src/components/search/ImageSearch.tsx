@@ -2,12 +2,24 @@ import ImageSearchResults from '@/components/search/ImageSearchResults';
 import { SearchParams, User } from '@/types/types';
 import Link from 'next/link';
 
-const SearchImages = async ({ pubkey, searchTerm }: SearchParams) => {
+const ImageSearch = async ({ pubkey, searchTerm }: SearchParams) => {
 
-    // search
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const response = await fetch(`${process.env.API_ENGINE_URL}/search`, {
+        method: "post",
+        body: JSON.stringify({
+            pubkey,
+            searchTerm,
+            limit: 48
+        })
+    })
 
-    const results: User[] = []
+    if(!response.ok) throw Error('Error')
+
+    const users: User[] = await response.json()
+
+    users.sort((a, b) => b.similarity - a.similarity)
+
+    const results = users.filter(user => user.profile.includes("http") && user.profile.includes("https"))
 
     if (!results.length) {
         return (
@@ -28,4 +40,4 @@ const SearchImages = async ({ pubkey, searchTerm }: SearchParams) => {
     return (<div>{results.length && <ImageSearchResults results={results} />}</div>)
 }
 
-export default SearchImages
+export default ImageSearch

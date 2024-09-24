@@ -1,5 +1,3 @@
-'use client'
-
 import { Event, Filter } from "./types"
 import { distinctEvent } from "@/utils/utils";
 

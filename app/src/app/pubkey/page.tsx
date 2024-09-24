@@ -7,6 +7,7 @@ import {  useState } from "react";
 import { AiOutlineUser } from "react-icons/ai"; 
 import { validatePubkey } from "@/utils/utils";
 import { UserProfile } from "@/components/UserProfile";
+import { User } from "@/types/types";
 
 export default function Page() {
 
@@ -16,6 +17,8 @@ export default function Page() {
     const [loading, setLoading] = useState(false)
     const [profile, setProfile] = useState('')
     const [displayName, setDisplayName] = useState('')
+
+    const [user, setUser] = useState<User | null>(null)
 
     const validateField = async (npub: string) => {
         
@@ -40,11 +43,13 @@ export default function Page() {
                 if(!data?.message) {
                     setDisplayName(data.displayName)
                     setProfile(data.profile)
+                    setUser(data)
                 }
 
                 if(data?.message) {
                     setDisplayName('')
                     setProfile('')
+                    setUser(null)
                 }
             }
 
@@ -65,6 +70,7 @@ export default function Page() {
         setLoading(true)
          
         localStorage.setItem('pubkey', pubkey)
+        localStorage.setItem('user', JSON.stringify(user))
 
         setTimeout(() => router.push('/'), 500)
        

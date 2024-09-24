@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import LoadingWeb from './loading';
-import SearchResults from '@/components/SearchResults';
+import WebSearch from '@/components/search/WebSearch';
 import { SearchParams } from '@/types/types';
 import { defaultPubkey } from '@/constants';
 
@@ -11,7 +11,7 @@ const WebSearchPage = async ({ searchParams }: { searchParams: SearchParams }) =
 
     return (
         <Suspense fallback={<LoadingWeb />}>
-            <SearchResults pubkey={pubkey} searchTerm={searchTerm} />
+            <WebSearch pubkey={pubkey} searchTerm={searchTerm} />
         </Suspense>
     )
 }

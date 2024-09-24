@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import PaginationButtons from './PaginationButtons';
+import PaginationButtons from '../PaginationButtons';
 import Image from 'next/image';
 import { ReactNode } from 'react';
 import { User } from '@/types/types';
@@ -9,14 +9,17 @@ type Props = {
 }
 
 export default function ImageSearchResults({ results }: Props): ReactNode {
+
     return (
-        <div className='sm:pb-24 pb-40 mt-4'>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-3 space-x-4'>
+        <div className='sm:pb-24 pb-40 m-12'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-3 gap-4'>
                 {results.map((result: User) => (
-                    <div className='mb-8' key={result.profile}>
+                    <div className='mb-8' key={result.pubkey}>
                         <div className='group'>
-                            <Link href={result.profile}>
+                            <Link href={result.profile} target='_blank'>
                                 <Image
+                                    width={500}
+                                    height={500}
                                     src={result.profile}
                                     alt={result.name}
                                     className='h-60 group-hover:shadow-xl w-full object-contain transition-shadow duration-300'
@@ -33,12 +36,13 @@ export default function ImageSearchResults({ results }: Props): ReactNode {
                                 </p>
                             </Link>
                         </div>
-                    </div>
+                    </div>                
                 ))}
             </div>
-            <div className='ml-16'>
-                <PaginationButtons />
-            </div>
+            {/* <div className='ml-16'> */}
+            {/*     <PaginationButtons /> */}
+            {/* </div> */}
+            <div className='h-12'></div>
         </div>
     );
 }
