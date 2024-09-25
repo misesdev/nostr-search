@@ -4,17 +4,19 @@
 #include "../types/types.c"
 #include "./endpoints/up_users.c"
 #include "./endpoints/up_search.c"
+#include "./endpoints/up_relay.c"
 #include "./endpoints/up_friends.c"
 #include "./endpoints/tree_save.c"
 #include "./endpoints/get_user.c"
 #include "./endpoints/get_friends.c"
+#include "./endpoints/search_relays.c"
 #include "./endpoints/search_friends.c"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-HttpResponse* router(char *request, struct TrieNode *root) 
+HttpResponse* router(char *request, Database *root) 
 {
     HttpResponse *response = malloc(sizeof(HttpResponse));
 
@@ -43,6 +45,18 @@ HttpResponse* router(char *request, struct TrieNode *root)
     // get friends from user
     if(strstr(request, "/get_friends ") != NULL)
         return getFriendsFromUser(jsonRequest, response, root);     
+    // save the tree on disk
+    if(strstr(request, "/save ") != NULL)
+        return saveTrieOnDisk(jsonRequest, response, root);
+    
+    // add relays
+    if(strstr(request, "/add_relay ") != NULL)
+        return addRelayOnEngine(jsonRequest, response, root);
+
+    // add relays
+    if(strstr(request, "/search_relay ") != NULL)
+        return searchRelays(jsonRequest, response, root);
+
     // save the tree on disk
     if(strstr(request, "/save ") != NULL)
         return saveTrieOnDisk(jsonRequest, response, root);

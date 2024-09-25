@@ -7,7 +7,7 @@
 #include "../../utils/search_utils.c"
 #include "../../utils/search_graph.c"
 
-HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, struct TrieNode *root)
+HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, Database *root)
 {
     Search *searchParams = getSearchParams(jsonRequest, response->Content);
 
@@ -17,7 +17,7 @@ HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, struct Trie
         return response;
     }
 
-    struct TrieNode *userNode = getTrieNodeFromPubkey(root, searchParams->pubkey);
+    struct TrieNode *userNode = getTrieNodeFromPubkey(root->tree, searchParams->pubkey);
 
     if(!userNode) 
     {

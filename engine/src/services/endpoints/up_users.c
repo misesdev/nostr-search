@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-HttpResponse* insertUser(char *jsonRequest, HttpResponse *response, struct TrieNode *root)
+HttpResponse* insertUser(char *jsonRequest, HttpResponse *response, Database *root)
 {
     User *user = getUserFromRequest(jsonRequest, response->Content);
     
@@ -17,7 +17,7 @@ HttpResponse* insertUser(char *jsonRequest, HttpResponse *response, struct TrieN
         return response;
     }
 
-    struct TrieNode *userNode = insertTrieNode(root, user);
+    struct TrieNode *userNode = insertTrieNode(root->tree, user);
 
     printf("user inserted: %s\n", userNode->user->displayName);
 

@@ -19,8 +19,8 @@
 typedef struct {
     int socket;
     struct sockaddr_in address;
-    HttpResponse* (* executeRequest)(char *, struct TrieNode *);
-    struct TrieNode *root;
+    HttpResponse* (* executeRequest)(char *, Database *);
+    Database *root;
 } client_info;
 
 pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -99,7 +99,7 @@ void enqueue_client(client_info* client) {
 }
 
 // master function of server
-void upServer(HttpResponse *(* executeRequest)(char*, struct TrieNode*), struct TrieNode *root, int port) 
+void upServer(HttpResponse *(* executeRequest)(char*, Database*), Database *root, int port) 
 {
     int socket_server;
     struct sockaddr_in address;

@@ -58,6 +58,16 @@ struct ResultNode {
     struct ResultNode *next;
 };
 
+struct RelayNode {
+    char address[RELAY_SIZE];
+    struct RelayNode *next;
+};
+
+typedef struct {
+    struct TrieNode *tree;
+    struct RelayNode *relays;
+} Database;
+
 #endif
 
 

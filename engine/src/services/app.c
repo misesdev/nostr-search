@@ -6,17 +6,14 @@
 #include "../types/types.c"
 #include "../filesystem/rdisk.c"
 #include "../filesystem/wdisk.c"
-
-#include "../utils/search_graph.c"
-#include "../types/user_trie.c"
+#include "../filesystem/relays_disk.c"
 
 #include <signal.h>
 #include <stdio.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
+#include <stdlib.h>
 
-struct TrieNode *root;
+Database *database;
 
 void handle_signal(int signal_command)
 {
@@ -25,52 +22,30 @@ void handle_signal(int signal_command)
         signal_command == SIGINT)
     {
         printf("\nsaving tree on disk...\n");
-        loadTrieInDisk(root);
+        loadTrieInDisk(database->tree);
         exit(0);
     }
 }
 
-void searchTest() 
-{
-    Search *search;
-
-    strcpy(search->pubkey, "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27");
-    strcpy(search->search, "fabio akita");
-    search->limit = 50;
-
-    clock_t start = clock();
-
-    struct TrieNode *userNode = getTrieNodeFromPubkey(root, search->pubkey);
-
-    searchOnGraph(userNode->user, search->search, search->limit);
-
-    clock_t end = clock();
-    float time = (float)(end - start) / CLOCKS_PER_SEC;
-
-    printf("search time: %f\n", time);
-}
 
 void upApplication(int port)
 {
-    // signal(SIGKILL, handle_signal);
-    // signal(SIGTERM, handle_signal);
-    // signal(SIGINT, handle_signal);
+    database = malloc(sizeof(Database));
 
     printf("loading tree from disk...\n");
 
-    root = loadTrieFromDisk();
+    database->tree = loadTrieFromDisk();
+    database->relays = loadRelaysFromDisk();
 
-    if(!root) 
+    if(!database->tree) 
     {
         printf("\nfailed when reading from disk\n");
-        exit(0);
+        exit(-1);
     }
-
-    //searchTest();
 
     printf("\napplication pid: %d\n\n", getpid());
 
-    upServer(router, root, port);
+    upServer(router, database, port);
 }
 
 #endif

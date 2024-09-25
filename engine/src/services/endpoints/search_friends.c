@@ -6,7 +6,7 @@
 #include "../../types/user_trie.c"
 #include "../../utils/search_utils.c"
 
-HttpResponse* searchFriends(char *jsonRequest, HttpResponse *response, struct TrieNode *root)
+HttpResponse* searchFriends(char *jsonRequest, HttpResponse *response, Database *root)
 {
     Search *searchParams = getSearchParams(jsonRequest, response->Content);
 
@@ -16,7 +16,7 @@ HttpResponse* searchFriends(char *jsonRequest, HttpResponse *response, struct Tr
         return response;
     }
 
-    struct TrieNode *userNode = getTrieNodeFromPubkey(root, searchParams->pubkey);
+    struct TrieNode *userNode = getTrieNodeFromPubkey(root->tree, searchParams->pubkey);
 
     if(!userNode) 
     {

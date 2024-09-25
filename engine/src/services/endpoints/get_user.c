@@ -6,7 +6,7 @@
 #include "../../types/user_trie.c"
 #include "../../utils/user_utils.c"
 
-HttpResponse* getUserWithPubkey(char *jsonRequest, HttpResponse *response, struct TrieNode *root)
+HttpResponse* getUserWithPubkey(char *jsonRequest, HttpResponse *response, Database *root)
 {
     UserIdentity *identity = jsonToIdentity(jsonRequest, response->Content);
 
@@ -16,7 +16,7 @@ HttpResponse* getUserWithPubkey(char *jsonRequest, HttpResponse *response, struc
         return response;
     }
 
-    struct TrieNode *userNode = getTrieNodeFromPubkey(root, identity->pubkey);
+    struct TrieNode *userNode = getTrieNodeFromPubkey(root->tree, identity->pubkey);
 
     if(!userNode) 
     {

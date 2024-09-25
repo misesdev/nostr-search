@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-HttpResponse* insertFriends(char *json_request, HttpResponse *response, struct TrieNode *root)
+HttpResponse* insertFriends(char *json_request, HttpResponse *response, Database *root)
 {
     struct FriendNode *friends = jsonToFriends(json_request, response->Content);
 
@@ -18,7 +18,7 @@ HttpResponse* insertFriends(char *json_request, HttpResponse *response, struct T
         return response;
     }
 
-    struct TrieNode *userNode = getTrieNode(root, friends->address);
+    struct TrieNode *userNode = getTrieNode(root->tree, friends->address);
 
     if(!userNode)
     {
@@ -33,7 +33,7 @@ HttpResponse* insertFriends(char *json_request, HttpResponse *response, struct T
     struct FriendNode *current = friends->next;
     while(current)
     {
-        struct TrieNode *friendNode = getTrieNode(root, current->address);
+        struct TrieNode *friendNode = getTrieNode(root->tree, current->address);
 
         if(friendNode) 
         {

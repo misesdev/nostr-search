@@ -7,11 +7,11 @@
 
 #include <stdio.h>
 
-HttpResponse* saveTrieOnDisk(char *json_request, HttpResponse *response, struct TrieNode *root)
+HttpResponse* saveTrieOnDisk(char *json_request, HttpResponse *response, Database *root)
 {
     printf("loading tree on disk..\n");
 
-    loadTrieInDisk(root);
+    loadTrieInDisk(root->tree);
 
     printf("loaded tree succefully\n");
 

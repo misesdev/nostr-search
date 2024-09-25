@@ -6,6 +6,7 @@
 #define TRIE_CHILDREN_LENGTH 255
 #define ADDRESS_LENGTH 16
 #define PUBKEY_LENGTH 32
+#define RELAY_SIZE 50
 
 // Search Definitions
 #define MAX_LIMIT_RESULTS 100
