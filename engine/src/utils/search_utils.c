@@ -145,6 +145,21 @@ struct ResultNode* searchOnFriends(User *user, char *searchTerm, int limit)
     return rootUsers;
 }
 
+void destroyResultNode(struct ResultNode *node) 
+{
+    struct ResultNode *delete;
+
+    while(node->next) 
+    {
+        delete = node->next;
+        node->next = delete->next;
+        //free(delete->user);
+        free(delete);
+    }
+
+    //free(node->user);
+    free(node);
+}
 #endif
 
 

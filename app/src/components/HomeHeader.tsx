@@ -31,10 +31,10 @@ const HomeHeader = (): ReactNode => {
                 { user && 
                     <Link 
                         href="#" 
-                        className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
+                        className='float-end rounded-full w-35 h-35 overflow-hidden border border-[#3e2eb3]'>
                             <Image 
-                                width={50}
-                                height={50}
+                                width={35}
+                                height={35}
                                 className=""
                                 alt={user.displayName}
                                 src={user.profile}

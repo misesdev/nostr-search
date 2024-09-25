@@ -23,6 +23,7 @@ export default function HomeSearch() : ReactNode {
 
     const deletePubkey = () => {
         localStorage.removeItem('pubkey')
+        localStorage.removeItem('user')
         setUserPubkey(false)
     }
     
@@ -30,7 +31,7 @@ export default function HomeSearch() : ReactNode {
         form.preventDefault();
         if (!input.trim()) return;
         form.target.submit()
-    };
+    }
             
     return (
         <>

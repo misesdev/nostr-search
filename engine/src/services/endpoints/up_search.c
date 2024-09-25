@@ -31,6 +31,8 @@ HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, struct Trie
 
     resultToJson(resultListUsers, response->Content);
 
+    destroyResultNode(resultListUsers);
+
     response->StatusCode = 200;
     free(searchParams);
 

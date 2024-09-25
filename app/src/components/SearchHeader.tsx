@@ -61,8 +61,8 @@ export default function SearchHeader(): ReactNode {
                                 href="#" 
                                 className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
                                     <Image 
-                                        width={50}
-                                        height={50}
+                                        width={35}
+                                        height={35}
                                         className=""
                                         alt={user.displayName}
                                         src={user.profile}
@@ -87,8 +87,8 @@ export default function SearchHeader(): ReactNode {
                             href="#" 
                             className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
                                 <Image 
-                                    width={50}
-                                    height={50}
+                                    width={35}
+                                    height={35}
                                     className=""
                                     alt={user.displayName}
                                     src={user.profile}
