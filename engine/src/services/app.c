@@ -27,7 +27,6 @@ void handle_signal(int signal_command)
     }
 }
 
-
 void upApplication(int port)
 {
     database = malloc(sizeof(Database));

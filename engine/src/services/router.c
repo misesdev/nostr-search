@@ -22,8 +22,7 @@ HttpResponse* router(char *request, Database *root)
 
     char *jsonRequest = requestParams(request, response->Content);
 
-    if(!jsonRequest) 
-    {
+    if(!jsonRequest) {
         response->StatusCode = 403;
         return response;
     }
@@ -47,22 +46,28 @@ HttpResponse* router(char *request, Database *root)
         return getFriendsFromUser(jsonRequest, response, root);     
     // save the tree on disk
     if(strstr(request, "/save ") != NULL)
-        return saveTrieOnDisk(jsonRequest, response, root);
-    
+        return saveTrieOnDisk(jsonRequest, response, root); 
     // add relays
     if(strstr(request, "/add_relay ") != NULL)
         return addRelayOnEngine(jsonRequest, response, root);
-
     // add relays
     if(strstr(request, "/search_relay ") != NULL)
         return searchRelays(jsonRequest, response, root);
-
     // save the tree on disk
     if(strstr(request, "/save ") != NULL)
         return saveTrieOnDisk(jsonRequest, response, root);
 
-    responseMessage(response->Content, "Please use one of the following endpoints: "
-        "/add_user, /add_friends, /get_user, /get_friends, /search and /search_friends");
+    responseMessage(response->Content, 
+        "Please use one of the following endpoints: \n"
+        "/add_user, "
+        "/get_user, "
+        "/add_friends, "
+        "/get_friends, "
+        "/search_friends, "
+        "/add_relay, "
+        "/search_relays and "
+        "/search "
+    );
 
     response->StatusCode = 403;
 
