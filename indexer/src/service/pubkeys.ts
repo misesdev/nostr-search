@@ -1,8 +1,15 @@
+import { maxFetchEvents, maxUsersPubkeys } from "../constants";
 import { FileSystem } from "../filesytem/disk";
 import { RelayPool } from "../modules/RelayPool";
 import { distinctPubkeys, getPubkeys } from "../utils";
 
-export const listPubkeys = async (pool: RelayPool, author: string, listRelays: boolean = false) => {
+type Props = {
+    pool: RelayPool,
+    author: string, 
+    listRelays: boolean
+}
+
+export const listPubkeys = async ({ pool, author, listRelays = false }: Props) => {
     
     var relays: string[] = []
     var pubkeys: string[] = []
@@ -32,7 +39,8 @@ export const listPubkeys = async (pool: RelayPool, author: string, listRelays: b
             getPubkeys(events[0]).forEach(pubkey => pubkeys.push(pubkey))
     }
 
-    let skipe = 300, maxPubkeys = 1070000
+    let skipe = maxFetchEvents, maxPubkeys = maxUsersPubkeys
+
     for(let i = 0; i < pubkeys.length; i += skipe) 
     {
         let authors = pubkeys.slice(i, i + skipe)
@@ -45,7 +53,7 @@ export const listPubkeys = async (pool: RelayPool, author: string, listRelays: b
 
         events.forEach(event => {
             let npubs = getPubkeys(event)
-            console.log("npubs", npubs.length)
+            console.log("npubs...:", npubs.length)
 
             npubs.forEach(pubkey => { 
                 if(!pubkeys.includes(pubkey))
@@ -63,7 +71,7 @@ export const listPubkeys = async (pool: RelayPool, author: string, listRelays: b
                             relays.push(relay)
                     }
                 } 
-                catch { console.log("error to list relays") }
+                catch { }
             }
         })
 
