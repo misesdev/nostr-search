@@ -1,23 +1,39 @@
 import { FileSystem  } from "../filesytem/disk";
 import { sendFriends } from "./sends/friends";
 import { sendUsers } from "./sends/users";
+import { sendRelays } from "./sends/relays";
 
 type Props = {
     users: boolean,
-    friends: boolean
+    friends: boolean,
+    relays: boolean
 }
 
-export const loadData = async ({ users = true, friends = true }: Props) => {
+export const loadData = async ({ 
+    users = true, 
+    friends = true,
+    relays = true
+}: Props) => {
     
-    const fileUsers = new FileSystem("./data/users.db")
-    const fileFriends = new FileSystem("./data/friends.db")
-
     // send users
-    if(users) await sendUsers(fileUsers)    
+    if(users) 
+    {
+        const fileUsers = new FileSystem("./data/users.db")
+        await sendUsers(fileUsers)  
+    }
 
     // send friends
-    if(friends) await sendFriends(fileFriends)
+    if(friends) 
+    {
+        const fileFriends = new FileSystem("./data/friends.db")
+        await sendFriends(fileFriends)
+    }
     
+    if(relays) 
+    {
+        const fileRelays = new FileSystem("./data/relays.db")
+        await sendRelays(fileRelays)
+    }
 }
 
 
