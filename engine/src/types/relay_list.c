@@ -1,16 +1,19 @@
 #ifndef RELAY_LIST_C
 #define RELAY_LIST_C
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "../constants/index.c"
 #include "../types/types.c"
+#include "../utils/utils.c"
 
 struct RelayNode* createRelayNode(char *relay)
 {
     struct RelayNode *node = malloc(sizeof(struct RelayNode));
     
-    strcpy(node->address, relay);
+    snprintf(node->address, RELAY_SIZE, "%s", relay);
 
     node->next = NULL;
 
@@ -19,21 +22,25 @@ struct RelayNode* createRelayNode(char *relay)
 
 void insertRelayNode(struct RelayNode *root, char *relay)
 {
-    struct RelayNode *inserNode = createRelayNode(relay);
-
+    if(strlen(root->address) <= 0) {
+        snprintf(root->address, RELAY_SIZE, "%s", relay);
+        return;
+    }
+   
     struct RelayNode *current = root;
-
     while(current)
     {
+        if(textSimilarity(current->address, relay) >= .90) return;
+
         if(!current->next) {
-            current->next = inserNode;
+            current->next = createRelayNode(relay);
             return;
         }
         current = current->next;
     }
 }
 
-void destroyRelayNodes(struct RelayNode *node)
+void destroyRelayNode(struct RelayNode *node)
 {
     struct RelayNode *delete;
 
