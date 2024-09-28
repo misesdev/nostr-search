@@ -33,14 +33,14 @@ void upApplication(int port)
 
     printf("loading tree from disk...\n");
 
-    database->tree = loadTrieFromDisk();
+    //database->tree = loadTrieFromDisk();
     database->relays = loadRelaysFromDisk();
 
-    if(!database->tree) 
-    {
-        printf("\nfailed when reading from disk\n");
-        exit(-1);
-    }
+    // if(!database->tree) 
+    // {
+    //     printf("\nfailed when reading from disk\n");
+    //     exit(-1);
+    // }
 
     printf("\napplication pid: %d\n\n", getpid());
 
