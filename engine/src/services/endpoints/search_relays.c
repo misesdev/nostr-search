@@ -18,8 +18,12 @@ HttpResponse* searchOnRelays(char *jsonRequest, HttpResponse *response, Database
 
     struct RelayNode* relays = searchRelays(root->relays, searchTerm);
 
-    serializeRelayNode(relays, response->Content);        
+    serializeRelayNode(relays, response->Content); 
+
     response->StatusCode = 200;
+
+    free(searchTerm);
+
     return response;
 }
 

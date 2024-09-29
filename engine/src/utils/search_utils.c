@@ -11,6 +11,8 @@
 #include "./http_utils.c"
 #include "../types/types.c"
 
+void destroyResultNode(struct ResultNode *node);
+
 Search* jsonToSearchParams(char *json, char *error)
 {
     cJSON *jsonParams = cJSON_Parse(json);
@@ -117,6 +119,8 @@ void resultToJson(struct ResultNode *rootUsers, char *response)
 
     snprintf(response, MAX_RESPONSE_LENGTH, "%s", cJSON_Print(jsonList));
 
+    destroyResultNode(rootUsers);
+
     cJSON_Delete(jsonList);
 
     free(rootUsers);
@@ -130,6 +134,8 @@ struct ResultNode* searchOnFriends(User *user, char *searchTerm, int limit)
     struct UserNode *current = user->friends;
     while(current)
     {
+        if(foundCount >= limit) break;
+
         float similarity = textSimilarity(current->user->displayName, searchTerm);
         
         if(similarity >= MIN_SIMILARITY_TERM) {
@@ -153,13 +159,13 @@ void destroyResultNode(struct ResultNode *node)
     {
         delete = node->next;
         node->next = delete->next;
-        //free(delete->user);
         free(delete);
     }
 
-    //free(node->user);
     free(node);
 }
+
+
 #endif
 
 

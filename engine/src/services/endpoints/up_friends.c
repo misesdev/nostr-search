@@ -6,7 +6,6 @@
 #include "../../utils/user_utils.c"
 #include "../../utils/friends_utils.c"
 
-#include <stdio.h>
 #include <stdlib.h>
 
 HttpResponse* insertFriends(char *json_request, HttpResponse *response, Database *root)
@@ -28,18 +27,12 @@ HttpResponse* insertFriends(char *json_request, HttpResponse *response, Database
         return response;
     }
 
-    printf("username: %s\n", userNode->user->displayName);
-
     struct FriendNode *current = friends->next;
     while(current)
     {
         struct TrieNode *friendNode = getTrieNode(root->tree, current->address);
 
-        if(friendNode) 
-        {
-            insertFriend(userNode->user, friendNode->user);
-            printf("    friend: %s\n", friendNode->user->displayName);
-        }
+        if(friendNode) insertFriend(userNode->user, friendNode->user);
 
         current = current->next;
     }

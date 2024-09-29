@@ -31,6 +31,7 @@ HttpResponse* searchFriends(char *jsonRequest, HttpResponse *response, Database 
     resultToJson(resultListUsers, response->Content);
     
     response->StatusCode = 200;
+    
     free(searchParams);
 
     return response;

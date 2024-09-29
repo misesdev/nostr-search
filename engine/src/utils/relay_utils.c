@@ -79,8 +79,6 @@ struct RelayNode* searchRelays(struct RelayNode *root, char *searchTerm)
     struct RelayNode *current = root;    
     while (current) 
     {
-        printf("search relay: %s\n", current->address);
-
         if(textSimilarity(current->address, searchTerm) >= MIN_SIMILARITY_TERM_RELAY) {
             insertRelayNode(resultList, current->address);
         }

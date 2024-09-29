@@ -2,6 +2,7 @@
 #define UP_SEARCH_C
 
 #include <stdlib.h>
+
 #include "../../types/types.c" 
 #include "../../types/user_trie.c"
 #include "../../utils/search_utils.c"
@@ -31,9 +32,8 @@ HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, Database *r
 
     resultToJson(resultListUsers, response->Content);
 
-    destroyResultNode(resultListUsers);
-
     response->StatusCode = 200;
+    
     free(searchParams);
 
     return response;

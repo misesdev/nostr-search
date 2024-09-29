@@ -39,7 +39,7 @@ void upApplication(int port)
     if(!database->tree) 
     {
         printf("\nfailed when reading from disk\n");
-        exit(-1);
+        exit(1);
     }
 
     printf("\napplication pid: %d\n\n", getpid());
