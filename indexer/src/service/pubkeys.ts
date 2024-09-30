@@ -2,6 +2,7 @@ import { maxFetchEvents, maxUsersPubkeys } from "../constants";
 import { FileSystem } from "../filesytem/disk";
 import { RelayPool } from "../modules/RelayPool";
 import { distinctPubkeys, getPubkeys } from "../utils";
+import { getRelayDomain } from "./sends/relays";
 
 type Props = {
     pool: RelayPool,
@@ -67,8 +68,10 @@ export const listPubkeys = async ({ pool, author, listRelays = false }: Props) =
                     
                     for(let relay in eventRelays) 
                     {
-                        if(!relays.includes(relay))
-                            relays.push(relay)
+                        let relayDomain = getRelayDomain(relay)
+
+                        if(!relays.includes(relayDomain))
+                            relays.push(relayDomain)
                     }
                 } 
                 catch { }

@@ -29,7 +29,7 @@ struct RelayNode* loadRelaysFromDisk()
     fread(&relaysCount, sizeof(long), 1, fileRelays);
     offset += sizeof(long);
 
-    if(relaysCount >= 1000000) relaysCount = 0;
+    if(relaysCount >= 500000) relaysCount = 0;
 
     printf("relays count: %ld\n", relaysCount);
 
@@ -42,11 +42,12 @@ struct RelayNode* loadRelaysFromDisk()
         fread(relayAddress, sizeof(char), RELAY_SIZE, fileRelays);
         offset += RELAY_SIZE;
 
-        if(i == 0)
+        if(i == 0) {
             snprintf(relays->address, RELAY_SIZE, "%s", relayAddress);
+            continue;
+        }
 
-        if(i > 0)
-            insertRelayNode(relays, relayAddress);
+        insertRelayNode(relays, relayAddress);
     }
 
     return relays;
