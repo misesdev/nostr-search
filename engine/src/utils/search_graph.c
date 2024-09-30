@@ -8,7 +8,7 @@
 #include <cjson/cJSON.h>
 
 #include "./uthash.h"
-#include "./utils.c"
+#include "./string_utils.c"
 #include "../types/types.c"
 #include "../utils/search_utils.c"
 

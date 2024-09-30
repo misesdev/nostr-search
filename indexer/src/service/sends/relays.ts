@@ -13,7 +13,7 @@ export const sendRelays = async (fileRelays: FileSystem) => {
         {
             let relay = getRelayDomain(line)
 
-            let response = await fetch(`http://localhost:8080/add_relay`, {
+            let response = await fetch(`${process.env.API_ENGINE_URL}/add_relay`, {
                 method: "post",
                 body: JSON.stringify({
                     relay: relay
@@ -30,7 +30,7 @@ export const sendRelays = async (fileRelays: FileSystem) => {
         return true
     }) 
 
-    let response = await fetch(`http://localhost:8080/save`, {
+    let response = await fetch(`${process.env.API_ENGINE_URL}/save`, {
         method: "post",
         body: JSON.stringify({
             scope: "relays"

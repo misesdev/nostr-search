@@ -7,7 +7,7 @@
 #include <string.h>
 #include <cjson/cJSON.h>
 
-#include "./utils.c"
+#include "./string_utils.c"
 #include "./http_utils.c"
 #include "../types/types.c"
 

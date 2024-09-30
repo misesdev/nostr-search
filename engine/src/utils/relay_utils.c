@@ -7,7 +7,7 @@
 
 #include "../types/types.c"
 #include "http_utils.c"
-#include "utils.c"
+#include "string_utils.c"
 #include "../types/relay_list.c"
 
 char* jsonToRelay(char *jsonRequest, char *error)
