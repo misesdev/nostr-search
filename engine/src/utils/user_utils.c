@@ -193,5 +193,16 @@ UserIdentity* jsonToIdentity(char *json_params, char *error)
     return identity;    
 }
 
+void getFriendsCount(User *user, long *count)
+{
+    struct UserNode *current = user->friends;
+    while(current) 
+    {
+        if(current->user) *count += 1;
+
+        current = current->next;
+    }
+}
+
 #endif  
 

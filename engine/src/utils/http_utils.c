@@ -82,11 +82,11 @@ char* httpResponse(HttpResponse *json_result)
 
 void logRequest(char *buffer) 
 {
-    char *start = NULL;
-    
-    if((start = strstr(buffer, "\r\n\r\n")) != NULL) {
-        printf("received request: %s\n", start + 4);
-    }
+    // char *start = NULL;
+    // 
+    // if((start = strstr(buffer, "\r\n\r\n")) != NULL) {
+    //     printf("received request: %s\n", start + 4);
+    // }
 }
 
 #endif

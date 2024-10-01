@@ -10,14 +10,16 @@
 #include "../types/user_trie.c"
 #include "../utils/user_utils.c"
 
-User* loadUserFromDisk(FILE *file, long offset) 
+User* loadUserFromDisk(FILE *file, long *offset) 
 {
-    fseek(file, offset, SEEK_SET);
+    fseek(file, *offset, SEEK_SET);
 
-    User *user = calloc(1, sizeof(User));
+    User *user = malloc(sizeof(User));
 
     fread(user, sizeof(User), 1, file);
 
+    *offset += sizeof(User);
+    
     user->friends = NULL;
 
     return user;
@@ -36,9 +38,8 @@ struct TrieNode* loadUsersTree(FILE *file)
 
     for(int i = 0; i < count; i++) 
     {
-        User *currentUser = loadUserFromDisk(file, offset);
+        User *currentUser = loadUserFromDisk(file, &offset);
         insertTrieNode(root, currentUser);
-        offset += sizeof(User);
     }
 
     return root;

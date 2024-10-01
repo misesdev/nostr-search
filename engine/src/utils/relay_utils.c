@@ -2,6 +2,7 @@
 #define RELAY_UTILS_C
 
 #include <cjson/cJSON.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -41,13 +42,13 @@ char* jsonToRelay(char *jsonRequest, char *error)
     return relay_address;
 }
 
-char* jsonToSearchTerm(char *jsonRequest, char *error)
+RelaySearch* jsonToSearchTerm(char *jsonRequest, char *error)
 {
     cJSON *json = cJSON_Parse(jsonRequest);
 
     if(!json) {
         responseMessage(error, "Error expected json params with property 'searchTerm'");
-        return "";
+        return NULL;
     }
 
     cJSON *searchTerm = cJSON_GetObjectItemCaseSensitive(json, "searchTerm");
@@ -55,32 +56,46 @@ char* jsonToSearchTerm(char *jsonRequest, char *error)
     if(!cJSON_IsString(searchTerm)) {
         responseMessage(error, "Invalid json, expected property 'searchTerm'");
         cJSON_Delete(json);
-        return "";
+        return NULL;
     }
 
     if(strlen(searchTerm->valuestring) <= MIN_SEARCH_TERM) {
         responseMessage(error, "Please the searchTerm <= 2");
         cJSON_Delete(json);
-        return "";
+        return NULL;
     }
 
-    char *search = calloc(MAX_SEARCH_TERM, sizeof(char));
-    snprintf(search, MAX_SEARCH_TERM, "%s", searchTerm->valuestring);
+    cJSON *limit = cJSON_GetObjectItem(json, "limit");
+
+    if(!cJSON_IsNumber(limit)) {
+        responseMessage(error, "Invalid params, expected property 'limit'");
+        cJSON_Delete(json);
+        return NULL;
+    }
+
+    RelaySearch *search = malloc(sizeof(RelaySearch));
+    
+    snprintf(search->searchTerm, MAX_SEARCH_TERM, "%s", searchTerm->valuestring);
+    search->limit = limit->valueint > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit->valueint;
 
     cJSON_Delete(json);
 
     return search;
 }
 
-struct RelayNode* searchRelays(struct RelayNode *root, char *searchTerm)
+struct RelayNode* searchRelays(struct RelayNode *root, char *searchTerm, int limit)
 {
+    int foundRelays = 0;
     struct RelayNode *resultList = createRelayNode("");
 
     struct RelayNode *current = root;    
     while (current) 
     {
+        if(foundRelays >= limit) break;
+
         if(textSimilarity(current->address, searchTerm) >= MIN_SIMILARITY_TERM_RELAY) {
             insertRelayNode(resultList, current->address);
+            foundRelays++;
         }
 
         current = current->next;

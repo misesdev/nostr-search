@@ -6,7 +6,7 @@
 #include "../types/types.c"
 #include "../filesystem/rdisk.c"
 #include "../filesystem/wdisk.c"
-#include "../filesystem/relays_disk.c"
+#include "../filesystem/relays.c"
 
 #include <signal.h>
 #include <stdio.h>

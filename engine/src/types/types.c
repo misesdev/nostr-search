@@ -68,6 +68,11 @@ typedef struct {
     struct RelayNode *relays;
 } Database;
 
+typedef struct {
+    char searchTerm[100];
+    int limit;
+} RelaySearch;
+
 #endif
 
 

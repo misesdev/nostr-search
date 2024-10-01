@@ -5,7 +5,7 @@
 #include "../../utils/save_utils.c"
 #include "../../types/types.c"
 #include "../../filesystem/wdisk.c"
-#include "../../filesystem/relays_disk.c"
+#include "../../filesystem/relays.c"
 
 #include <stdio.h>
 

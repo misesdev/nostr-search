@@ -8,14 +8,16 @@
 #include "../utils/utils.c"
 #include "../types/types.c"
 #include "../types/user_list.c"
-#include "../types/user_trie.c"
-#include "./disk_utils.c"
+//#include "../types/user_trie.c"
+#include "../utils/user_utils.c"
 
-void loadUserOnDisk(User *user, FILE *file, long offset) 
+void loadUserOnDisk(User *user, FILE *file, long *offset) 
 {
-    fseek(file, offset, SEEK_SET);
+    fseek(file, *offset, SEEK_SET);
 
     fwrite(user, sizeof(User), 1, file);
+
+    *offset += sizeof(User);
 }
 
 void loadUsersOnDisk(FILE *fileUsers, struct UserNode *rootUsers, long *userCount) 
@@ -25,11 +27,10 @@ void loadUsersOnDisk(FILE *fileUsers, struct UserNode *rootUsers, long *userCoun
     fwrite(userCount, sizeof(long), 1, fileUsers);
     offset += sizeof(long);
 
-    while (rootUsers) {
-        if(rootUsers->user) {
-            loadUserOnDisk(rootUsers->user, fileUsers, offset);
-            offset += sizeof(User);
-        }
+    while (rootUsers) 
+    {
+        if(rootUsers->user) loadUserOnDisk(rootUsers->user, fileUsers, &offset);
+        
         rootUsers = rootUsers->next;
     }
 }
@@ -45,7 +46,8 @@ void serialiseUsersFromTrie(struct TrieNode *root, struct UserNode *rootUsers, l
         list = list->next;
     }
 
-    if(root->isEndOfKey) {
+    if(root->isEndOfKey && root->user) 
+    {
         insertUserNode(rootUsers, root->user);
         *userCount += 1;
     }
@@ -53,13 +55,15 @@ void serialiseUsersFromTrie(struct TrieNode *root, struct UserNode *rootUsers, l
 
 void loadFriendsFromUser(FILE *file, User *user, long *offset)
 {
-    uint8_t address[ADDRESS_LENGTH] = {0};
+    if(!user->friends) return;
+
+    uint8_t address[ADDRESS_LENGTH];
     compressPubkey(user->pubkey, address);
     
     long friendsCount = 0;
-    getFriendsCount(user->friends, &friendsCount);
+    getFriendsCount(user, &friendsCount);
     
-    // write user address in tree
+    // write user address in disk
     fseek(file, *offset, SEEK_SET);    
     fwrite(&address, sizeof(uint8_t), ADDRESS_LENGTH, file);
     *offset += ADDRESS_LENGTH;
@@ -121,9 +125,9 @@ bool loadTrieInDisk(struct TrieNode *root)
 
     loadFriendsOnDisk(fileFriends, rootUsers, &userCount);
 
-    destroyUserNode(rootUsers);
+    //destroyUserNode(rootUsers);
 
-    destroyTrieNode(root, false);
+    //destroyTrieNode(root, false);
 
     fclose(fileFriends);
     fclose(fileUsers);

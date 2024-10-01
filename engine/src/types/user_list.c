@@ -64,11 +64,11 @@ void destroyUserNode(struct UserNode *node)
     {
         delete = node->next;
         node->next = delete->next;
-        free(delete->user);
+        if(delete->user) free(delete->user);
         free(delete);
     }
-
-    free(node->user);
+    
+    if(node->user) free(node->user);
     free(node);
 }
 

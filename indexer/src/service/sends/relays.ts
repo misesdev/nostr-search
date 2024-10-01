@@ -1,7 +1,11 @@
 import { FileSystem } from "../../filesytem/disk"
 
 export const getRelayDomain = (relay: string) => {
+    
     const url = new URL(relay)
+
+    if(!url.hostname.includes("."))
+        throw Error("Invalid relay domain")
 
     return `${url.protocol}//${url.hostname}`
 }
