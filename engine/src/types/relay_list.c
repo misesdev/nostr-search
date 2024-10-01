@@ -7,23 +7,26 @@
 
 #include "../constants/index.c"
 #include "../types/types.c"
-#include "../utils/utils.c"
+#include "../utils/string_utils.c"
 
-struct RelayNode* createRelayNode(char *relay)
+struct RelayNode* createRelayNode(char *relay, float similarity)
 {
     struct RelayNode *node = malloc(sizeof(struct RelayNode));
     
     snprintf(node->address, RELAY_SIZE, "%s", relay);
+
+    node->similarity = similarity;
 
     node->next = NULL;
 
     return node;
 }
 
-void insertRelayNode(struct RelayNode *root, char *relay)
+void insertRelayNode(struct RelayNode *root, char *relay, float similarity)
 {
     if(strlen(root->address) <= 0) {
         snprintf(root->address, RELAY_SIZE, "%s", relay);
+        root->similarity = similarity;
         return;
     }
    
@@ -33,7 +36,7 @@ void insertRelayNode(struct RelayNode *root, char *relay)
         if(textSimilarity(current->address, relay) >= .90) return;
 
         if(!current->next) {
-            current->next = createRelayNode(relay);
+            current->next = createRelayNode(relay, similarity);
             return;
         }
         current = current->next;

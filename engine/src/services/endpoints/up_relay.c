@@ -15,7 +15,7 @@ HttpResponse* addRelayOnEngine(char *jsonRequest, HttpResponse *response, Databa
         return response;
     }
 
-    insertRelayNode(root->relays, relay_address);
+    insertRelayNode(root->relays, relay_address, 0);
 
     responseMessage(response->Content, "relay added succefully");
 

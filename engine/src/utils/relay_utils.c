@@ -86,15 +86,18 @@ RelaySearch* jsonToSearchTerm(char *jsonRequest, char *error)
 struct RelayNode* searchRelays(struct RelayNode *root, char *searchTerm, int limit)
 {
     int foundRelays = 0;
-    struct RelayNode *resultList = createRelayNode("");
+    struct RelayNode *resultList = createRelayNode("", 0);
 
     struct RelayNode *current = root;    
     while (current) 
     {
         if(foundRelays >= limit) break;
 
-        if(textSimilarity(current->address, searchTerm) >= MIN_SIMILARITY_TERM_RELAY) {
-            insertRelayNode(resultList, current->address);
+        float similarity = textSimilarity(current->address, searchTerm);
+
+        if(similarity >= MIN_SIMILARITY_TERM_RELAY) 
+        {
+            insertRelayNode(resultList, current->address, similarity);
             foundRelays++;
         }
 
@@ -120,8 +123,8 @@ void serializeRelayNode(struct RelayNode *root, char *response)
         if(strlen(current->address) > 0) 
         {
             cJSON *object = cJSON_CreateObject();
-            cJSON *relay_address = cJSON_CreateString(current->address);
-            cJSON_AddItemToObject(object, "relay", relay_address);
+            cJSON_AddStringToObject(object, "relay", current->address);
+            cJSON_AddNumberToObject(object, "similarity",(int)(current->similarity * 100));
 
             cJSON_AddItemToArray(arrayList, object);
         }

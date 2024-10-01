@@ -33,7 +33,7 @@ struct RelayNode* loadRelaysFromDisk()
 
     printf("relays count: %ld\n", relaysCount);
 
-    struct RelayNode *relays = createRelayNode("");
+    struct RelayNode *relays = createRelayNode("", 0);
 
     for(int i = 0; i < relaysCount; i++) 
     {
@@ -47,7 +47,7 @@ struct RelayNode* loadRelaysFromDisk()
             continue;
         }
 
-        insertRelayNode(relays, relayAddress);
+        insertRelayNode(relays, relayAddress, 0);
     }
 
     return relays;

@@ -59,6 +59,7 @@ struct ResultNode {
 };
 
 struct RelayNode {
+    float similarity;
     char address[RELAY_SIZE];
     struct RelayNode *next;
 };
