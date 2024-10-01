@@ -74,9 +74,6 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
         }
     }
 
-    printf("visited users: %d\n", visitedCount);
-    printf("users queue size: %d\n", userQueue->size);
-
     freeUserBitset(userBitset);
 
     freeQueueUser(userQueue);
