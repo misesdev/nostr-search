@@ -62,6 +62,9 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
             foundCount++;
         }
 
+        // if the current user not have friends, go to next users of queue
+        if(!currentUser->friends) continue;
+
         // Add friends of current node on queue
         struct UserNode *friendList = currentUser->friends;
         while (friendList != NULL && visitedCount < MAX_USERS_TO_VISIT) 
