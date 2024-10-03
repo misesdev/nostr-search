@@ -36,7 +36,7 @@ HttpResponse* router(char *request, Database *root)
     // get friends from user
     if(strstr(request, "/search_friends ") != NULL)
         return searchFriends(jsonRequest, response, root);      // search on graph users
-    if(strstr(request, "/search ") != NULL)
+    if(strstr(request, "/search_users ") != NULL)
         return searchUsers(jsonRequest, response, root);
     // add friends of users on graph user
     if(strstr(request, "/add_friends ") != NULL)
@@ -44,9 +44,6 @@ HttpResponse* router(char *request, Database *root)
     // get friends from user
     if(strstr(request, "/get_friends ") != NULL)
         return getFriendsFromUser(jsonRequest, response, root);     
-    // save the tree on disk
-    if(strstr(request, "/save ") != NULL)
-        return saveTrieOnDisk(jsonRequest, response, root); 
     // add relays
     if(strstr(request, "/add_relay ") != NULL)
         return addRelayOnEngine(jsonRequest, response, root);
@@ -66,7 +63,7 @@ HttpResponse* router(char *request, Database *root)
         "/search_friends, "
         "/add_relay, "
         "/search_relays and "
-        "/search "
+        "/search_users "
     );
 
     response->StatusCode = 403;
