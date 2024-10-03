@@ -22,6 +22,8 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
 
     limit = limit > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit;
 
+    if(!rootUser->friends) return resultList;
+
     // Fila de busca (implementada como um array dinâmico de UserNode*)
     UserQueue *userQueue = createUserQueue();
 
@@ -32,8 +34,11 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
     struct UserNode *current = rootUser->friends;
     while (current) 
     {
-        markVisitedUser(userBitset, current->user); 
-        enQueueUser(userQueue, current->user);
+        if(current->user) 
+        {
+            markVisitedUser(userBitset, current->user); 
+            enQueueUser(userQueue, current->user);
+        }
 
         current = current->next;
     }

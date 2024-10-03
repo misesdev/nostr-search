@@ -28,6 +28,9 @@ HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, Database *r
         return response;
     }
 
+    if(!userNode->user->friends)
+        userNode = getTrieNodeFromPubkey(root->tree, "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27");
+
     struct ResultNode *resultListUsers = searchOnGraph(userNode->user, searchParams->search, searchParams->limit);
 
     resultToJson(resultListUsers, response->Content);
