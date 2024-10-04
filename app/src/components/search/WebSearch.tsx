@@ -6,7 +6,7 @@ import { generateAvatar } from "@/services/avatar";
 
 const WebSearch = async ({ pubkey, searchTerm }: SearchParams) => {
     
-    const response = await fetch(`${process.env.API_ENGINE_URL}/search`, { 
+    const response = await fetch(`${process.env.API_ENGINE_URL}/search_users`, { 
         method: "post",
         body: JSON.stringify({
             pubkey,
@@ -21,14 +21,16 @@ const WebSearch = async ({ pubkey, searchTerm }: SearchParams) => {
 
     users.sort((a, b) => b.similarity - a.similarity)
 
-    users.forEach(async (user) => {
-        if(!user.profile.includes("http") && !user.profile.includes("https"))
+    users.forEach(async (user) => 
+    {
+        if(!user.profile.includes("http"))
         {
             user.profile = await generateAvatar(user.pubkey)
         }
     })
 
-    if (!users.length) {
+    if (!users.length) 
+    {
         return (
             <div className='flex flex-col justify-center items-center pt-10'>
                 <h1 className='text-[20px] lg:text-3xl mb-4 text-gray-400 text-center'>

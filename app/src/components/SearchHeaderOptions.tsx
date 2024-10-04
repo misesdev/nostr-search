@@ -8,9 +8,9 @@ import { AiOutlineCamera, AiOutlineSearch } from 'react-icons/ai';
 export default function SearchHeaderOptions(): ReactNode {
     
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const searchTerm = searchParams.get('searchTerm');
-    const pathname = usePathname();
 
     const [pubkey, setPubkey] = useState(defaultPubkey);
 
@@ -37,3 +37,6 @@ export default function SearchHeaderOptions(): ReactNode {
         </div>
     );
 }
+
+
+

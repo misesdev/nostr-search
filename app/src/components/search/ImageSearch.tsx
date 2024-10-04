@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const ImageSearch = async ({ pubkey, searchTerm }: SearchParams) => {
 
-    const response = await fetch(`${process.env.API_ENGINE_URL}/search`, {
+    const response = await fetch(`${process.env.API_ENGINE_URL}/search_users`, {
         method: "post",
         body: JSON.stringify({
             pubkey,
@@ -17,9 +17,10 @@ const ImageSearch = async ({ pubkey, searchTerm }: SearchParams) => {
 
     const users: User[] = await response.json()
 
+    // ordenate for similarity desc
     users.sort((a, b) => b.similarity - a.similarity)
 
-    const results = users.filter(user => user.profile.includes("http") && user.profile.includes("https"))
+    const results = users.filter(user => user.profile.includes("http"))
 
     if (!results.length) {
         return (
