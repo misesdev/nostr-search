@@ -21,16 +21,14 @@ export const UserProfile = ({ profile, displayName }: Props) => {
 
     return (
         <div className="overflow-hidden w-[130px] h-[130px] items-center border-4 border-[#3e2eb3] rounded-3xl">
-            <div className="">
-                <Image
-                    width={130}
-                    height={130}
-                    src={content}
-                    alt={displayName}
-                    className="min-h-[130px] min-w-[130px]"
-                    onError={handleGeneric}
-                />
-            </div>
+            <Image
+                width={130}
+                height={130}
+                src={content}
+                alt={displayName}
+                className="min-h-[130px] min-w-[130px]"
+                onError={handleGeneric}
+            />
         </div>
     )
 }

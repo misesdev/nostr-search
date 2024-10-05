@@ -23,7 +23,7 @@ const WebSearch = async ({ pubkey, searchTerm }: SearchParams) => {
 
     users.forEach(async (user) => 
     {
-        if(!user.profile.includes("http"))
+        if(!(user.profile.includes("http")))
         {
             user.profile = await generateAvatar(user.pubkey)
         }

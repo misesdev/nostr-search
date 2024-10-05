@@ -59,7 +59,7 @@ RelaySearch* jsonToSearchTerm(char *jsonRequest, char *error)
         return NULL;
     }
 
-    if(strlen(searchTerm->valuestring) <= MIN_SEARCH_TERM) {
+    if(strlen(searchTerm->valuestring) < MIN_SEARCH_TERM) {
         responseMessage(error, "Please the searchTerm <= 2");
         cJSON_Delete(json);
         return NULL;
@@ -93,7 +93,7 @@ struct RelayNode* searchRelays(struct RelayNode *root, char *searchTerm, int lim
     {
         if(foundRelays >= limit) break;
 
-        float similarity = textSimilarity(current->address, searchTerm);
+        float similarity = textSimilarity(current->address+6, searchTerm);
 
         if(similarity >= MIN_SIMILARITY_TERM_RELAY) 
         {

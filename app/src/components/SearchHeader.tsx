@@ -12,11 +12,9 @@ export default function SearchHeader(): ReactNode {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const npub = localStorage.getItem("user")
+        const localUser = localStorage.getItem("user")
 
-        console.log(npub)
-
-        if(npub) setUser(JSON.parse(npub))
+        if(localUser) setUser(JSON.parse(localUser))
     }, [])
 
     return (

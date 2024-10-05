@@ -38,6 +38,7 @@ export default function SearchBox() : ReactNode {
                 className='bg-transparent mx-4 text-gray-300 w-full focus:outline-none'
                 value={term}
                 name="searchTerm"
+                minLength={3}
                 onChange={(e) => setTerm(e.target.value)}
             />
             <input type='hidden' name='pubkey' value={pubkey} />

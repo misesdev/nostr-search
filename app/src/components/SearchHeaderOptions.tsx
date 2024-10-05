@@ -34,6 +34,10 @@ export default function SearchHeaderOptions(): ReactNode {
                 <AiOutlineCamera className='text-md' />
                 <p>Images</p>
             </div>
+            <div onClick={()=>selectTab("relays")} className={`text-gray-200 flex items-center space-x-1 border-b-4 border-transparent active:text-blue-500 cursor-pointer pb-3 px-2 ${pathname === '/search/relays' && '!text-blue-600 !border-blue-600'}`}>
+                <AiOutlineCamera className='text-md' />
+                <p>Relays</p>
+            </div>
         </div>
     );
 }

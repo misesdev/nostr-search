@@ -4,6 +4,10 @@ export type SearchParams = {
     pubkey?: string
 }
 
+export type RelayParams = {
+    searchTerm: string
+}
+
 export type User = {
     name: string,
     displayName: string,
@@ -11,4 +15,20 @@ export type User = {
     pubkey: string,
     about?: string,
     similarity: number
+}
+
+export type Relay = {
+    relay: string,
+    similarity: number
+}
+
+export type RelayInfo = {
+    name?: string,
+    icon?: string,
+    limitation?: any,
+    description?: string,
+    software?: string,
+    supported_nips?: number[],
+    version?: string,
+    address?: string
 }
