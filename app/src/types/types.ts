@@ -30,5 +30,6 @@ export type RelayInfo = {
     software?: string,
     supported_nips?: number[],
     version?: string,
-    address?: string
+    address?: string,
+    contact?: string
 }

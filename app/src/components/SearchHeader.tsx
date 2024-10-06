@@ -9,6 +9,7 @@ import { User } from '@/types/types';
 
 export default function SearchHeader(): ReactNode {
 
+    const [visible, setVisible] = useState(false)
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -16,6 +17,12 @@ export default function SearchHeader(): ReactNode {
 
         if(localUser) setUser(JSON.parse(localUser))
     }, [])
+
+    const deletePubkey = () => {
+        localStorage.removeItem('pubkey')
+        localStorage.removeItem('user')
+        window.location.href = '/'
+    }
 
     return (
         <header className='top-0 bg-gray-800'>
@@ -36,14 +43,14 @@ export default function SearchHeader(): ReactNode {
                     <Link href='/'>
                         <div className='flex'>
                             {/* <Link href='/'> */}
-                                <Image
-                                    src='/logo.png'
-                                    alt='Nostr Book Users'
-                                    width={32}
-                                    height={32}
-                                    priority
-                                    style={{ width: 'auto' }}
-                                />
+                            <Image
+                                src='/logo.png'
+                                alt='Nostr Book Users'
+                                width={32}
+                                height={32}
+                                priority
+                                style={{ width: 'auto' }}
+                            />
                             {/* </Link> */}
                             <h3 className='text-[16px] font-bold mt-1 ml-5 text-gray-400'>Nosbook</h3>
                         </div>
@@ -55,9 +62,11 @@ export default function SearchHeader(): ReactNode {
                             </Link>
                         }
                         { user && 
-                            <Link 
-                                href="#" 
-                                className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
+                            <div className="">
+                                <Link 
+                                    href="#"
+                                    onClick={() => setVisible(true)}
+                                    className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
                                     <Image 
                                         width={35}
                                         height={35}
@@ -65,7 +74,30 @@ export default function SearchHeader(): ReactNode {
                                         alt={user.displayName}
                                         src={user.profile}
                                     />
-                            </Link>
+                                </Link>
+                                { visible &&
+                                    <div
+                                        onMouseLeave={() => setVisible(false)}
+                                        className="absolute right-10 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                    >
+                                        <div className="py-1" role="menu">
+                                            <a href="https://find.nosbook.org" 
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:text-gray-200 hover:bg-[#3e2eb3]" 
+                                                role="menuitem" 
+                                                target="_blak"
+                                                id="menu-item"
+                                                onClick={() => setVisible(false)}
+                                            >API</a>
+                                            <a href="#" 
+                                                onClick={deletePubkey}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:text-gray-200 hover:bg-[#3e2eb3]" 
+                                                role="menuitem" 
+                                                id="menu-item">Sign Out</a>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
                         }
                     </div>
                 </div>
@@ -80,10 +112,12 @@ export default function SearchHeader(): ReactNode {
                             Sign in
                         </Link>
                     }
-                    { user && 
-                        <Link 
-                            href="#" 
-                            className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
+                    { user &&                           
+                        <div className="relative inline-block text-left"> 
+                            <Link 
+                                href="#" 
+                                onClick={() => setVisible(true)}
+                                className='float-end rounded-full w-50 h-50 overflow-hidden border border-[#3e2eb3]'>
                                 <Image 
                                     width={35}
                                     height={35}
@@ -91,7 +125,30 @@ export default function SearchHeader(): ReactNode {
                                     alt={user.displayName}
                                     src={user.profile}
                                 />
-                        </Link>
+                            </Link>
+                                { visible &&
+                                    <div
+                                        onMouseLeave={() => setVisible(false)}
+                                        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                    >
+                                        <div className="py-1" role="menu">
+                                            <a href="https://find.nosbook.org" 
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:text-gray-200 hover:bg-[#3e2eb3]" 
+                                                role="menuitem" 
+                                                target="_blak"
+                                                id="menu-item"
+                                                onClick={() => setVisible(false)}
+                                            >API</a>
+                                            <a href="#" 
+                                                onClick={deletePubkey}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:text-gray-200 hover:bg-[#3e2eb3]" 
+                                                role="menuitem" 
+                                                id="menu-item">Sign Out</a>
+                                        </div>
+                                    </div>
+                                }
+
+                        </div>
                     }
                 </div>
             </div>

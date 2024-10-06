@@ -11,7 +11,7 @@ const WebSearch = async ({ pubkey, searchTerm }: SearchParams) => {
         body: JSON.stringify({
             pubkey,
             searchTerm,
-            limit: 48
+            limit: 100
         })
     })
 

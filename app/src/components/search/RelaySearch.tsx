@@ -8,7 +8,7 @@ export const RelaySearch = async ({ searchTerm }: RelayParams) => {
         method: "post",
         body: JSON.stringify({
             searchTerm: searchTerm.replace("wss://", ""),
-            limit: 50
+            limit: 100
         }) 
     })
 
