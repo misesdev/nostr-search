@@ -30,12 +30,12 @@ export const RelayItem = ({ relay }: Props) => {
             }).catch(() => setInfo(null))
         } 
         catch { setInfo(null) }
-    }, [])
+    }, [relay])
 
     const handleIconError = () => setInfo(null)
 
-    const copyRelay = (relay: string) => {
-        navigator.clipboard.writeText(relay);
+    const copyRelay = () => {
+        navigator.clipboard.writeText(info?.address ?? "");
         toast.success("Copied relay to clipboard!")
     }
 
@@ -43,7 +43,7 @@ export const RelayItem = ({ relay }: Props) => {
         return <></>
 
     return (
-        <div className='w-full group cursor-pointer' onClick={() => copyRelay(info.address ?? "")}>
+        <div className='w-full group cursor-pointer' onClick={() => copyRelay()}>
             <div className='p-5 bg-gray-800 rounded-3xl overflow-x-clip'>
                 <div className="w-full flex">
                     <div className="overflow-hidden w-[80px] h-[80px] items-center border-4 border-[#3e2eb3] rounded-3xl">
@@ -77,9 +77,9 @@ export const RelayItem = ({ relay }: Props) => {
                         Supported Nips:
                     </label>
                     <div className="w-full overflow-x-scroll h-10">
-                        {info.supported_nips?.map(nip => {
+                        {info.supported_nips?.map((nip, key) => {
                             return (
-                                <span className="font-bold text-[12px] text-gray-300 p-1 mx-1 bg-[#3e2eb3] rounded-[4px]">{nip}</span>
+                                <span key={key} className="font-bold text-[12px] text-gray-300 p-1 mx-1 bg-[#3e2eb3] rounded-[4px]">{nip}</span>
                             )
                         })}
                     </div>
