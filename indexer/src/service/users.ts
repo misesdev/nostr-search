@@ -82,6 +82,8 @@ export const listUsers = async (pool: RelayPool) => {
 
     await fileUsers.clear()
 
+    console.log("total users:", pubkeys.length)
+
     let skipe = maxFetchEvents, totalUsers = 0
     for (let i = 0; i <= pubkeys.length; i += skipe) 
     {

@@ -17,13 +17,13 @@ export const sendRelays = async (fileRelays: FileSystem) => {
         {
             let relay = getRelayDomain(line)
 
-            const response_relay = await fetch(relay.replace("wss://", "https://"), {
-                headers: {
-                    "Accept": "application/nostr+json"
-                }
-            })
+            // const response_relay = await fetch(relay.replace("wss://", "https://"), {
+            //     headers: {
+            //         "Accept": "application/nostr+json"
+            //     }
+            // })
 
-            if(!response_relay.ok) throw Error("Relay not running")
+            // if(!response_relay.ok) throw Error("Relay not running")
 
             let response = await fetch(`${process.env.API_ENGINE_URL}/add_relay`, {
                 method: "post",
