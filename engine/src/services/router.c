@@ -3,13 +3,13 @@
 
 #include "../types/types.c"
 #include "./endpoints/up_users.c"
-#include "./endpoints/up_search.c"
 #include "./endpoints/up_relay.c"
 #include "./endpoints/up_friends.c"
 #include "./endpoints/get_user.c"
 #include "./endpoints/get_friends.c"
 #include "./endpoints/search_relays.c"
 #include "./endpoints/search_friends.c"
+#include "./endpoints/search_users.c"
 #include "./endpoints/up_save.c"
 
 #include <stdio.h>

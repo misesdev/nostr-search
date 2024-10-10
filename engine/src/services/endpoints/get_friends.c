@@ -18,11 +18,12 @@ HttpResponse* getFriendsFromUser(char *jsonRequest, HttpResponse *response, Data
 
     struct TrieNode *userNode = getTrieNodeFromPubkey(root->tree, identity->pubkey);
 
+    free(identity);
+
     if(!userNode) 
     {
         responseMessage(response->Content, "Focal user not found, please provide a existent public key");
         response->StatusCode = 403;
-        free(identity);
         return response;
     }
 
@@ -30,8 +31,6 @@ HttpResponse* getFriendsFromUser(char *jsonRequest, HttpResponse *response, Data
 
     response->StatusCode = 200;
     
-    free(identity);
-
     return response;
 }
 

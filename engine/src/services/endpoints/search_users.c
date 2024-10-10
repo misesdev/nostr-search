@@ -1,5 +1,5 @@
-#ifndef UP_SEARCH_C
-#define UP_SEARCH_C
+#ifndef SEARCH_USERS_C
+#define SEARCH_USERS_C
 
 #include <stdlib.h>
 

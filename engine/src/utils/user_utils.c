@@ -50,7 +50,8 @@ void showUsersOfTrie(struct TrieNode *root)
 {
     struct TrieList *list = root->childrens;
 
-    while(list) {
+    while(list) 
+    {
         showUsersOfTrie(list->node);
         list = list->next;
     }
@@ -78,7 +79,7 @@ User* jsonToUser(char *jsonString, char *error)
         return NULL;
     }
 
-    User *user = calloc(1, sizeof(User));
+    User *user = malloc(sizeof(User));
 
     cJSON *name = cJSON_GetObjectItemCaseSensitive(json, "name");
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(json, "pubkey");
@@ -127,11 +128,9 @@ void userToJson(User *user, char *jsonUser)
 
     char *jsonResult = cJSON_Print(userJson);
 
-    strcpy(jsonUser, jsonResult);
+    snprintf(jsonUser, MAX_RESPONSE_LENGTH, "%s", jsonResult);
 
     cJSON_Delete(userJson);
-
-    free(jsonResult);
 }
 
 void userListToJson(struct UserNode *rootUsers, char *response)
@@ -150,8 +149,6 @@ void userListToJson(struct UserNode *rootUsers, char *response)
     snprintf(response, MAX_RESPONSE_LENGTH, "%s", cJSON_Print(jsonList));
 
     cJSON_Delete(jsonList);
-
-    free(rootUsers);
 }
                  
 User* getUserFromRequest(char *json_params, char *error) 
@@ -180,7 +177,7 @@ UserIdentity* jsonToIdentity(char *json_params, char *error)
         return NULL;
     }
 
-    if(strlen(pubkey->valuestring) < 64 || strlen(pubkey->valuestring) > 64) {
+    if(strlen(pubkey->valuestring) != 64) {
         responseMessage(error, "Error invalid 'pubkey', expected 32 bytes hexadecimal");
         cJSON_Delete(jsonIdentity);
         return NULL;

@@ -20,14 +20,12 @@ struct ResultNode* searchOnGraph(User *rootUser, char *searchTerm, int limit)
 
     struct ResultNode *resultList = createResultNode(NULL, 0);
 
-    limit = limit > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit;
-
     if(!rootUser->friends) return resultList;
 
-    // Fila de busca (implementada como um array dinâmico de UserNode*)
+    // Fila de busca (implementada como um array dinâmico de User*)
     UserQueue *userQueue = createUserQueue();
 
-    // Hash set para verificar usuários visitados
+    // Bit set para verificar usuários visitados
     uint_fast64_t *userBitset = createUserBitset();
 
     // Adiciona os amigos do usuário root à fila de busca

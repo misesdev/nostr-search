@@ -22,7 +22,7 @@ Search* jsonToSearchParams(char *json, char *error)
         return NULL;
     }
 
-    Search *searchParams = calloc(1, sizeof(Search));
+    Search *searchParams = malloc(sizeof(Search));
     
     cJSON *search = cJSON_GetObjectItemCaseSensitive(jsonParams, "searchTerm");
     cJSON *pubkey = cJSON_GetObjectItemCaseSensitive(jsonParams, "pubkey");
@@ -34,9 +34,9 @@ Search* jsonToSearchParams(char *json, char *error)
         snprintf(searchParams->pubkey, 65, "%s", pubkey->valuestring);
         snprintf(searchParams->search, 100, "%s", search->valuestring);  
         if(cJSON_IsNumber(limit) && limit->valueint > 0)
-            searchParams->limit = limit->valueint;
+            searchParams->limit = limit->valueint > MAX_LIMIT_RESULTS ? MAX_LIMIT_RESULTS : limit->valueint;
         else
-            searchParams->limit = 50;
+            searchParams->limit = 100;
     } else {
         responseMessage(error, "Error when parsing search, expected properties 'pubkey', 'limit' and 'searchTerm'");
         cJSON_Delete(jsonParams);
