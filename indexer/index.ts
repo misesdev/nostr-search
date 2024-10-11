@@ -12,24 +12,24 @@ const author: string = "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39
 
 const main = async () => {
 
-    // const relayPool = new RelayPool(relays)
+    const relayPool = new RelayPool(relays)
 
-    // await relayPool.connect();
+    await relayPool.connect();
 
-    // await listPubkeys({ 
-    //     pool: relayPool, 
-    //     author: author, 
-    //     listRelays: true
-    // }) 
+    await listPubkeys({ 
+        pool: relayPool, 
+        author: author, 
+        listRelays: true
+    }) 
 
-    // await listUsers(relayPool)
+    await listUsers(relayPool)
 
-    // await listFriends(relayPool)
+    await listFriends(relayPool)
 
     await loadData({ 
-        users: false, 
-        friends: false, 
-        relays: true
+        users: true,  
+        friends: true, 
+        relays: true 
     })
 
     return;
