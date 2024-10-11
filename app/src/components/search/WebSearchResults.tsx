@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link';
-import PaginationButtons from '../PaginationButtons';
 import { ReactNode } from 'react';
 import { User } from '@/types/types';
 import { UserProfile } from '../UserProfile';

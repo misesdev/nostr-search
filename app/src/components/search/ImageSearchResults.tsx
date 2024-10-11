@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import PaginationButtons from '../PaginationButtons';
 import Image from 'next/image';
 import { ReactNode } from 'react';
 import { User } from '@/types/types';
