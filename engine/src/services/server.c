@@ -14,7 +14,7 @@
 
 #define MIN_FREE_MEMORY 1024 * 1024 * 100
 #define SIZE_BUFFER 1024 * 10 // 10 kbytes
-#define MAX_THREADS 50  // Limite máximo de threads para controlar o uso de memória
+#define MAX_THREADS 75  // Limite máximo de threads para controlar o uso de memória
 
 typedef struct {
     int socket;
@@ -26,9 +26,8 @@ typedef struct {
 pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t queue_cond = PTHREAD_COND_INITIALIZER;
 
-// Fila de conexões de clientes
-client_info* client_queue[MAX_THREADS];
 int queue_size = 0;  // Tamanho da fila de clientes
+client_info* client_queue[MAX_THREADS]; // Fila de conexões de clientes
 
 // Função para processar cada cliente em uma thread do pool
 void* thread_worker(void* arg) 
@@ -137,8 +136,7 @@ void upServer(HttpResponse *(* executeRequest)(char*, Database*), Database *root
 
     while (true) 
     {
- 
-        client_info* client = calloc(1, sizeof(client_info)); // Aloca memória para cada cliente
+        client_info* client = malloc(sizeof(client_info)); // Aloca memória para cada cliente
         if (!client) {
             perror("fail in the allocation of memory for the client\n");
             continue; // Tenta aceitar uma nova conexão
