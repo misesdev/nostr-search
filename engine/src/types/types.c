@@ -12,6 +12,7 @@ typedef struct {
     char profile[150];
     char displayName[45];
     struct UserNode *friends;
+    uint32_t index;
 } User;
 
 struct UserNode {
@@ -58,6 +59,10 @@ struct ResultNode {
     struct ResultNode *next;
 };
 
+typedef struct {
+    char address[RELAY_SIZE];
+} Relay;
+
 struct RelayNode {
     float similarity;
     char address[RELAY_SIZE];
@@ -65,8 +70,21 @@ struct RelayNode {
 };
 
 typedef struct {
+    uint32_t size;
+    uint32_t count;
+    User *users;
+} LinkedUsers;
+
+typedef struct {
+    uint32_t size;
+    uint32_t count;
+    Relay *relays;
+} LinkedRelays;
+
+typedef struct {
+    LinkedUsers *users;
+    LinkedRelays *relays;
     struct TrieNode *tree;
-    struct RelayNode *relays;
 } Database;
 
 typedef struct {

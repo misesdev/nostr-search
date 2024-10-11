@@ -4,9 +4,7 @@
 #include "./server.c"
 #include "./router.c"
 #include "../types/types.c"
-#include "../filesystem/rdisk.c"
-#include "../filesystem/wdisk.c"
-#include "../filesystem/relays.c"
+#include "../filesystem/disk.c"
 
 #include <signal.h>
 #include <stdio.h>
@@ -15,32 +13,20 @@
 
 Database *database;
 
-void handle_signal(int signal_command)
+void handle_signal(int command)
 {
-    if(signal_command == SIGTERM || 
-        signal_command == SIGKILL || 
-        signal_command == SIGINT)
+    if(command == SIGTERM || command == SIGKILL || command == SIGINT)
     {
-        printf("\nsaving tree on disk...\n");
-        loadTrieInDisk(database->tree);
+        saveDatabase(database, SCOPE_FRIENDS);
         exit(0);
     }
 }
 
 void upApplication(int port)
 {
-    database = malloc(sizeof(Database));
+    //signal(SIGINT, handle_signal);
 
-    printf("loading tree from disk...\n");
-
-    database->tree = loadTrieFromDisk();
-    database->relays = loadRelaysFromDisk();
-
-    if(!database->tree) 
-    {
-        printf("\nfailed when reading from disk\n");
-        exit(1);
-    }
+    database = loadDatabase();
 
     printf("\napplication pid: %d\n\n", getpid());
 

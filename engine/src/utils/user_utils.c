@@ -10,7 +10,6 @@
 #include "../types/types.c" 
 #include "../types/user_list.c"
 #include "cjson/cJSON.h"
-#include "utils.c"
 
 User* createUser(char *name, char *profile, char *pubkey)
 {
@@ -46,30 +45,6 @@ void insertFriend(User *user, User *friend)
     }
 }
 
-void showUsersOfTrie(struct TrieNode *root)
-{
-    struct TrieList *list = root->childrens;
-
-    while(list) 
-    {
-        showUsersOfTrie(list->node);
-        list = list->next;
-    }
-
-    long users = 0;
-    if(root->isEndOfKey) {
-        uint8_t address[ADDRESS_LENGTH];
-        compressPubkey(root->user->pubkey, address);
-        printf("username: %s\n", root->user->name);
-        struct UserNode *friends = root->user->friends;
-        while(friends) {
-            printf("    friend: %s\n", friends->user->name);
-            friends = friends->next;
-        }
-        users++;
-    }
-}
-
 User* jsonToUser(char *jsonString, char *error) 
 {   
     cJSON *json = cJSON_Parse(jsonString);
@@ -91,10 +66,20 @@ User* jsonToUser(char *jsonString, char *error)
         cJSON_IsString(profile) && (profile->valuestring != NULL) &&
         cJSON_IsString(displayName) && (displayName->valuestring != NULL))
     {
+        if(strlen(pubkey->valuestring) != 64) {
+            responseMessage(error, "Error invalid pubkey, please provide a valid pubkey");
+            cJSON_Delete(json);
+            free(user);
+            return NULL;
+        }
+
         snprintf(user->name, 45, "%s", name->valuestring);
         snprintf(user->pubkey, 65, "%s", pubkey->valuestring);
         snprintf(user->profile, 150, "%s", profile->valuestring);
-        snprintf(user->displayName, 45, "%s", displayName->valuestring);      
+        snprintf(user->displayName, 45, "%s", displayName->valuestring); 
+
+        user->friends = NULL;
+        user->index = 0;
     } 
     else 
     {
@@ -151,15 +136,6 @@ void userListToJson(struct UserNode *rootUsers, char *response)
     cJSON_Delete(jsonList);
 }
                  
-User* getUserFromRequest(char *json_params, char *error) 
-{        
-    User *user = jsonToUser(json_params, error);
-
-    if(!user) return NULL;
-
-    return user;
-}
-
 UserIdentity* jsonToIdentity(char *json_params, char *error)
 {
     cJSON *jsonIdentity = cJSON_Parse(json_params);
@@ -190,15 +166,18 @@ UserIdentity* jsonToIdentity(char *json_params, char *error)
     return identity;    
 }
 
-void getFriendsCount(User *user, long *count)
+uint32_t getFriendsCount(User *user)
 {
+    uint32_t count = 0;
     struct UserNode *current = user->friends;
     while(current) 
     {
-        if(current->user) *count += 1;
+        if(current->user) count += 1;
 
         current = current->next;
     }
+
+    return count;
 }
 
 #endif  

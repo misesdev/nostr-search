@@ -8,7 +8,7 @@
 
 HttpResponse* searchFriends(char *jsonRequest, HttpResponse *response, Database *root)
 {
-    Search *searchParams = getSearchParams(jsonRequest, response->Content);
+    Search *searchParams = jsonToSearchParams(jsonRequest, response->Content);
 
     if(!searchParams) 
     {

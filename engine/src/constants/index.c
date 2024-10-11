@@ -11,8 +11,8 @@
 // Search Definitions
 #define MAX_LIMIT_RESULTS 100
 #define MAX_USERS_TO_VISIT 130000
-#define MIN_SIMILARITY_TERM .46
-#define MIN_SIMILARITY_TERM_RELAY .42
+#define MIN_SIMILARITY_TERM .40
+#define MIN_SIMILARITY_TERM_RELAY .40
 #define MAX_SEARCH_TERM 100
 #define MIN_SEARCH_TERM 3
 
@@ -27,6 +27,7 @@
 #define SCOPE_USERS 1
 #define SCOPE_FRIENDS 2
 #define SCOPE_RELAYS 3
+#define SCOPE_ALL 4
 
 #endif 
 

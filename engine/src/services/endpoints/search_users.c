@@ -4,13 +4,12 @@
 #include <stdlib.h>
 
 #include "../../types/types.c" 
-#include "../../types/user_trie.c"
 #include "../../utils/search_utils.c"
-#include "../../utils/search_graph.c"
+#include "../../utils/search_list.c"
 
 HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, Database *root)
 {
-    Search *searchParams = getSearchParams(jsonRequest, response->Content);
+    Search *searchParams = jsonToSearchParams(jsonRequest, response->Content);
 
     if(!searchParams) 
     {
@@ -18,20 +17,7 @@ HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, Database *r
         return response;
     }
 
-    struct TrieNode *userNode = getTrieNodeFromPubkey(root->tree, searchParams->pubkey);
-
-    if(!userNode) 
-    {
-        responseMessage(response->Content, "Focal user not found, please provide a valid public key");
-        response->StatusCode = 403;
-        free(searchParams);
-        return response;
-    }
-
-    if(!userNode->user->friends)
-        userNode = getTrieNodeFromPubkey(root->tree, "55472e9c01f37a35f6032b9b78dade386e6e4c57d80fd1d0646abb39280e5e27");
-
-    struct ResultNode *resultListUsers = searchOnGraph(userNode->user, searchParams->search, searchParams->limit);
+    struct ResultNode *resultListUsers = searchOnUserList(root->users, searchParams->search);
 
     resultToJson(resultListUsers, response->Content);
 

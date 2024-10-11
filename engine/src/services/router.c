@@ -21,7 +21,7 @@ HttpResponse* router(char *request, Database *root)
     HttpResponse *response = malloc(sizeof(HttpResponse));
 
     char *jsonRequest = requestParams(request, response->Content);
-
+    
     if(!jsonRequest) {
         response->StatusCode = 403;
         return response;

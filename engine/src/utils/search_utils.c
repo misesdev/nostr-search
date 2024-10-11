@@ -49,15 +49,6 @@ Search* jsonToSearchParams(char *json, char *error)
     return searchParams;
 }
 
-Search* getSearchParams(char *json_params, char *error)
-{
-    Search *searchParams = jsonToSearchParams(json_params, error);
-
-    if(!searchParams) return NULL;
-
-    return searchParams;
-}
-
 struct ResultNode* createResultNode(User *user, float similarity)
 {
     struct ResultNode *node = malloc(sizeof(struct ResultNode));
@@ -122,8 +113,6 @@ void resultToJson(struct ResultNode *rootUsers, char *response)
     destroyResultNode(rootUsers);
 
     cJSON_Delete(jsonList);
-
-    free(rootUsers);
 }
 
 struct ResultNode* searchOnFriends(User *user, char *searchTerm, int limit)

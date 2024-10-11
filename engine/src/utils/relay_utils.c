@@ -2,6 +2,7 @@
 #define RELAY_UTILS_C
 
 #include <cjson/cJSON.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -83,25 +84,22 @@ RelaySearch* jsonToSearchTerm(char *jsonRequest, char *error)
     return search;
 }
 
-struct RelayNode* searchRelays(struct RelayNode *root, char *searchTerm, int limit)
+struct RelayNode* searchRelays(LinkedRelays *relays, char *searchTerm, int limit)
 {
     int foundRelays = 0;
     struct RelayNode *resultList = createRelayNode("", 0);
-
-    struct RelayNode *current = root;    
-    while (current) 
+   
+    for(uint32_t i = 0; i < relays->count; i++) 
     {
         if(foundRelays >= limit) break;
 
-        float similarity = textSimilarity(current->address+6, searchTerm);
+        float similarity = textSimilarity(relays->relays[i].address+6, searchTerm);
 
         if(similarity >= MIN_SIMILARITY_TERM_RELAY) 
         {
-            insertRelayNode(resultList, current->address, similarity);
+            insertRelayNode(resultList, relays->relays[i].address, similarity);
             foundRelays++;
         }
-
-        current = current->next;
     }
 
     return resultList;

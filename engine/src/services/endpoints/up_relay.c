@@ -3,7 +3,7 @@
 
 #include "../../types/types.c"
 #include "../../utils/http_utils.c"
-#include "../../types/relay_list.c"
+#include "../../types/relay_linked.c"
 #include "../../utils/relay_utils.c"
 
 HttpResponse* addRelayOnEngine(char *jsonRequest, HttpResponse *response, Database *root)
@@ -15,7 +15,7 @@ HttpResponse* addRelayOnEngine(char *jsonRequest, HttpResponse *response, Databa
         return response;
     }
 
-    insertRelayNode(root->relays, relay_address, 0);
+    insertRelayLinked(root->relays, relay_address);
 
     responseMessage(response->Content, "relay added succefully");
 

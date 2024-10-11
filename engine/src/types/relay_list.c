@@ -1,6 +1,7 @@
 #ifndef RELAY_LIST_C
 #define RELAY_LIST_C
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,9 +58,9 @@ void destroyRelayNode(struct RelayNode *node)
     free(node);
 }
 
-long countRelayNodes(struct RelayNode *root)
+uint32_t countRelayNodes(struct RelayNode *root)
 {
-    long count = 0;
+    uint32_t count = 0;
     struct RelayNode *current = root;
 
     while(current)

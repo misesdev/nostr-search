@@ -2,84 +2,78 @@
 #define RELAY_DISK_C
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../types/types.c"
-#include "../types/relay_list.c"
 
-struct RelayNode* loadRelaysFromDisk()
+void loadRelays(Database *database)
 {
-    long offset = 0, defaultCount = 0;
+    long offset = 0;
+    uint32_t defaultCount = 0;
     FILE *fileRelays = fopen("./data/relays.db", "rb");
 
     if(!fileRelays) 
     {
         FILE *file = fopen("./data/relays.db", "wb");
         
-        if(!file) return NULL;
+        if(!file) return;
 
         fseek(file, offset, SEEK_SET);
-        fwrite(&defaultCount, sizeof(long), 1, file);
+        fwrite(&defaultCount, sizeof(uint32_t), 1, file);
+        fclose(file);
 
-        return NULL;
-    }
+        fileRelays = fopen("./data/relays.db", "rb");
 
-    long relaysCount;
-    fseek(fileRelays, offset, SEEK_SET);
-    fread(&relaysCount, sizeof(long), 1, fileRelays);
-    offset += sizeof(long);
-
-    if(relaysCount >= 500000) relaysCount = 0;
-
-    printf("relays count: %ld\n", relaysCount);
-
-    struct RelayNode *relays = createRelayNode("", 0);
-
-    for(int i = 0; i < relaysCount; i++) 
-    {
-        char relayAddress[RELAY_SIZE];
-        fseek(fileRelays, offset, SEEK_SET);
-        fread(relayAddress, sizeof(char), RELAY_SIZE, fileRelays);
-        offset += RELAY_SIZE;
-
-        if(i == 0) {
-            snprintf(relays->address, RELAY_SIZE, "%s", relayAddress);
-            continue;
+        if(!fileRelays) { 
+            printf("relays not loaded\n");
+            return;
         }
-
-        insertRelayNode(relays, relayAddress, 0);
     }
 
-    return relays;
+    database->relays = malloc(sizeof(LinkedRelays));
+
+    fseek(fileRelays, offset, SEEK_SET);
+    fread(&database->relays->count, sizeof(uint32_t), 1, fileRelays);
+    offset += sizeof(uint32_t);
+
+    database->relays->relays = malloc((database->relays->count + 100) * sizeof(Relay));
+    database->relays->size = (database->relays->count + 100);
+
+    printf("loading %d relays..\n", database->relays->count);
+    for(uint32_t i = 0; i < database->relays->count; i++) 
+    {
+        fseek(fileRelays, offset, SEEK_SET);
+        fread(&(database->relays->relays[i].address), sizeof(char), RELAY_SIZE, fileRelays);
+        offset += RELAY_SIZE;
+    }
+
+    fclose(fileRelays);
 }
 
-
-bool loadRelaysOnDisk(struct RelayNode *root)
+void saveRelays(LinkedRelays *relays)
 {
     long offset = 0;
 
     FILE *fileRelays = fopen("./data/relays.db", "wb");
 
-    if(!fileRelays) return false;
-
-    long relaysCount = countRelayNodes(root);
-
-    fseek(fileRelays, offset, SEEK_SET);
-    fwrite(&relaysCount, sizeof(long), 1, fileRelays);
-    offset += sizeof(long);
-
-    struct RelayNode *current = root;
-
-    while(current)
-    {
-        fseek(fileRelays, offset, SEEK_SET);
-        fwrite(current->address, sizeof(char), RELAY_SIZE, fileRelays);
-        offset += RELAY_SIZE;
-
-        current = current->next;
+    if(!fileRelays) {
+        printf("not found file relays.db");
+        return;
     }
 
-    return true;
+    fseek(fileRelays, offset, SEEK_SET);
+    fwrite(&relays->count, sizeof(uint32_t), 1, fileRelays);
+    offset += sizeof(uint32_t);
+
+    for(uint32_t i = 0; i < relays->count; i++)
+    {
+        fseek(fileRelays, offset, SEEK_SET);
+        fwrite(&(relays->relays[i].address), sizeof(char), RELAY_SIZE, fileRelays);
+        offset += RELAY_SIZE;
+    }
+
+    fclose(fileRelays);
 }
 
 
