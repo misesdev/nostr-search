@@ -79,11 +79,11 @@ export default function Page() {
 
     return (
         <>
-            <HomeHeader />
+            <HomeHeader hiddenLogin />
             <div className='overflow-auto flex flex-col items-center mt-18'>
                 <div className="overflow-auto flex flex-col items-center mt-18" >
 
-                    { isValid && profile && <UserProfile profile={profile} displayName={displayName} /> }
+                    { isValid && profile && <UserProfile size={150} profile={profile} displayName={displayName} /> }
                     { isValid && profile &&
                         <h2 className="text-[20px] lg:text-[24px] text-center mt-10 text-gray-400 font-bold">
                             {displayName}    

@@ -1,5 +1,3 @@
-'use client'
-
 import hashprint from 'hashprintjs'
 
 export const generateAvatar = async (displayName: string) => {

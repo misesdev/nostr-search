@@ -12,9 +12,11 @@
 #include <sys/sysinfo.h> 
 #include "../utils/http_utils.c"
 
+#define loop while(true)
+
 #define MIN_FREE_MEMORY 1024 * 1024 * 100
 #define SIZE_BUFFER 1024 * 10 // 10 kbytes
-#define MAX_THREADS 75  // Limite máximo de threads para controlar o uso de memória
+#define MAX_THREADS 50  // Limite máximo de threads para controlar o uso de memória
 
 typedef struct {
     int socket;
@@ -32,7 +34,7 @@ client_info* client_queue[MAX_THREADS]; // Fila de conexões de clientes
 // Função para processar cada cliente em uma thread do pool
 void* thread_worker(void* arg) 
 {
-    while (1) {
+    loop {
         client_info* client;
 
         pthread_mutex_lock(&queue_mutex);
@@ -48,7 +50,8 @@ void* thread_worker(void* arg)
         pthread_mutex_unlock(&queue_mutex);
 
         // Processa a requisição
-        if (client) {
+        if (client) 
+        {
             char *buffer = calloc(SIZE_BUFFER, sizeof(char));
 
             if(!buffer) {
@@ -72,7 +75,7 @@ void* thread_worker(void* arg)
                 free(response);
             }
 
-            close(client->socket);
+            shutdown(client->socket, SHUT_WR);
             free(buffer);
             free(client);
         }

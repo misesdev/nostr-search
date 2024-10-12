@@ -5,7 +5,11 @@ import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import Image from "next/image";
 
-const HomeHeader = (): ReactNode => {
+type Props = {
+    hiddenLogin?: boolean
+}
+
+const HomeHeader = ({ hiddenLogin = false }: Props): ReactNode => {
 
     const [visible, setVisible] = useState(false)
     const [user, setUser] = useState<User | null>(null)
@@ -24,6 +28,10 @@ const HomeHeader = (): ReactNode => {
         localStorage.removeItem('user')
         window.location.href = '/'
     }
+
+    if(hiddenLogin) return (
+        <header className='flex justify-end p-5 text-sm'></header>
+    )
 
     return (
         <header className='flex justify-end p-5 text-sm'>

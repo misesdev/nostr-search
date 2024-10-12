@@ -6,21 +6,23 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 
 type Props = {
+    size?: number,
     profile: string,
     displayName: string
 }
 
-export const UserProfile = ({ profile, displayName }: Props) => {
+export const UserProfile = ({ profile, displayName, size = 100 }: Props) => {
     
     const [loading, setLoading] = useState(true)
-    const [content, setContent] = useState<string>(!profile.includes("http") ? defaultProfile : profile)
+    const [content, setContent] = useState<string>(profile)
 
     useEffect(() => {
         const load = async () => {
-            if(!profile.includes("http")) {
+            try { new URL(profile) } 
+            catch {
                 const picture = await generateAvatar(profile ?? displayName)
                 setContent(picture)
-            }                
+            }
             setLoading(false)
         }
 
@@ -36,13 +38,13 @@ export const UserProfile = ({ profile, displayName }: Props) => {
         return <></>
 
     return (
-        <div className="flex items-center overflow-hidden w-[100px] h-[100px] border-4 border-[#3e2eb3] rounded-[20px]">
+        <div className={`flex items-center overflow-hidden w-[${size}px] h-[${size}px] border-4 border-[#3e2eb3] rounded-[20px]`}>
             <Image
-                width={100}
-                height={100}
+                width={size}
+                height={size}
                 src={content}
                 alt={displayName}
-                className="min-h-[100px] min-w-[100px]"
+                className={`min-h-[${size}px] min-w-[${size}px]`}
                 style={{ backgroundPosition: "50%" }}
                 onError={handleGeneric}
             />
