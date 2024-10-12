@@ -5,7 +5,7 @@ export const getRelayDomain = (relay: string) => {
     
     const url = new URL(relay)
 
-    if(!url.hostname.includes("."))
+    if(!url.hostname.includes(".") || url.hostname.length <= 2)
         throw Error("Invalid relay domain")
 
     return `${url.protocol}//${url.hostname}`
@@ -26,7 +26,7 @@ export const sendRelays = async (fileRelays: FileSystem) => {
         catch { return true }
         
         return true
-    }) 
+    })
 
     let data = await requestEngine("/save", { scope: "relays" })
 
