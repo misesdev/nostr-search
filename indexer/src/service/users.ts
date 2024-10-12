@@ -38,7 +38,7 @@ const sanitiseUser = (event: Event): User => {
         user["profile"] = user["picture"]
 
     if(!user["picture"]) 
-        user["profile"] = defaultProfile
+        user["profile"] = "" //defaultProfile
 
     if(!user["about"])
         user["about"] = ""
@@ -50,7 +50,9 @@ const sanitiseUser = (event: Event): User => {
         user["displayName"] = `${user["displayName"].substring(0, 41)}...`
 
     if(user["profile"].length > 149)
-        user["profile"] = defaultProfile
+        user["profile"] = "" //defaultProfile
+
+    if(!user["about"]) user["about"] = ""
 
     // if(user["about"] && user["about"].length > 180)
     //     user["about"] = `${user["about"].substring(0, 176)}...`
