@@ -18,7 +18,12 @@ HttpResponse* insertUser(char *jsonRequest, HttpResponse *response, Database *ro
         return response;
     }
 
-    if(getTrieNodeFromPubkey(root->tree, user->pubkey)) {
+    struct TrieNode *userExists = getTrieNodeFromPubkey(root->tree, user->pubkey);
+
+    if(userExists) 
+    {
+        insertTrieNode(root->tree, user);
+
         responseMessage(response->Content, "User added successfully");
         response->StatusCode = 200;
         free(user);

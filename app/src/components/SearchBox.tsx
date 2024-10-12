@@ -10,9 +10,11 @@ export default function SearchBox() : ReactNode {
     const searchParams = useSearchParams()
     const searchTerm = searchParams.get('searchTerm')
     const [pubkey, setPubkey] = useState(defaultPubkey)
+    const [pathname, setPathname] = useState("")
     const [term, setTerm] = useState(searchTerm || '')
     
     useEffect(() => {
+        setPathname(window.location.pathname)
         const pubkey = searchParams.get('pubkey')
 
         if(pubkey) setPubkey(pubkey) 
@@ -22,15 +24,14 @@ export default function SearchBox() : ReactNode {
 
         form.preventDefault();
 
-        form.target.action = window.location.pathname;
-
         if (!term.trim()) return;
 
         form.target.submit()
     }
 
     return (
-        <form method='get' action={window.location.pathname}
+        <form method='get' 
+            action={pathname}
             onSubmit={handleSubmit}
             className='flex border border-gray-500 rounded-full shadow-lg px-6 py-3 lg:ml-10 lg:mr-5 flex-grow lg:max-w-3xl items-center'
         >  

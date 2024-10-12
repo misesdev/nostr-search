@@ -34,7 +34,7 @@ Database* loadUsersFromDisk(FILE *file)
 
     printf("loading %d users..\n", database->users->count);
 
-    for(uint32_t i = 0; i < database->users->count - 1; i++) 
+    for(uint32_t i = 0; i < database->users->count; i++) 
     {
         User *user = &database->users->users[i];
 

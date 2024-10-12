@@ -8,10 +8,14 @@ type RelayProps = {
 export const RelaySearchResults = async ({ relays }: RelayProps) => {
     
     return (
-        <div className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-7 py-5 md:py-8 px-3 md:px-6'>
-            { 
-                relays.map(async (relay, index) => <RelayItem key={index} relay={relay.relay} />)
-            }
+        <div className="w-full">
+            <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-7 py-5 md:py-8 px-3 md:px-6'>
+                { 
+                    relays.map(async (relay, index) => <RelayItem key={index} relay={relay.relay} />)
+                }
+            </div>
+            <div className="w-full h-10"></div>
         </div>
     )
 }
+

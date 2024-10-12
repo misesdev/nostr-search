@@ -55,7 +55,6 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
         snprintf(current->user->displayName, 45, "%s", user->displayName);
         snprintf(current->user->pubkey, 65, "%s", user->pubkey);
         snprintf(current->user->profile, 150, "%s", user->profile);
-        free(user);
     } 
     else {
         current->isEndOfKey = true;
