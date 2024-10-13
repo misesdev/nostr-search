@@ -17,7 +17,7 @@ HttpResponse* searchUsers(char *jsonRequest, HttpResponse *response, Database *r
         return response;
     }
 
-    struct ResultNode *resultListUsers = searchOnUserList(root->users, searchParams->search);
+    struct ResultNode *resultListUsers = searchOnUserList(root->users, searchParams->search, searchParams->limit);
 
     resultToJson(resultListUsers, response->Content);
 
