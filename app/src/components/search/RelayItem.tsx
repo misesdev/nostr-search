@@ -18,9 +18,16 @@ export const RelayItem = ({ relay }: Props) => {
     const [loading, setLoading] = useState(true)
     const [info, setInfo] = useState<RelayInfo | null>({ address: relay })
 
-    useEffect(() => { 
+    useEffect(() => {
+        const controller = new AbortController()
+
+        const timeout = setTimeout(() => {
+            controller.abort()
+        }, 2000)
+
         fetch(relay.replace("wss", "https"), {
             headers: { "Accept": "application/nostr+json" },
+            signal: controller.signal
         }).then(resp => resp.json())
         .then(async (data) => {
             data["address"] = relay
@@ -28,12 +35,19 @@ export const RelayItem = ({ relay }: Props) => {
             catch { 
                 data.icon = await generateAvatar(relay)  
             }
+            clearTimeout(timeout)
             setLoading(false)
             setInfo(data)
         }).catch(() => {
+            clearTimeout(timeout)
             setLoading(false)
             setInfo(null)
         }) 
+
+        return () => {
+            clearTimeout(timeout)
+            controller.abort()
+        }
     }, [relay])
 
     const copyRelay = () => {
