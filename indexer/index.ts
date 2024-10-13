@@ -16,15 +16,17 @@ const main = async () => {
 
     await relayPool.connect();
 
-    await listPubkeys({ 
-        pool: relayPool, 
-        author: author, 
-        listRelays: true
-    }) 
+    // await listPubkeys({ 
+    //     pool: relayPool, 
+    //     author: author, 
+    //     listRelays: true
+    // }) 
 
     await listUsers(relayPool)
 
     await listFriends(relayPool)
+
+    await relayPool.disconect()
 
     await loadData({ 
         users: true,  
