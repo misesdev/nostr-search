@@ -27,7 +27,7 @@ export const UserProfile = ({ profile, displayName, size = 100 }: Props) => {
         }
 
         load()
-    }, [profile])
+    }, [profile, displayName])
 
     const handleGeneric = async () => {        
         const avatar = await generateAvatar(displayName)
