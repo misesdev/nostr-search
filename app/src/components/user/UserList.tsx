@@ -23,7 +23,7 @@ export const UserItem = ({ user }: UserItemProps) => {
             <div className='p-5 bg-gray-800 rounded-3xl overflow-x-clip'>
                 <div className='overflow-x-clip'>
                     <div className='block'>
-                        <div className="flex mb-5">
+                        <div className="flex mb-5 min-w-[80px]">
                             <UserProfile size={80} profile={user.profile} displayName={user.displayName} /> 
                             <div className='group px-5'>
                                 <h3 className='text-[28px] lg:text-[28px] text-left mt-3 text-gray-400 font-bold'>
@@ -44,7 +44,7 @@ export const UserItem = ({ user }: UserItemProps) => {
                             <button 
                                 onClick={() => copyToClipboard(user.pubkey)}
                                 className='w-full text-center text-gray-200 text-[12px] bg-[#3e2eb3] p-2 px-5 rounded-[10px]'>
-                                {hexToNpub(user.pubkey).substring(0, 38)}..
+                                {hexToNpub(user.pubkey).substring(0, 35)}..
                                 <AiOutlineCopy className="text-gray-200 m-1 mx-2 text-[14px] float-end" />
                             </button>
                         </div>
