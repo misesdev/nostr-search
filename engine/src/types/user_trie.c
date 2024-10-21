@@ -8,6 +8,7 @@
 #include "./types.c"
 #include "./user_trie_list.c"
 #include "../utils/utils.c"
+#include "../utils/user_utils.c"
 
 struct TrieNode* createTrieNode(uint8_t key) {
     struct TrieNode *node = calloc(1, sizeof(struct TrieNode));
@@ -50,18 +51,50 @@ struct TrieNode* insertTrieNode(struct TrieNode *root, User *user)
         current = nextNode;
     }
     
-    if(current->user) {
-        snprintf(current->user->name, 45, "%s", user->name);
-        snprintf(current->user->displayName, 45, "%s", user->displayName);
-        snprintf(current->user->pubkey, 65, "%s", user->pubkey);
-        snprintf(current->user->profile, 150, "%s", user->profile);
-    } 
-    else {
-        current->isEndOfKey = true;
-        current->user = user;
-    }
+    current->isEndOfKey = true;
+    current->user = user;
 
     return current;
+}
+
+bool updateTrieNode(struct TrieNode *root, User *user)
+{
+    uint8_t key[ADDRESS_LENGTH] = {0};
+
+    compressPubkey(user->pubkey, key);
+
+    struct TrieNode *current = root;
+
+    for(uint8_t i = 0; i < ADDRESS_LENGTH; i++)
+    {     
+        struct TrieNode *nextNode = NULL;
+        struct TrieList *list = current->childrens;
+
+        while(list) {
+            if(list->node->key == key[i]) {
+                nextNode = list->node;
+                break;
+            }
+            list = list->next;
+        }
+
+        if(!nextNode) 
+        {
+            nextNode = createTrieNode(key[i]);
+            struct TrieList *newChildren = createNode(nextNode);
+            newChildren->next = current->childrens;
+            current->childrens = newChildren;
+        }
+        
+        current = nextNode;
+    }
+    
+    if(current->user && current->isEndOfKey) 
+    {
+        copyUserData(user, current->user);
+    } 
+
+    return true;
 }
 
 bool deleteTrieNode(struct TrieNode *current, uint8_t *key)

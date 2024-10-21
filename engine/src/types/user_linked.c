@@ -1,11 +1,11 @@
 #ifndef USER_LINKED_C
 #define USER_LINKED_C
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include "./types.c"
+#include "../utils/user_utils.c"
 
 uint32_t indexOfUser(LinkedUsers *rootUsers, char *pubkey)
 {
@@ -25,15 +25,10 @@ User* insertUserLinked(LinkedUsers *rootUsers, User *user)
 
     User *insertUser = &rootUsers->users[rootUsers->count];
 
-    snprintf(insertUser->name, 45, "%s", user->name);
-    snprintf(insertUser->pubkey, 65, "%s", user->pubkey);
-    snprintf(insertUser->profile, 150, "%s", user->profile);
-    snprintf(insertUser->displayName, 45, "%s", user->displayName);
+    copyUserData(user, insertUser);
     insertUser->index = rootUsers->count;
-    insertUser->friends = NULL;
+    insertUser->friends = user->friends;
     rootUsers->count++;
-
-    free(user);
 
     return insertUser;
 }

@@ -180,5 +180,14 @@ uint32_t getFriendsCount(User *user)
     return count;
 }
 
+void copyUserData(User *origin, User *destination)
+{
+    snprintf(destination->name, 45, "%s", origin->name);
+    snprintf(destination->pubkey, 65, "%s", origin->pubkey);
+    snprintf(destination->profile, 150, "%s", origin->profile);
+    snprintf(destination->displayName, 45, "%s", origin->displayName);
+}
+
+
 #endif  
 

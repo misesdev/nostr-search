@@ -22,8 +22,7 @@ HttpResponse* insertUser(char *jsonRequest, HttpResponse *response, Database *ro
 
     if(userExists) 
     {
-        insertTrieNode(root->tree, user);
-
+        updateTrieNode(root->tree, user);
         responseMessage(response->Content, "User added successfully");
         response->StatusCode = 200;
         free(user);
@@ -39,6 +38,8 @@ HttpResponse* insertUser(char *jsonRequest, HttpResponse *response, Database *ro
     responseMessage(response->Content, "User added successfully");
 
     response->StatusCode = 200;
+
+    free(user);
 
     return response;
 }

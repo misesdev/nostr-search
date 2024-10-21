@@ -14,8 +14,8 @@
 
 #define loop while(true)
 
-#define MIN_FREE_MEMORY 1024 * 1024 * 100
-#define SIZE_BUFFER 1024 * 10 // 10 kbytes
+#define MIN_FREE_MEMORY 1024 * 1024 * 100 // 100 Mega Bytes
+#define SIZE_BUFFER 1024 * 10 // 10 kilo bytes
 #define MAX_THREADS 50  // Limite máximo de threads para controlar o uso de memória
 
 typedef struct {
@@ -63,7 +63,7 @@ void* thread_worker(void* arg)
 
             int bytes_read = read(client->socket, buffer, SIZE_BUFFER);
             if (bytes_read > 0) {
-                logRequest(buffer);
+                // logRequest(buffer);
                 
                 HttpResponse *response = client->executeRequest(buffer, client->root);
 
@@ -75,7 +75,7 @@ void* thread_worker(void* arg)
                 free(response);
             }
 
-            shutdown(client->socket, SHUT_WR);
+            close(client->socket);
             free(buffer);
             free(client);
         }
