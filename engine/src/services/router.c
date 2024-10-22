@@ -7,6 +7,7 @@
 #include "./endpoints/up_friends.c"
 #include "./endpoints/get_user.c"
 #include "./endpoints/get_friends.c"
+#include "./endpoints/get_stats.c"
 #include "./endpoints/search_relays.c"
 #include "./endpoints/search_friends.c"
 #include "./endpoints/search_users.c"
@@ -44,6 +45,9 @@ HttpResponse* router(char *request, Database *root)
     // get friends from user
     if(strstr(request, "/get_friends ") != NULL)
         return getFriendsFromUser(jsonRequest, response, root);     
+    // get nostr statistics
+    if(strstr(request, "/get_stats ") != NULL)
+        return getNostrStats(jsonRequest, response, root);
     // add relays
     if(strstr(request, "/add_relay ") != NULL)
         return addRelayOnEngine(jsonRequest, response, root);
@@ -60,6 +64,7 @@ HttpResponse* router(char *request, Database *root)
         "/get_user, "
         "/add_friends, "
         "/get_friends, "
+        "/get_stats, "
         "/search_friends, "
         "/add_relay, "
         "/search_relays and "
