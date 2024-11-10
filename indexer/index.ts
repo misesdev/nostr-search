@@ -24,7 +24,7 @@ const main = async () => {
 
     await listFriends(relayPool)
 
-    // await relayPool.disconect()
+    await relayPool.disconect()
 
     return;
 }
