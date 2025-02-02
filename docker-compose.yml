@@ -13,7 +13,7 @@ services:
     #   - app-network 
     # depends_on:
     #   - engine
-    mem_limit: 500m
+    mem_limit: 1024m
     network_mode: host
     
   engine:
@@ -26,7 +26,7 @@ services:
     #   - "8080:8080"
     # networks: 
     #   - app-network
-    mem_limit: 750m
+    mem_limit: 1024m
     network_mode: host
   
 # networks:
