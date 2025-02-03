@@ -15,7 +15,8 @@ float textSimilarity(char *origin, char *compare)
     while(*(origin + 1)) 
     { 
         number = (uint32_t) ((tolower(*origin) * 100) + tolower(*(origin+1))) % HASH_SIZE;
-        hashSet[number / 64] |= 1UL << (number % 64);
+        if((hashSet[number / 64] & 1UL << (number % 64)) == 0)
+            hashSet[number / 64] |= 1UL << (number % 64);
 
         sizePairs++;
         origin++;
