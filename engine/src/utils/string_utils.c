@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include "./char_map.c"
 
-#define HASH_PRIME 37
-#define HASH_SIZE 10000
+#define HASH_PRIME 53
+#define HASH_SIZE 10003
 
 float textSimilarity(char *origin, char *compare) 
 {
