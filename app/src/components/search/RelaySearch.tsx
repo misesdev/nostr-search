@@ -14,7 +14,7 @@ export const RelaySearch = async ({ searchTerm }: RelayParams) => {
 
     if(!response.ok) {
         console.log("response", await response.json())
-        throw Error("erro")
+        throw Error("search request error")
     }
 
     let results: Relay[] = await response.json()
