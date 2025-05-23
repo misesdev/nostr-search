@@ -9,7 +9,7 @@ import { RelayLoading } from "../relay/RelayLoading"
 import { AiOutlineCopy } from "react-icons/ai"
 import { defaultProfile } from "@/constants"
 
-type Props = {
+interface Props {
     relay: string
 }
 
@@ -94,13 +94,15 @@ export const RelayItem = ({ relay }: Props) => {
                     <label className="text-gray-200 font text-[12px] mb-1">
                         Supported Nips:
                     </label>
-                    <div className="w-full overflow-x-auto h-10" style={{ scrollbarWidth: 'thin' }}>
-                        {info?.supported_nips?.map((nip, key) => {
-                            return (
-                                <span key={key} className="font-bold text-[12px] text-gray-300 p-1 mx-1 bg-[#3e2eb3] rounded-[4px]">{nip}</span>
-                            )
-                        })}
-                    </div>
+                    { info?.supported_nips?.length && 
+                        <div className="w-full overflow-x-auto h-10" style={{ scrollbarWidth: 'thin' }}>
+                            {info?.supported_nips?.map((nip, key) => {
+                                return (
+                                    <span key={key} className="font-bold text-[12px] text-gray-300 p-1 mx-1 bg-[#3e2eb3] rounded-[4px]">{nip}</span>
+                                )
+                            })}
+                        </div>
+                    }
                 </div>
 
                 { info?.software && 
