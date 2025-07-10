@@ -1,10 +1,9 @@
 
-
 export default function Page() {
     return (
         <div className="raw p-10">
             <h2 className="text-[20px] lb:text-[24px] text-center mt-10 text-gray-400 font-bold">
-                Parabéns, você é realmente acima da média:
+                Parabéns, você é realmente acima da média.
             </h2>
 
             <h3 className="text-[20px] lb:text-[24px] text-center mt-10 text-gray-400 font-bold">
