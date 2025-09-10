@@ -2,10 +2,9 @@ import ImageSearchResults from '@/components/search/ImageSearchResults';
 import { SearchParams, User } from '@/types/types';
 import Link from 'next/link';
 
-const SearchImages = async ({ pubkey, searchTerm }: SearchParams) => {
+const SearchImages = async ({ searchTerm }: SearchParams) => {
 
-    // search
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     const results: User[] = []
 

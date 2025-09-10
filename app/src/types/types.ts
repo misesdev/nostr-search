@@ -9,27 +9,32 @@ export type RelayParams = {
 }
 
 export type User = {
-    name: string,
-    displayName: string,
-    profile: string,
-    pubkey: string,
-    about?: string,
-    similarity: number
+    name: string;
+    pubkey: string;
+    display_name: string;
+    picture: string;
+    about: string;
+    banner: string;
+    website?: string;
+    nip05?: string;
+    lud06?: string;
+    lud16?: string;
+    zapService?: string;
+    ref_count: number;
 }
 
 export type Relay = {
-    relay: string,
-    similarity: number
+    url: string;
+    name: string;
+    pubkey?: string;
+    description?: string;
+    contact?: string;
+    supported_nips: string;
+    software?: string;
+    version?: string;
+    active: boolean;
+    ref_count: number;
+    icon?: string;
+    author?: User;
 }
 
-export type RelayInfo = {
-    name?: string,
-    icon?: string,
-    limitation?: any,
-    description?: string,
-    software?: string,
-    supported_nips?: number[],
-    version?: string,
-    address?: string,
-    contact?: string
-}

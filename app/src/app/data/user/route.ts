@@ -6,11 +6,12 @@ export async function POST(request: NextRequest)
 
     const { pubkey } = body
 
-    const response = await fetch('http://localhost:8080/get_user', {
-        method: "post",
-        body: JSON.stringify({
-            pubkey: pubkey
-        })
+    const response = await fetch(`${process.env.API_ENGINE_URL}/user/${pubkey}`, {
+        method: "get",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
     })
 
     if(response.ok) 

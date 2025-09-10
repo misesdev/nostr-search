@@ -4,16 +4,8 @@ const nextConfig = {
         missingSuspenseWithCSRBailout: false 
     },
     images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: '**',
-            },
-            {
-                protocol: 'http',
-                hostname: '**',
-            },
-        ],
+        remotePatterns: [],
+        //unoptimized: true
     },
 };
 

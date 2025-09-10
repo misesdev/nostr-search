@@ -3,13 +3,17 @@ import WebSearchResults from "./WebSearchResults";
 import Link from 'next/link';
 import Error from "@/app/search/error";
 import { generateAvatar } from "@/services/avatar";
+import { normalizeUser } from "@/utils/utils";
 
-const WebSearch = async ({ pubkey, searchTerm }: SearchParams) => {
+const WebSearch = async ({ searchTerm }: SearchParams) => {
     
-    const response = await fetch(`${process.env.API_ENGINE_URL}/search_users`, { 
+    const response = await fetch(`${process.env.API_ENGINE_URL}/user/search`, { 
         method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-            pubkey,
             searchTerm,
             limit: 100
         })
@@ -19,15 +23,7 @@ const WebSearch = async ({ pubkey, searchTerm }: SearchParams) => {
 
     const users: User[] = await response.json()
 
-    users.sort((a, b) => b.similarity - a.similarity)
-
-    users.forEach(async (user) => 
-    {
-        if(!(user.profile.includes("http")))
-        {
-            user.profile = await generateAvatar(user.pubkey)
-        }
-    })
+    users.forEach((user) => user = normalizeUser(user))
 
     if (!users.length) 
     {

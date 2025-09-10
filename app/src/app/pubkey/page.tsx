@@ -8,6 +8,7 @@ import { AiOutlineUser } from "react-icons/ai";
 import { validatePubkey } from "@/utils/utils";
 import { UserProfile } from "@/components/UserProfile";
 import { User } from "@/types/types";
+import { defaultProfile } from "@/constants";
 
 export default function Page() {
 
@@ -38,15 +39,15 @@ export default function Page() {
 
             if(response.ok) 
             {
-                let data = await response.json()
+                let user: User = await response.json()
 
-                if(!data?.message) {
-                    setDisplayName(data.displayName)
-                    setProfile(data.profile)
-                    setUser(data)
+                if(user) {
+                    setDisplayName(user.display_name)
+                    setProfile(user.picture??defaultProfile)
+                    setUser(user)
                 }
 
-                if(data?.message) {
+                if(!user) {
                     setDisplayName('')
                     setProfile('')
                     setUser(null)

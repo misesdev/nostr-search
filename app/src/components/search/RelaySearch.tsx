@@ -1,15 +1,20 @@
 import Link from "next/link"
 import { Relay, RelayParams } from "@/types/types"
 import { RelaySearchResults } from "./RelaySearchResults"
+import { normalizeRelay } from "@/utils/utils"
 
 export const RelaySearch = async ({ searchTerm }: RelayParams) => {
     
-    const response = await fetch(`${process.env.API_ENGINE_URL}/search_relays`,{
+    const response = await fetch(`${process.env.API_ENGINE_URL}/relays/search`,{
         method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
             searchTerm: searchTerm.replace("wss://", ""),
             limit: 100
-        }) 
+        })
     })
 
     if(!response.ok) {
@@ -19,7 +24,7 @@ export const RelaySearch = async ({ searchTerm }: RelayParams) => {
 
     let results: Relay[] = await response.json()
 
-    results.sort((a, b) => b.similarity - a.similarity)
+    results.forEach(relay => relay = normalizeRelay(relay))
 
     if (!results.length) 
     {

@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { User } from '@/types/types';
-import { UserList } from '../user/UserList';
+import { UsersResults } from '../user/UserResults';
 
 type Props = {
     results: User[]
@@ -11,7 +11,7 @@ type Props = {
 export default function WebSearchResults({ results }: Props): ReactNode {
     return (
         <div className='w-full'>
-            <UserList users={results} />
+            <UsersResults users={results} />
             <div className='w-full h-10'></div>
         </div>
     );

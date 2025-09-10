@@ -2,12 +2,15 @@ import ImageSearchResults from '@/components/search/ImageSearchResults';
 import { SearchParams, User } from '@/types/types';
 import Link from 'next/link';
 
-const ImageSearch = async ({ pubkey, searchTerm }: SearchParams) => {
+const ImageSearch = async ({ searchTerm }: SearchParams) => {
 
-    const response = await fetch(`${process.env.API_ENGINE_URL}/search_users`, {
+    const response = await fetch(`${process.env.API_ENGINE_URL}/user/search`, {
         method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-            pubkey,
             searchTerm,
             limit: 100
         })
@@ -17,10 +20,7 @@ const ImageSearch = async ({ pubkey, searchTerm }: SearchParams) => {
 
     const users: User[] = await response.json()
 
-    // ordenate for similarity desc
-    users.sort((a, b) => b.similarity - a.similarity)
-
-    const results = users.filter(user => user.profile.includes("http"))
+    const results = users.filter(user => user.picture?.includes("http"))
 
     if (!results.length) {
         return (

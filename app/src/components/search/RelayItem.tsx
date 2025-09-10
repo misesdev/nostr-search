@@ -1,131 +1,90 @@
 'use client'
 
-import { generateAvatar } from "@/services/avatar"
-import { RelayInfo } from "@/types/types"
-import { useEffect, useState } from "react"
+import { Relay } from "@/types/types"
+import { Copy } from "lucide-react"
 import Image from "next/image"
 import toast from "react-hot-toast"
-import { RelayLoading } from "../relay/RelayLoading"
 import { AiOutlineCopy } from "react-icons/ai"
-import { defaultProfile } from "@/constants"
 
 interface Props {
-    relay: string
+    relay: Relay 
 }
 
 export const RelayItem = ({ relay }: Props) => {
 
-    const [loading, setLoading] = useState(true)
-    const [info, setInfo] = useState<RelayInfo | null>({ address: relay })
+    const supported_nips = JSON.parse(relay.supported_nips??"[]") as number[]
 
-    useEffect(() => {
-        const controller = new AbortController()
-
-        const timeout = setTimeout(() => {
-            controller.abort()
-        }, 2000)
-
-        fetch(relay.replace("wss", "https"), {
-            headers: { "Accept": "application/nostr+json" },
-            signal: controller.signal
-        }).then(resp => resp.json())
-        .then(async (data) => {
-            data["address"] = relay
-            try { new URL(data.icon) } 
-            catch { 
-                data.icon = await generateAvatar(relay)  
-            }
-            clearTimeout(timeout)
-            setLoading(false)
-            setInfo(data)
-        }).catch(() => {
-            clearTimeout(timeout)
-            setLoading(false)
-            setInfo(null)
-        }) 
-
-        return () => {
-            clearTimeout(timeout)
-            controller.abort()
-        }
-    }, [relay])
-
-    const copyRelay = () => {
-        navigator.clipboard.writeText(info?.address ?? "");
-        toast.success(`Copied ${relay} to clipboard!`)
+    const handleCopy = () => {
+        navigator.clipboard.writeText(relay.url)
+        toast.success(`Copied ${relay.url} to clipboard!`)
     }
 
-    if(loading)
-        return <RelayLoading />
-
-    if(!info)
-         return <></>
-
     return (
-        <div className='w-full group'>
-            <div className='min-h-[320px] p-5 bg-gray-800 rounded-3xl overflow-x-clip'>
-                <div className="w-full flex">
-                    <div className="flex items-center overflow-hidden w-[80px] h-[80px] border-4 border-[#3e2eb3] rounded-[12px]">
-                        <Image
-                            width={80}
-                            height={80}
-                            src={info.icon ?? defaultProfile}
-                            alt={info?.description ?? ""}
-                            className="min-h-[80px] min-w-[80px]"
-                            style={{ backgroundPosition: "50%" }}
-                            //onError={() => setError(true)}
-                        />
-                    </div>
-                    <div className="items-end">
-                        <button onClick={() => copyRelay()} 
-                            className="flex text-gray-200 font-bold py-4 px-6 mx-5 bg-[#3e2eb3] rounded-[20px] cursor-pointer">
-                            {info?.address} 
-                            <AiOutlineCopy className="text-gray-200 m-1 mx-2 text-[18px]" />
-                        </button>
-                    </div>
-                </div>
-                <div className="w-full pt-1">
-                    <label className="text-gray-200 font-bold text-[12px]">
-                        {info?.description ?? ""}
-                    </label>
-                </div>
+        <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 flex flex-col md:flex-row gap-4 transition hover:shadow-lg">
+            <div className="flex-shrink-0">
+                <img
+                    src={relay.icon}
+                    alt={relay.name || "Relay Icon"}
+                    className="w-16 h-16 rounded-full object-cover"
+                />
+            </div>
 
-                <div className="w-full pt-1">
-                    <label className="text-gray-200 font text-[12px] mb-1">
-                        Supported Nips:
-                    </label>
-                    { info?.supported_nips?.length && 
-                        <div className="w-full overflow-x-auto h-10" style={{ scrollbarWidth: 'thin' }}>
-                            {info?.supported_nips?.map((nip, key) => {
-                                return (
-                                    <span key={key} className="font-bold text-[12px] text-gray-300 p-1 mx-1 bg-[#3e2eb3] rounded-[4px]">{nip}</span>
-                                )
-                            })}
+            <div className="flex-1 flex flex-col justify-between">
+                <div>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        {relay.name}
+                    </h2>
+                    {relay.description && (
+                        <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm line-clamp-3">
+                            {relay.description}
+                        </p>
+                    )}
+
+                    {relay.software &&
+                        <div className="flex-1 items-center mt-1">
+                            <span className="text-gray-700 dark:text-gray-300 text-sm">
+                                <strong>software</strong>: {relay.software}
+                            </span>
                         </div>
                     }
+                    
+                    {relay.version &&
+                        <div className="flex-1 items-center mt-1">
+                            <span className="text-gray-700 dark:text-gray-300 text-sm">
+                                <strong>version</strong>: {relay.version}
+                            </span>
+                        </div>
+                    }
+
+                    {relay.author && (
+                        <div className="flex items-center mt-2">
+                            <img
+                                src={relay.author.picture}
+                                alt={relay.author.display_name}
+                                className="w-6 h-6 rounded-full mr-2 object-cover"
+                            />
+                            <span className="text-gray-700 dark:text-gray-300 text-sm">
+                                {relay.author.display_name || relay.author.name}
+                                (<strong>Manteiner</strong>)
+                            </span>
+                        </div>
+                    )}
                 </div>
 
-                { info?.software && 
-                    <div className="w-full pt-1 overflow-clip">
-                        <label className="text-gray-200 font text-[12px] mb-1">
-                            Software: {info?.software}
-                        </label>
-                    </div>
-                }
-                { info?.version && 
-                    <div className="w-full pt-1">
-                        <label className="text-gray-200 font text-[12px] mb-1">
-                            Version: {info.version}
-                        </label>
-                    </div>
-                }
-                { info?.contact && 
-                    <div className="w-full pt-1 overflow-clip">
-                        <label className="text-gray-200 font text-[12px] mb-1">
-                            Contact: {info.contact}
-                        </label>
-                    </div>
-                }
+                {/* Ações do card */}
+                <div className="mt-3 flex items-center justify-between">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {relay.active ? "Active" : "Inactive"} 
+                        <span className="text-green-700"> • </span>
+                        {relay.ref_count} references
+                    </span>
+                    <button
+                        onClick={handleCopy}
+                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                    >
+                        <Copy className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                    </button>
+                </div>
             </div>
         </div>
     )
